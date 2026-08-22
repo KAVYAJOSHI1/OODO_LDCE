@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Activities | GlobeTrotter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="dashboard.html" class="navbar-brand">
+        <span class="brand-icon">G</span>
+        GlobeTrotter
+    </a>
+    <div class="navbar-menu">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="my_trips.html" class="nav-link">My Trips</a>
+        <a href="profile.html" class="nav-link">Profile</a>
+    </div>
+</nav>
+
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-title">Travel</div>
+        <a href="dashboard.html" class="sidebar-link">🏠 Dashboard</a>
+        <a href="my_trips.html" class="sidebar-link">✈️ My Trips</a>
+        <a href="create_trip.html" class="sidebar-link">➕ Plan Trip</a>
+        <a href="city_search.html" class="sidebar-link">🏙️ Cities</a>
+        <a href="activity_search.html" class="sidebar-link active">🎯 Activities</a>
+        <a href="calendar.html" class="sidebar-link">📅 Calendar</a>
+        <a href="budget.html" class="sidebar-link">📊 Budget</a>
+        <div class="sidebar-title" style="margin-top:20px;">Account</div>
+        <a href="profile.html" class="sidebar-link">👤 Profile</a>
+        <a href="login.html" class="sidebar-link">🚪 Logout</a>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">🎯 Explore Activities & Experiences</h1>
+                <p class="page-subtitle">Filter activities by type, duration, cost, and city to build your itinerary.</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Activity</th>
+                            <th>City</th>
+                            <th>Category</th>
+                            <th>Duration</th>
+                            <th>Est. Cost</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <strong>Taj Mahal Sunrise Guided Tour</strong>
+                                <div style="font-size: 11px; color: var(--muted);">Skip-the-line entrance + guide</div>
+                            </td>
+                            <td><span class="badge badge-primary">Agra</span></td>
+                            <td>Heritage</td>
+                            <td>2.5 Hours</td>
+                            <td><strong style="color: var(--primary);">₹1,200</strong></td>
+                            <td><button class="btn btn-primary btn-sm" onclick="alert('Added activity!')">+ Add to Trip</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Alleppey Houseboat Day Cruise</strong>
+                                <div style="font-size: 11px; color: var(--muted);">Traditional Kerala lunch included</div>
+                            </td>
+                            <td><span class="badge badge-primary">Kochi</span></td>
+                            <td>Boat & Cruise</td>
+                            <td>5 Hours</td>
+                            <td><strong style="color: var(--primary);">₹2,800</strong></td>
+                            <td><button class="btn btn-primary btn-sm" onclick="alert('Added activity!')">+ Add to Trip</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

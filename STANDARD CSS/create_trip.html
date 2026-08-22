@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan New Trip | GlobeTrotter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="dashboard.html" class="navbar-brand">
+        <span class="brand-icon">G</span>
+        GlobeTrotter
+    </a>
+    <div class="navbar-menu">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="my_trips.html" class="nav-link">My Trips</a>
+        <a href="profile.html" class="nav-link">Profile</a>
+    </div>
+</nav>
+
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-title">Travel</div>
+        <a href="dashboard.html" class="sidebar-link">🏠 Dashboard</a>
+        <a href="my_trips.html" class="sidebar-link">✈️ My Trips</a>
+        <a href="create_trip.html" class="sidebar-link active">➕ Plan Trip</a>
+        <a href="city_search.html" class="sidebar-link">🏙️ Cities</a>
+        <a href="activity_search.html" class="sidebar-link">🎯 Activities</a>
+        <a href="calendar.html" class="sidebar-link">📅 Calendar</a>
+        <a href="budget.html" class="sidebar-link">📊 Budget</a>
+        <div class="sidebar-title" style="margin-top:20px;">Account</div>
+        <a href="profile.html" class="sidebar-link">👤 Profile</a>
+        <a href="login.html" class="sidebar-link">🚪 Logout</a>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">➕ Plan a New Trip</h1>
+                <p class="page-subtitle">Set up your trip details and start building your custom itinerary.</p>
+            </div>
+            <a href="my_trips.html" class="btn btn-secondary">← Back to Trips</a>
+        </div>
+
+        <div style="max-width: 800px; margin: 0 auto;">
+            <div class="card">
+                <form action="itinerary_builder.html" method="GET">
+                    <div class="form-group">
+                        <label class="form-label" for="title">Trip Title</label>
+                        <input type="text" id="title" name="title" class="form-control" value="Goa Beach & Heritage Getaway" required>
+                    </div>
+
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label" for="primary_city">Primary Destination City</label>
+                            <select id="primary_city" name="primary_city" class="form-control" required>
+                                <option value="Goa" selected>Goa, India</option>
+                                <option value="Delhi">Delhi, India</option>
+                                <option value="Jaipur">Jaipur, Rajasthan</option>
+                                <option value="Mumbai">Mumbai, Maharashtra</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="budget">Total Estimated Budget (₹)</label>
+                            <input type="number" id="budget" name="budget" class="form-control" value="25000" min="0" step="500" required>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-2">
+                        <div class="form-group">
+                            <label class="form-label" for="start_date">Start Date</label>
+                            <input type="date" id="start_date" name="start_date" class="form-control" value="2026-10-12" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="end_date">End Date</label>
+                            <input type="date" id="end_date" name="end_date" class="form-control" value="2026-10-20" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="notes">Notes / Overview</label>
+                        <textarea id="notes" name="notes" class="form-control" rows="4">Exciting Odoo hackathon team trip planning!</textarea>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                        <a href="dashboard.html" class="btn btn-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-primary btn-lg">Create & Add Activities ➔</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

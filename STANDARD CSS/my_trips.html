@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Trips | GlobeTrotter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <a href="dashboard.html" class="navbar-brand">
+        <span class="brand-icon">G</span>
+        GlobeTrotter
+    </a>
+    <div class="navbar-menu">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="my_trips.html" class="nav-link active">My Trips</a>
+        <a href="profile.html" class="nav-link">Profile</a>
+    </div>
+</nav>
+
+<div class="app-layout">
+    <aside class="sidebar">
+        <div class="sidebar-title">Travel</div>
+        <a href="dashboard.html" class="sidebar-link">🏠 Dashboard</a>
+        <a href="my_trips.html" class="sidebar-link active">✈️ My Trips</a>
+        <a href="create_trip.html" class="sidebar-link">➕ Plan Trip</a>
+        <a href="city_search.html" class="sidebar-link">🏙️ Cities</a>
+        <a href="activity_search.html" class="sidebar-link">🎯 Activities</a>
+        <a href="calendar.html" class="sidebar-link">📅 Calendar</a>
+        <a href="budget.html" class="sidebar-link">📊 Budget</a>
+        <div class="sidebar-title" style="margin-top:20px;">Account</div>
+        <a href="profile.html" class="sidebar-link">👤 Profile</a>
+        <a href="login.html" class="sidebar-link">🚪 Logout</a>
+    </aside>
+
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">✈️ My Trips</h1>
+                <p class="page-subtitle">View and manage all your upcoming, ongoing, and completed travel plans.</p>
+            </div>
+            <a href="create_trip.html" class="btn btn-primary">+ Plan New Trip</a>
+        </div>
+
+        <div class="card" style="margin-bottom: 24px; padding: 14px 20px;">
+            <div style="display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                <div class="search-box" style="flex: 1; min-width: 240px;">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="form-control" placeholder="Search trips by destination or title...">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <select class="form-control" style="width: auto;">
+                        <option value="all">All Statuses</option>
+                        <option value="upcoming">Upcoming</option>
+                        <option value="in_progress">In Progress</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-3">
+            <div class="card trip-card">
+                <div class="trip-cover">
+                    <div>
+                        <span class="badge badge-primary">Upcoming</span>
+                        <div class="trip-title" style="margin-top: 8px;">Golden Triangle Explorer</div>
+                    </div>
+                </div>
+                <div class="trip-body">
+                    <div class="trip-meta">📍 Delhi ➔ Agra ➔ Jaipur</div>
+                    <div class="trip-meta">📅 Oct 12 – Oct 20, 2026 (8 days)</div>
+                    <div class="trip-footer">
+                        <span class="badge badge-primary">Budget ₹24.5K</span>
+                        <div style="display: flex; gap: 6px;">
+                            <a href="itinerary_view.html" class="btn btn-secondary btn-sm">View</a>
+                            <a href="itinerary_builder.html" class="btn btn-primary btn-sm">Edit Builder</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card trip-card">
+                <div class="trip-cover" style="background: linear-gradient(135deg, #28a745, #5dd382);">
+                    <div>
+                        <span class="badge badge-success">In Progress</span>
+                        <div class="trip-title" style="margin-top: 8px;">Kerala Backwaters Retreat</div>
+                    </div>
+                </div>
+                <div class="trip-body">
+                    <div class="trip-meta">📍 Kochi ➔ Alleppey ➔ Munnar</div>
+                    <div class="trip-meta">📅 Aug 20 – Aug 26, 2026 (7 days)</div>
+                    <div class="trip-footer">
+                        <span class="badge badge-success">Budget ₹18.2K</span>
+                        <div style="display: flex; gap: 6px;">
+                            <a href="itinerary_view.html" class="btn btn-secondary btn-sm">View</a>
+                            <a href="itinerary_builder.html" class="btn btn-primary btn-sm">Edit Builder</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card trip-card">
+                <div class="trip-cover" style="background: linear-gradient(135deg, #f59e0b, #f9c265);">
+                    <div>
+                        <span class="badge badge-warning">Completed</span>
+                        <div class="trip-title" style="margin-top: 8px;">Udaipur Lake & Fort Trail</div>
+                    </div>
+                </div>
+                <div class="trip-body">
+                    <div class="trip-meta">📍 Udaipur ➔ Kumbhalgarh</div>
+                    <div class="trip-meta">📅 May 10 – May 14, 2026 (5 days)</div>
+                    <div class="trip-footer">
+                        <span class="badge badge-warning">Spent ₹14.8K</span>
+                        <div style="display: flex; gap: 6px;">
+                            <a href="itinerary_view.html" class="btn btn-secondary btn-sm">View</a>
+                            <a href="public_trip.html" class="btn btn-secondary btn-sm">Share Link</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>
