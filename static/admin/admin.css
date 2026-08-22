@@ -50,13 +50,13 @@ body.admin-body {
 /* Sidebar */
 .admin-sidebar {
     width: 250px;
+    flex: 0 0 250px;
     background-color: var(--admin-sidebar-bg);
     color: #e2e8f0;
     display: flex;
     flex-direction: column;
-    flex-shrink: 0;
     border-right: 1px solid #2d3748;
-    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
     white-space: nowrap;
     position: relative;
@@ -68,12 +68,13 @@ body.sidebar-collapsed .admin-sidebar,
     width: 0 !important;
     min-width: 0 !important;
     max-width: 0 !important;
+    flex: 0 0 0px !important;
     margin-left: -250px !important;
     opacity: 0 !important;
     border-right: none !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+    padding: 0 !important;
     pointer-events: none !important;
+    visibility: hidden !important;
 }
 
 .admin-sidebar-toggle-btn {

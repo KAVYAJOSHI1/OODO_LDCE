@@ -16,18 +16,12 @@ function toggleAdminSidebar() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Restore sidebar state from localStorage
     if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
         const wrapper = document.querySelector('.admin-wrapper');
         if (wrapper) wrapper.classList.add('sidebar-collapsed');
         document.body.classList.add('sidebar-collapsed');
     }
-
-    document.querySelectorAll('#sidebarToggleBtn, .admin-sidebar-toggle-btn, .admin-sidebar-close-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            toggleAdminSidebar();
-        });
-    });
 });
 
 // CSRF Token Helper
