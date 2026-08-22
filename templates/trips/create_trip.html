@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Plan New Trip | GlobeTrotter{% endblock %}
+{% block title %}{% if is_edit %}Edit Trip{% else %}Plan New Trip{% endif %} | GlobeTrotter{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">➕ Plan a New Trip</h1>
+        <h1 class="page-title">{% if is_edit %}✏️ Edit Trip{% else %}➕ Plan a New Trip{% endif %}</h1>
         <p class="page-subtitle">Set up your trip details and start building your custom itinerary.</p>
     </div>
     <a href="{% url 'my_trips' %}" class="btn btn-secondary">
@@ -15,14 +15,15 @@
 
 <div style="max-width: 800px; margin: 0 auto;">
     <div class="card">
-        <form method="POST" action="{% url 'itinerary_builder' %}" onsubmit="return handleCreateTripSubmit(event)">
+        <form method="POST" action="{% if is_edit %}{% url 'trip_edit' trip.id %}{% else %}{% url 'create_trip' %}{% endif %}">
             {% csrf_token %}
 
             <div class="form-group">
                 <label class="form-label" for="title">Trip Title *</label>
-                <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Goa Beach & Heritage Getaway" value="Goa Beach & Heritage Getaway" required>
+                <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Goa Beach & Heritage Getaway" value="{% if trip %}{{ trip.name }}{% else %}Goa Beach & Heritage Getaway{% endif %}" required>
             </div>
 
+            {% if not is_edit %}
             <div class="grid grid-2">
                 <div class="form-group">
                     <label class="form-label" for="primary_city">Primary Destination City *</label>
@@ -42,19 +43,26 @@
                     <input type="number" id="budget" name="budget" class="form-control" placeholder="25000" value="25000" min="0" step="500" required>
                 </div>
             </div>
+            {% else %}
+            <div class="form-group">
+                <label class="form-label" for="budget">Total Estimated Budget *</label>
+                <input type="number" id="budget" name="budget" class="form-control" value="{{ trip.budget|floatformat:2 }}" min="0" step="500" required>
+            </div>
+            {% endif %}
 
             <div class="grid grid-2">
                 <div class="form-group">
                     <label class="form-label" for="start_date">Start Date *</label>
-                    <input type="date" id="start_date" name="start_date" class="form-control" value="2026-10-12" required>
+                    <input type="date" id="start_date" name="start_date" class="form-control" value="{% if trip %}{{ trip.start_date|date:'Y-m-d' }}{% else %}2026-10-12{% endif %}" required>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="end_date">End Date *</label>
-                    <input type="date" id="end_date" name="end_date" class="form-control" value="2026-10-20" required>
+                    <input type="date" id="end_date" name="end_date" class="form-control" value="{% if trip %}{{ trip.end_date|date:'Y-m-d' }}{% else %}2026-10-20{% endif %}" required>
                 </div>
             </div>
 
+            {% if not is_edit %}
             <div class="form-group">
                 <label class="form-label" for="travel_type">Travel Style / Preference</label>
                 <select id="travel_type" name="travel_type" class="form-control">
@@ -65,16 +73,17 @@
                     <option value="budget">🎒 Backpacking / Budget</option>
                 </select>
             </div>
+            {% endif %}
 
             <div class="form-group">
                 <label class="form-label" for="notes">Notes / Overview</label>
-                <textarea id="notes" name="notes" class="form-control" rows="4" placeholder="Mention any specific preferences, companion details, or special requests...">Exciting custom getaway planning!</textarea>
+                <textarea id="notes" name="notes" class="form-control" rows="4" placeholder="Mention any specific preferences, companion details, or special requests...">{% if trip %}{{ trip.description }}{% else %}Exciting custom getaway planning!{% endif %}</textarea>
             </div>
 
             <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
                 <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
                 <button type="submit" class="btn btn-primary btn-lg">
-                    Create & Add Activities ➔
+                    {% if is_edit %}Save Changes{% else %}Create & Add Activities ➔{% endif %}
                 </button>
             </div>
         </form>

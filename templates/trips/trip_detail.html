@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}{{ trip.name }} | GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+            <h1 class="page-title">{{ trip.name }}</h1>
+            <span class="badge badge-primary">{{ trip.get_status_display }}</span>
+        </div>
+        <p class="page-subtitle">📅 {{ trip.start_date|default:"TBD" }} – {{ trip.end_date|default:"TBD" }} ({{ trip.get_duration_days }} days) • {{ trip.currency }} {{ trip.budget }} budget</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'trip_edit' trip.id %}" class="btn btn-secondary">✏️ Edit Details</a>
+        <a href="{% url 'itinerary_builder' %}?trip={{ trip.id }}" class="btn btn-primary">🛠️ Open Builder</a>
+    </div>
+</div>
+
+{% if trip.description %}
+<div class="card" style="margin-bottom: 24px;">
+    <div class="card-title" style="margin-bottom: 6px;">Overview</div>
+    <p style="color: var(--muted); font-size: 14px;">{{ trip.description }}</p>
+</div>
+{% endif %}
+
+<div class="grid grid-4" style="margin-bottom: 24px;">
+    <div class="card stat-card">
+        <div class="stat-icon">📍</div>
+        <div>
+            <div class="stat-label">Stops</div>
+            <div class="stat-value">{{ trip.stops.count }}</div>
+        </div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon">💰</div>
+        <div>
+            <div class="stat-label">Total Cost</div>
+            <div class="stat-value">{{ trip.currency }} {{ trip.get_total_cost }}</div>
+        </div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon">📊</div>
+        <div>
+            <div class="stat-label">Budget Used</div>
+            <div class="stat-value">{{ trip.get_budget_percentage|floatformat:0 }}%</div>
+        </div>
+    </div>
+    <div class="card stat-card">
+        <div class="stat-icon">👥</div>
+        <div>
+            <div class="stat-label">Travelers</div>
+            <div class="stat-value">{{ trip.travelers }}</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title" style="margin-bottom: 16px;">Manage this trip</div>
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <a href="{% url 'itinerary_builder' %}?trip={{ trip.id }}" class="btn btn-primary">🛠️ Itinerary Builder</a>
+        <a href="{% url 'itinerary_view' %}?trip={{ trip.id }}" class="btn btn-secondary">👁️ View Itinerary</a>
+        <a href="{% url 'budget' %}?trip={{ trip.id }}" class="btn btn-secondary">💰 Budget</a>
+        <a href="{% url 'calendar' %}?trip={{ trip.id }}" class="btn btn-secondary">📅 Calendar</a>
+        <a href="{% url 'trip_edit' trip.id %}" class="btn btn-secondary">✏️ Edit Details</a>
+        <form method="POST" action="{% url 'trip_delete' trip.id %}" onsubmit="return confirm('Delete &quot;{{ trip.name }}&quot;? This cannot be undone.');" style="display: inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">🗑️ Delete Trip</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

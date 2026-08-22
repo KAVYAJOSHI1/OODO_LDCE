@@ -2,17 +2,25 @@
 
 {% block title %}Itinerary Builder | GlobeTrotter{% endblock %}
 
+{% block extra_head %}
+{% if trip %}<script>window.GLOBETROTTER_TRIP_ID = {{ trip.id }};</script>{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="page-header">
     <div>
         <h1 class="page-title">🛠️ Itinerary Builder</h1>
-        <p class="page-subtitle">Golden Triangle Explorer — Delhi ➔ Agra ➔ Jaipur (Oct 20 – Oct 28, 2026)</p>
+        {% if trip %}
+        <p class="page-subtitle">{{ trip.name }} — {{ trip.start_date|default:"TBD" }} to {{ trip.end_date|default:"TBD" }}</p>
+        {% else %}
+        <p class="page-subtitle">No trip selected — <a href="{% url 'create_trip' %}">create a trip</a> to start building.</p>
+        {% endif %}
     </div>
     <div style="display: flex; gap: 10px;">
-        <a href="{% url 'itinerary_view' %}" class="btn btn-secondary">
+        <a href="{% url 'itinerary_view' %}{% if trip %}?trip={{ trip.id }}{% endif %}" class="btn btn-secondary">
             👁️ Preview Itinerary
         </a>
-        <a href="{% url 'my_trips' %}" class="btn btn-primary" onclick="showToast('Itinerary saved successfully!', 'success');">
+        <a href="{% url 'my_trips' %}" class="btn btn-primary">
             💾 Save & Exit
         </a>
     </div>

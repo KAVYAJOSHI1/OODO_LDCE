@@ -1,9 +1,35 @@
+# Python
 __pycache__/
 *.py[cod]
-*.sqlite3
-db.sqlite3
-.env
-venv/
+*.egg-info/
+.Python
+
+# Virtual environments
 .venv/
+venv/
+env/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+media/
+# runtime logs -- the folder is auto-created by settings.py on startup,
+# so it never needs to be committed
+logs/
+# output of `collectstatic`, regenerated
+staticfiles/
+# local secrets -- not used (SQLite, no .env required), kept ignored just in case
+.env
+
+# IMPORTANT - do NOT ignore these, they MUST be committed:
+#   travel/migrations/*.py   -> the shared database blueprint (only __pycache__ is ignored)
+#   travel/management/        -> seed_data commands
+#   travel/tests/             -> the test suite
+
+# Editors / OS
 .vscode/
 .idea/
+.DS_Store
+Thumbs.db
+GlobeTrotter_Team_Architecture_and_Hackathon_Plan.docx
+GlobeTrotter.pdf

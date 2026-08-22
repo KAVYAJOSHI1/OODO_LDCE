@@ -2,20 +2,24 @@
 
 {% block title %}Preview Itinerary | GlobeTrotter{% endblock %}
 
+{% block extra_head %}
+{% if trip %}<script>window.GLOBETROTTER_TRIP_ID = {{ trip.id }};</script>{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="page-header">
     <div>
         <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
-            <h1 class="page-title" id="previewTripTitle">Golden Triangle Explorer</h1>
-            <span class="badge badge-primary">Upcoming</span>
+            <h1 class="page-title" id="previewTripTitle">{{ trip.name|default:"No Trip Selected" }}</h1>
+            <span class="badge badge-primary">{{ trip.get_status_display|default:"—" }}</span>
         </div>
-        <p class="page-subtitle" id="previewTripSubtitle">📍 Delhi ➔ Agra ➔ Jaipur • Oct 20 – Oct 28, 2026 (8 Days)</p>
+        <p class="page-subtitle" id="previewTripSubtitle">Loading itinerary…</p>
     </div>
     <div style="display: flex; gap: 10px;">
-        <a href="{% url 'public_trip' %}" class="btn btn-secondary">
+        <a href="{% url 'public_trip' %}{% if trip.share_token %}?token={{ trip.share_token }}{% endif %}" class="btn btn-secondary">
             🔗 Share Trip
         </a>
-        <a href="{% url 'itinerary_builder' %}" class="btn btn-primary">
+        <a href="{% url 'itinerary_builder' %}{% if trip %}?trip={{ trip.id }}{% endif %}" class="btn btn-primary">
             ✏️ Edit Itinerary
         </a>
     </div>
@@ -34,11 +38,11 @@
         <div style="display: flex; gap: 12px;">
             <div style="text-align: center; background: rgba(255,255,255,0.15); padding: 10px 16px; border-radius: 8px;">
                 <div style="font-size: 11px; text-transform: uppercase;">Duration</div>
-                <div style="font-size: 18px; font-weight: 700;">8 Days</div>
+                <div style="font-size: 18px; font-weight: 700;">{{ trip.get_duration_days|default:"0" }} Days</div>
             </div>
             <div style="text-align: center; background: rgba(255,255,255,0.15); padding: 10px 16px; border-radius: 8px;">
                 <div style="font-size: 11px; text-transform: uppercase;">Status</div>
-                <div style="font-size: 18px; font-weight: 700;">Confirmed</div>
+                <div style="font-size: 18px; font-weight: 700;">{{ trip.get_status_display|default:"—" }}</div>
             </div>
         </div>
     </div>

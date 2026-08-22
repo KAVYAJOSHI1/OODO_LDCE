@@ -3,7 +3,7 @@
  * City-Strict relationships with unique stable IDs, accurate metadata, and context-aware time slots.
  */
 
-const GLOBETROTTER_CITIES = [
+let GLOBETROTTER_CITIES = [
     {
         id: "goa",
         name: "Goa",

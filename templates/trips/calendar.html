@@ -6,97 +6,41 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">📅 Travel Calendar & Schedule</h1>
-        <p class="page-subtitle">Visual timeline of your upcoming trips and scheduled daily activities.</p>
-    </div>
-    <div style="display: flex; gap: 10px;">
-        <button class="btn btn-secondary">◀ Prev Month</button>
-        <span class="btn btn-primary" style="cursor: default;">October 2026</span>
-        <button class="btn btn-secondary">Next Month ▶</button>
-    </div>
-</div>
-
-<!-- Calendar Grid -->
-<div class="card" style="margin-bottom: 24px;">
-    <div style="display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 600; color: var(--muted); padding-bottom: 12px; border-bottom: 1px solid var(--border);">
-        <div>Sun</div>
-        <div>Mon</div>
-        <div>Tue</div>
-        <div>Wed</div>
-        <div>Thu</div>
-        <div>Fri</div>
-        <div>Sat</div>
-    </div>
-
-    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-top: 12px;">
-        <!-- Empty Days -->
-        <div style="min-height: 90px; background: var(--background); border-radius: 6px; padding: 6px; color: var(--muted);">27</div>
-        <div style="min-height: 90px; background: var(--background); border-radius: 6px; padding: 6px; color: var(--muted);">28</div>
-        <div style="min-height: 90px; background: var(--background); border-radius: 6px; padding: 6px; color: var(--muted);">29</div>
-        <div style="min-height: 90px; background: var(--background); border-radius: 6px; padding: 6px; color: var(--muted);">30</div>
-        <div style="min-height: 90px; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 6px;">1</div>
-        <div style="min-height: 90px; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 6px;">2</div>
-        <div style="min-height: 90px; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 6px;">3</div>
-
-        <!-- Week 2 -->
-        <div style="min-height: 90px; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 6px;">4</div>
-        <div style="min-height: 90px; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 6px;">5</div>
-        <div style="min-height: 90px; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 6px;">6</div>
-        <div style="min-height: 90px; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 6px;">7</div>
-        <div style="min-height: 90px; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 6px;">8</div>
-        <div style="min-height: 90px; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 6px;">9</div>
-        <div style="min-height: 90px; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 6px;">10</div>
-
-        <!-- Week 3 (Trip Starts Oct 12) -->
-        <div style="min-height: 90px; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 6px;">11</div>
-
-        <!-- Oct 12: Delhi -->
-        <div style="min-height: 90px; background: var(--primary-light); border: 1px solid var(--primary); border-radius: 6px; padding: 6px;">
-            <div style="font-weight: 700; color: var(--primary); font-size: 12px;">12</div>
-            <div style="font-size: 10px; background: var(--primary); color: white; padding: 2px 4px; border-radius: 4px; margin-top: 4px;">
-                ✈️ Delhi Arrival
-            </div>
-        </div>
-
-        <!-- Oct 13: Delhi -->
-        <div style="min-height: 90px; background: var(--primary-light); border: 1px solid var(--primary); border-radius: 6px; padding: 6px;">
-            <div style="font-weight: 700; color: var(--primary); font-size: 12px;">13</div>
-            <div style="font-size: 10px; background: var(--primary); color: white; padding: 2px 4px; border-radius: 4px; margin-top: 4px;">
-                🏛️ Delhi Tour
-            </div>
-        </div>
-
-        <!-- Oct 14: Agra -->
-        <div style="min-height: 90px; background: #e9f7ef; border: 1px solid var(--success); border-radius: 6px; padding: 6px;">
-            <div style="font-weight: 700; color: var(--success); font-size: 12px;">14</div>
-            <div style="font-size: 10px; background: var(--success); color: white; padding: 2px 4px; border-radius: 4px; margin-top: 4px;">
-                🚆 Agra Train
-            </div>
-        </div>
-
-        <!-- Oct 15: Taj Mahal -->
-        <div style="min-height: 90px; background: #e9f7ef; border: 1px solid var(--success); border-radius: 6px; padding: 6px;">
-            <div style="font-weight: 700; color: var(--success); font-size: 12px;">15</div>
-            <div style="font-size: 10px; background: var(--success); color: white; padding: 2px 4px; border-radius: 4px; margin-top: 4px;">
-                🕌 Taj Mahal
-            </div>
-        </div>
-
-        <!-- Oct 16: Jaipur -->
-        <div style="min-height: 90px; background: #fff5df; border: 1px solid var(--warning); border-radius: 6px; padding: 6px;">
-            <div style="font-weight: 700; color: #b77900; font-size: 12px;">16</div>
-            <div style="font-size: 10px; background: var(--warning); color: white; padding: 2px 4px; border-radius: 4px; margin-top: 4px;">
-                🏰 Jaipur Fort
-            </div>
-        </div>
-
-        <!-- Oct 17: Jaipur -->
-        <div style="min-height: 90px; background: #fff5df; border: 1px solid var(--warning); border-radius: 6px; padding: 6px;">
-            <div style="font-weight: 700; color: #b77900; font-size: 12px;">17</div>
-            <div style="font-size: 10px; background: var(--warning); color: white; padding: 2px 4px; border-radius: 4px; margin-top: 4px;">
-                🛍️ Jaipur Bazaars
-            </div>
-        </div>
-
+        {% if trip %}
+        <p class="page-subtitle">{{ trip.name }} — day-by-day schedule of every planned activity.</p>
+        {% else %}
+        <p class="page-subtitle">No trip selected — <a href="{% url 'create_trip' %}">create a trip</a> to see its calendar.</p>
+        {% endif %}
     </div>
 </div>
+
+{% if trip %}
+<div style="display: flex; flex-direction: column; gap: 16px;">
+    {% for day in days %}
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <div class="card-title">📅 Day {{ day.day_number }} — {{ day.date }}</div>
+                <div class="card-subtitle">{{ day.city|default:"No stop scheduled" }}{% if day.country %}, {{ day.country }}{% endif %}</div>
+            </div>
+            <span class="badge badge-primary">₹{{ day.day_cost }}</span>
+        </div>
+
+        <div class="timeline" style="margin-top: 12px;">
+            {% for act in day.activities %}
+            <div class="timeline-item">
+                <div class="timeline-time">{{ act.scheduled_time|default:"Unscheduled" }}{% if act.end_time %} – {{ act.end_time }}{% endif %}</div>
+                <div class="timeline-title">{{ act.activity.name }}</div>
+                <div class="timeline-meta">{{ act.activity.type_display }} • {{ act.activity.duration_hours }}h • Est: {{ act.cost }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% empty %}
+    <div class="card" style="text-align: center; padding: 32px; color: var(--muted);">
+        No activities scheduled yet. Head to the <a href="{% url 'itinerary_builder' %}?trip={{ trip.id }}">Itinerary Builder</a> to add some.
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
 {% endblock %}
