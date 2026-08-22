@@ -61,18 +61,36 @@ function handleAddCitySubmit(event) {
 }
 
 function addCity(cityData) {
-    // Visually append city stop to Itinerary Builder UI if list exists
     const cityList = document.getElementById('builderCityList');
     if (cityList) {
         const cityDiv = document.createElement('div');
         cityDiv.style.cssText = "padding: 10px 12px; background: white; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-top: 6px;";
-        cityDiv.innerHTML = `
-            <div>
-                <strong>Stop: ${cityData.name}</strong>
-                <div style="font-size: 11px; color: var(--muted);">${cityData.state}</div>
-            </div>
-            <button class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 10px;" onclick="triggerDeleteConfirmation('City', '${cityData.name}', () => { this.parentElement.remove(); showToast('City removed', 'warning'); })">×</button>
-        `;
+
+        const infoDiv = document.createElement('div');
+        const strong = document.createElement('strong');
+        strong.textContent = `Stop: ${cityData.name}`;
+
+        const stateDiv = document.createElement('div');
+        stateDiv.style.cssText = "font-size: 11px; color: var(--muted);";
+        stateDiv.textContent = cityData.state;
+
+        infoDiv.appendChild(strong);
+        infoDiv.appendChild(stateDiv);
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = "btn btn-danger btn-sm";
+        deleteBtn.style.cssText = "padding: 2px 6px; font-size: 10px;";
+        deleteBtn.textContent = "×";
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            triggerDeleteConfirmation('City', cityData.name, () => {
+                cityDiv.remove();
+                showToast('City removed', 'warning');
+            });
+        });
+
+        cityDiv.appendChild(infoDiv);
+        cityDiv.appendChild(deleteBtn);
         cityList.appendChild(cityDiv);
     }
 
@@ -132,15 +150,45 @@ function addActivity(activityData) {
     if (timeline) {
         const item = document.createElement('div');
         item.className = 'timeline-item';
-        item.innerHTML = `
-            <div class="timeline-time">Scheduled — ${activityData.time}</div>
-            <div class="timeline-title">${activityData.name}</div>
-            <div class="timeline-meta">Category: ${activityData.category}</div>
-            <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center;">
-                <span class="badge badge-success">₹${activityData.cost}</span>
-                <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Activity', '${activityData.name}', () => { this.closest('.timeline-item').remove(); showToast('Activity removed', 'warning'); })">Remove</button>
-            </div>
-        `;
+
+        const timeDiv = document.createElement('div');
+        timeDiv.className = 'timeline-time';
+        timeDiv.textContent = `Scheduled — ${activityData.time}`;
+
+        const titleDiv = document.createElement('div');
+        titleDiv.className = 'timeline-title';
+        titleDiv.textContent = activityData.name;
+
+        const metaDiv = document.createElement('div');
+        metaDiv.className = 'timeline-meta';
+        metaDiv.textContent = `Category: ${activityData.category}`;
+
+        const actionDiv = document.createElement('div');
+        actionDiv.style.cssText = "margin-top: 8px; display: flex; gap: 8px; align-items: center;";
+
+        const badgeSpan = document.createElement('span');
+        badgeSpan.className = 'badge badge-success';
+        badgeSpan.textContent = `₹${activityData.cost}`;
+
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'btn btn-danger btn-sm';
+        removeBtn.style.cssText = "padding: 2px 8px; font-size: 11px;";
+        removeBtn.textContent = 'Remove';
+        removeBtn.addEventListener('click', () => {
+            triggerDeleteConfirmation('Activity', activityData.name, () => {
+                item.remove();
+                showToast('Activity removed', 'warning');
+            });
+        });
+
+        actionDiv.appendChild(badgeSpan);
+        actionDiv.appendChild(removeBtn);
+
+        item.appendChild(timeDiv);
+        item.appendChild(titleDiv);
+        item.appendChild(metaDiv);
+        item.appendChild(actionDiv);
+
         timeline.appendChild(item);
     }
 
@@ -186,13 +234,41 @@ function addExpense(expenseData) {
     const tableBody = document.getElementById('expenseTableBody');
     if (tableBody) {
         const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${expenseData.name}</td>
-            <td><span class="badge badge-primary">${expenseData.category}</span></td>
-            <td>${expenseData.date}</td>
-            <td>₹${expenseData.amount.toLocaleString()}</td>
-            <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', '${expenseData.name}', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
-        `;
+
+        const tdName = document.createElement('td');
+        tdName.textContent = expenseData.name;
+
+        const tdCat = document.createElement('td');
+        const badgeCat = document.createElement('span');
+        badgeCat.className = 'badge badge-primary';
+        badgeCat.textContent = expenseData.category;
+        tdCat.appendChild(badgeCat);
+
+        const tdDate = document.createElement('td');
+        tdDate.textContent = expenseData.date;
+
+        const tdAmount = document.createElement('td');
+        tdAmount.textContent = `₹${expenseData.amount.toLocaleString()}`;
+
+        const tdAction = document.createElement('td');
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn btn-danger btn-sm';
+        deleteBtn.style.cssText = "padding: 2px 8px; font-size: 11px;";
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.addEventListener('click', () => {
+            triggerDeleteConfirmation('Expense', expenseData.name, () => {
+                row.remove();
+                showToast('Expense deleted', 'warning');
+            });
+        });
+        tdAction.appendChild(deleteBtn);
+
+        row.appendChild(tdName);
+        row.appendChild(tdCat);
+        row.appendChild(tdDate);
+        row.appendChild(tdAmount);
+        row.appendChild(tdAction);
+
         tableBody.appendChild(row);
     }
 
