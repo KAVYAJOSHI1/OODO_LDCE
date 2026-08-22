@@ -8,11 +8,17 @@ function toggleAdminSidebar() {
     const wrapper = document.querySelector('.admin-wrapper');
     const body = document.body;
 
-    if (wrapper) wrapper.classList.toggle('sidebar-collapsed');
-    if (body) body.classList.toggle('sidebar-collapsed');
+    const currentlyCollapsed = body.classList.contains('sidebar-collapsed') || (wrapper && wrapper.classList.contains('sidebar-collapsed'));
 
-    const isCollapsed = body.classList.contains('sidebar-collapsed') || (wrapper && wrapper.classList.contains('sidebar-collapsed'));
-    localStorage.setItem('admin_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+    if (currentlyCollapsed) {
+        if (wrapper) wrapper.classList.remove('sidebar-collapsed');
+        if (body) body.classList.remove('sidebar-collapsed');
+        localStorage.setItem('admin_sidebar_collapsed', 'false');
+    } else {
+        if (wrapper) wrapper.classList.add('sidebar-collapsed');
+        if (body) body.classList.add('sidebar-collapsed');
+        localStorage.setItem('admin_sidebar_collapsed', 'true');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
