@@ -5,6 +5,7 @@ from core import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('trips/dashboard/', views.dashboard),
     path('signup/', views.signup_view, name='signup'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
@@ -20,7 +21,9 @@ urlpatterns = [
     path('trips/<int:trip_id>/delete/', views.trip_delete, name='trip_delete'),
 
     path('cities/', views.city_search, name='city_search'),
+    path('trips/cities/', views.city_search),
     path('activities/', views.activity_search, name='activity_search'),
+    path('trips/activities/', views.activity_search),
 
     path('profile/', views.profile, name='profile'),
     path('public/', views.public_trip, name='public_trip'),
