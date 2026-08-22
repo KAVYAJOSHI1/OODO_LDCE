@@ -35,4 +35,14 @@ urlpatterns = [
     path("trips/<int:trip_id>/delete/", views.trip_delete, name="trip_delete"),
     # profile
     path("profile/", views.profile, name="profile"),
+    # --- integration glue: render Member 2's templates; data via /api/travel/ ---
+    # (route names owned here per "URL routing"; page logic is Member 3 / Member 4)
+    path("cities/", views.city_search, name="city_search"),
+    path("activities/", views.activity_search, name="activity_search"),
+    path("calendar/", views.calendar_view, name="calendar"),
+    path("builder/", views.itinerary_builder, name="itinerary_builder"),
+    path("itinerary/", views.itinerary_view, name="itinerary_view"),
+    path("budget/", views.budget_view, name="budget"),
+    path("trip/share/", views.public_trip, name="public_trip"),
+    path("trip/share/<str:share_token>/", views.public_trip, name="public_trip_token"),
 ]

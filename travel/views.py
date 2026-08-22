@@ -230,6 +230,57 @@ def trip_delete(request, trip_id):
 
 
 # ===========================================================================
+# Integration glue (Member 1: URL routing + core views)
+#
+# These thin views only RENDER Member 2's templates so the shared base.html
+# links resolve and the whole UI is navigable. They contain no travel logic:
+# the pages load their data client-side from Member 3's JSON API at
+# /api/travel/ (see travel/INTEGRATION.md). Member 3 / Member 4 can replace any
+# of these with a richer view without changing the URL name.
+# ===========================================================================
+def _current_trip(request):
+    return Trip.objects.filter(user=request.user).order_by("-created_at").first()
+
+
+@login_required
+def city_search(request):
+    return render(request, "trips/city_search.html", {})
+
+
+@login_required
+def activity_search(request):
+    return render(request, "trips/activity_search.html", {})
+
+
+@login_required
+def calendar_view(request):
+    return render(request, "trips/calendar.html", {"trip": _current_trip(request)})
+
+
+@login_required
+def itinerary_builder(request):
+    return render(request, "trips/itinerary_builder.html", {"trip": _current_trip(request)})
+
+
+@login_required
+def itinerary_view(request):
+    return render(request, "trips/itinerary_view.html", {"trip": _current_trip(request)})
+
+
+@login_required
+def budget_view(request):
+    return render(request, "trips/budget.html", {"trip": _current_trip(request)})
+
+
+def public_trip(request, share_token=None):
+    """Read-only public itinerary. Owned by Member 4; this renders the template."""
+    trip = None
+    if share_token:
+        trip = Trip.objects.filter(share_token=share_token, is_public=True).first()
+    return render(request, "trips/public_trip.html", {"trip": trip})
+
+
+# ===========================================================================
 # Profile
 # ===========================================================================
 @login_required
