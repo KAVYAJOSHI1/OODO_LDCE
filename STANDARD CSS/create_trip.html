@@ -47,44 +47,47 @@
 
         <div style="max-width: 800px; margin: 0 auto;">
             <div class="card">
-                <form action="itinerary_builder.html" method="GET">
+                <form action="itinerary_builder.html" method="GET" onsubmit="return handleCreateTripSubmit(event)">
                     <div class="form-group">
-                        <label class="form-label" for="title">Trip Title</label>
+                        <label class="form-label" for="title">Trip Title *</label>
                         <input type="text" id="title" name="title" class="form-control" value="Goa Beach & Heritage Getaway" required>
                     </div>
 
                     <div class="grid grid-2">
                         <div class="form-group">
-                            <label class="form-label" for="primary_city">Primary Destination City</label>
+                            <label class="form-label" for="primary_city">Primary Destination City *</label>
                             <select id="primary_city" name="primary_city" class="form-control" required>
                                 <option value="Goa" selected>Goa, India</option>
                                 <option value="Delhi">Delhi, India</option>
+                                <option value="Agra">Agra, Uttar Pradesh</option>
                                 <option value="Jaipur">Jaipur, Rajasthan</option>
                                 <option value="Mumbai">Mumbai, Maharashtra</option>
+                                <option value="Kochi">Kochi, Kerala</option>
+                                <option value="Udaipur">Udaipur, Rajasthan</option>
                             </select>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="budget">Total Estimated Budget (₹)</label>
+                            <label class="form-label" for="budget">Total Estimated Budget (₹) *</label>
                             <input type="number" id="budget" name="budget" class="form-control" value="25000" min="0" step="500" required>
                         </div>
                     </div>
 
                     <div class="grid grid-2">
                         <div class="form-group">
-                            <label class="form-label" for="start_date">Start Date</label>
+                            <label class="form-label" for="start_date">Start Date *</label>
                             <input type="date" id="start_date" name="start_date" class="form-control" value="2026-10-12" required>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="end_date">End Date</label>
+                            <label class="form-label" for="end_date">End Date *</label>
                             <input type="date" id="end_date" name="end_date" class="form-control" value="2026-10-20" required>
                         </div>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="notes">Notes / Overview</label>
-                        <textarea id="notes" name="notes" class="form-control" rows="4">Exciting Odoo hackathon team trip planning!</textarea>
+                        <textarea id="notes" name="notes" class="form-control" rows="4">Exciting custom getaway planning!</textarea>
                     </div>
 
                     <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
@@ -97,5 +100,8 @@
     </main>
 </div>
 
+<script src="static/js/toast.js"></script>
+<script src="static/js/data.js"></script>
+<script src="static/js/itinerary.js"></script>
 </body>
 </html>

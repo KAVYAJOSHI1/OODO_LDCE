@@ -1,69 +1,280 @@
 /**
  * GlobeTrotter - Master State Engine, Interactions & Date-Aware Multi-Day Scheduler
- * Master Activity Catalog with AI Recommendations & Smart Slot USPs.
+ * Master Activity Catalog with AI Recommendations, Dynamic Routing & Multi-Trip Support.
  */
 
-// Global Application State (Logical, Date-Aware & Geographically Accurate Route)
-window.GLOBETROTTER_STATE = {
-    trip: {
-        id: "trip-101",
-        title: "Golden Triangle Explorer",
-        targetBudget: 35000,
-        startDate: "2026-10-20",
-        endDate: "2026-10-28",
-        description: "Curated 8-day heritage journey covering Delhi, Agra, and Jaipur.",
-        shareToken: "gt-share-883921"
-    },
-    stops: [
-        {
-            id: "stop-delhi",
-            cityId: "delhi",
-            cityName: "New Delhi",
-            stateName: "Delhi, India",
+// Preset Pre-Built Trips Data Store
+window.GLOBETROTTER_PRESET_TRIPS = {
+    "golden_triangle": {
+        trip: {
+            id: "trip-golden-triangle",
+            title: "Golden Triangle Explorer",
+            targetBudget: 35000,
             startDate: "2026-10-20",
-            endDate: "2026-10-22",
-            activities: [
-                { id: "act-delhi-1", activityId: "delhi-qutub-minar", name: "Qutub Minar Complex", category: "Heritage & Monuments", cost: 600, date: "2026-10-20", time: "09:00 AM", duration: "3.0 Hours", ticketRequired: true, fixedSlot: false },
-                { id: "act-delhi-2", activityId: "delhi-humayun-tomb", name: "Humayun's Tomb", category: "Heritage & Monuments", cost: 600, date: "2026-10-20", time: "12:30 PM", duration: "2.0 Hours", ticketRequired: true, fixedSlot: false },
-                { id: "act-delhi-3", activityId: "delhi-chandni-chowk", name: "Chandni Chowk Food & Rickshaw Walk", category: "Food Walk", cost: 800, date: "2026-10-21", time: "06:30 PM", duration: "3.0 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "06:30 PM" }
-            ]
-        },
-        {
-            id: "stop-agra",
-            cityId: "agra",
-            cityName: "Agra",
-            stateName: "Uttar Pradesh, India",
-            startDate: "2026-10-22",
-            endDate: "2026-10-24",
-            activities: [
-                { id: "act-agra-1", activityId: "agra-taj-mahal", name: "Taj Mahal Sunrise Guided Tour", category: "Heritage & Monuments", cost: 1200, date: "2026-10-22", time: "06:00 AM", duration: "3.0 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "06:00 AM" },
-                { id: "act-agra-2", activityId: "agra-fort", name: "Agra Fort UNESCO Site Walk", category: "Heritage & Monuments", cost: 650, date: "2026-10-22", time: "09:30 AM", duration: "2.5 Hours", ticketRequired: true, fixedSlot: false },
-                { id: "act-agra-3", activityId: "agra-mehtab-bagh", name: "Mehtab Bagh Sunset View", category: "Sightseeing", cost: 300, date: "2026-10-23", time: "04:30 PM", duration: "2.0 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "04:30 PM" }
-            ]
-        },
-        {
-            id: "stop-jaipur",
-            cityId: "jaipur",
-            cityName: "Jaipur",
-            stateName: "Rajasthan, India",
-            startDate: "2026-10-24",
             endDate: "2026-10-28",
-            activities: [
-                { id: "act-jaipur-1", activityId: "jaipur-amer-fort", name: "Amer Fort Jeep Safari", category: "Heritage & Monuments", cost: 1500, date: "2026-10-24", time: "09:00 AM", duration: "3.5 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "09:00 AM" },
-                { id: "act-jaipur-2", activityId: "jaipur-hawa-mahal", name: "Hawa Mahal & Museum", category: "Heritage & Monuments", cost: 200, date: "2026-10-25", time: "01:00 PM", duration: "1.5 Hours", ticketRequired: false, fixedSlot: false },
-                { id: "act-jaipur-3", activityId: "jaipur-nahargarh", name: "Nahargarh Fort Sunset View", category: "Sightseeing", cost: 300, date: "2026-10-25", time: "05:30 PM", duration: "2.5 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "05:30 PM" }
-            ]
-        }
-    ],
-    expenses: [
-        { id: "exp-1", name: "Hotel Imperial New Delhi (2 Nights)", category: "Stay", amount: 7000, date: "Oct 20, 2026" },
-        { id: "exp-2", name: "Gatimaan Express Train (Delhi -> Agra)", category: "Transport", amount: 1500, date: "Oct 22, 2026" },
-        { id: "exp-3", name: "Heritage Hotel Agra (2 Nights)", category: "Stay", amount: 6000, date: "Oct 22, 2026" },
-        { id: "exp-4", name: "Express Highway Cab (Agra -> Jaipur)", category: "Transport", amount: 2500, date: "Oct 24, 2026" },
-        { id: "exp-5", name: "Taj Palace Jaipur (4 Nights)", category: "Stay", amount: 10000, date: "Oct 24, 2026" }
-    ],
-    activeTargetStopId: "stop-delhi"
+            description: "Curated 8-day heritage journey covering Delhi, Agra, and Jaipur.",
+            shareToken: "gt-share-883921"
+        },
+        stops: [
+            {
+                id: "stop-delhi",
+                cityId: "delhi",
+                cityName: "New Delhi",
+                stateName: "Delhi, India",
+                startDate: "2026-10-20",
+                endDate: "2026-10-22",
+                activities: [
+                    { id: "act-delhi-1", activityId: "delhi-qutub-minar", name: "Qutub Minar Complex", category: "Heritage & Monuments", cost: 600, date: "2026-10-20", time: "09:00 AM", duration: "3.0 Hours", ticketRequired: true, fixedSlot: false },
+                    { id: "act-delhi-2", activityId: "delhi-humayun-tomb", name: "Humayun's Tomb", category: "Heritage & Monuments", cost: 600, date: "2026-10-20", time: "12:30 PM", duration: "2.0 Hours", ticketRequired: true, fixedSlot: false },
+                    { id: "act-delhi-3", activityId: "delhi-chandni-chowk", name: "Chandni Chowk Food & Rickshaw Walk", category: "Food Walk", cost: 800, date: "2026-10-21", time: "06:30 PM", duration: "3.0 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "06:30 PM" }
+                ]
+            },
+            {
+                id: "stop-agra",
+                cityId: "agra",
+                cityName: "Agra",
+                stateName: "Uttar Pradesh, India",
+                startDate: "2026-10-22",
+                endDate: "2026-10-24",
+                activities: [
+                    { id: "act-agra-1", activityId: "agra-taj-mahal", name: "Taj Mahal Sunrise Guided Tour", category: "Heritage & Monuments", cost: 1200, date: "2026-10-22", time: "06:00 AM", duration: "3.0 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "06:00 AM" },
+                    { id: "act-agra-2", activityId: "agra-fort", name: "Agra Fort UNESCO Site Walk", category: "Heritage & Monuments", cost: 650, date: "2026-10-22", time: "09:30 AM", duration: "2.5 Hours", ticketRequired: true, fixedSlot: false },
+                    { id: "act-agra-3", activityId: "agra-mehtab-bagh", name: "Mehtab Bagh Sunset View", category: "Sightseeing", cost: 300, date: "2026-10-23", time: "04:30 PM", duration: "2.0 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "04:30 PM" }
+                ]
+            },
+            {
+                id: "stop-jaipur",
+                cityId: "jaipur",
+                cityName: "Jaipur",
+                stateName: "Rajasthan, India",
+                startDate: "2026-10-24",
+                endDate: "2026-10-28",
+                activities: [
+                    { id: "act-jaipur-1", activityId: "jaipur-amer-fort", name: "Amer Fort Jeep Safari", category: "Heritage & Monuments", cost: 1500, date: "2026-10-24", time: "09:00 AM", duration: "3.5 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "09:00 AM" },
+                    { id: "act-jaipur-2", activityId: "jaipur-hawa-mahal", name: "Hawa Mahal & Museum", category: "Heritage & Monuments", cost: 200, date: "2026-10-25", time: "01:00 PM", duration: "1.5 Hours", ticketRequired: false, fixedSlot: false },
+                    { id: "act-jaipur-3", activityId: "jaipur-nahargarh", name: "Nahargarh Fort Sunset View", category: "Sightseeing", cost: 300, date: "2026-10-25", time: "05:30 PM", duration: "2.5 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "05:30 PM" }
+                ]
+            }
+        ],
+        expenses: [
+            { id: "exp-1", name: "Hotel Imperial New Delhi (2 Nights)", category: "Stay", amount: 7000, date: "Oct 20, 2026" },
+            { id: "exp-2", name: "Gatimaan Express Train (Delhi -> Agra)", category: "Transport", amount: 1500, date: "Oct 22, 2026" },
+            { id: "exp-3", name: "Heritage Hotel Agra (2 Nights)", category: "Stay", amount: 6000, date: "Oct 22, 2026" },
+            { id: "exp-4", name: "Express Highway Cab (Agra -> Jaipur)", category: "Transport", amount: 2500, date: "Oct 24, 2026" },
+            { id: "exp-5", name: "Taj Palace Jaipur (4 Nights)", category: "Stay", amount: 10000, date: "Oct 24, 2026" }
+        ],
+        activeTargetStopId: "stop-delhi"
+    },
+    "kerala_backwaters": {
+        trip: {
+            id: "trip-kerala",
+            title: "Kerala Backwaters & Tea Garden Retreat",
+            targetBudget: 28000,
+            startDate: "2026-11-05",
+            endDate: "2026-11-12",
+            description: "Scenic 7-day tropical getaway covering Kochi, Alleppey houseboats, and Munnar hills.",
+            shareToken: "gt-share-kerala-992"
+        },
+        stops: [
+            {
+                id: "stop-kochi",
+                cityId: "kochi",
+                cityName: "Kochi",
+                stateName: "Kerala, India",
+                startDate: "2026-11-05",
+                endDate: "2026-11-07",
+                activities: [
+                    { id: "act-kochi-1", activityId: "kochi-fort", name: "Fort Kochi Heritage & Chinese Fishing Nets", category: "Sightseeing", cost: 300, date: "2026-11-05", time: "09:00 AM", duration: "2.5 Hours", ticketRequired: false, fixedSlot: false },
+                    { id: "act-kochi-2", activityId: "kochi-kathakali", name: "Traditional Kathakali Cultural Dance Center", category: "Culture", cost: 500, date: "2026-11-06", time: "05:00 PM", duration: "2.0 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "05:00 PM" }
+                ]
+            },
+            {
+                id: "stop-alleppey",
+                cityId: "alleppey",
+                cityName: "Alleppey",
+                stateName: "Kerala, India",
+                startDate: "2026-11-07",
+                endDate: "2026-11-09",
+                activities: [
+                    { id: "act-all-1", activityId: "alleppey-houseboat", name: "Punnamada Lake Overnight Houseboat Cruise", category: "Adventure", cost: 4500, date: "2026-11-07", time: "12:00 PM", duration: "24.0 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "12:00 PM" }
+                ]
+            }
+        ],
+        expenses: [
+            { id: "exp-k1", name: "Luxury Houseboat Booking Alleppey", category: "Stay", amount: 9000, date: "Nov 07, 2026" },
+            { id: "exp-k2", name: "Kochi Airport Taxi Transfer", category: "Transport", amount: 1800, date: "Nov 05, 2026" }
+        ],
+        activeTargetStopId: "stop-kochi"
+    },
+    "udaipur_trail": {
+        trip: {
+            id: "trip-udaipur",
+            title: "Udaipur Lake & Fort Trail",
+            targetBudget: 22000,
+            startDate: "2026-12-01",
+            endDate: "2026-12-05",
+            description: "5-day royal palace tour around Lake Pichola and Fateh Sagar.",
+            shareToken: "gt-share-udaipur-441"
+        },
+        stops: [
+            {
+                id: "stop-udaipur",
+                cityId: "udaipur",
+                cityName: "Udaipur",
+                stateName: "Rajasthan, India",
+                startDate: "2026-12-01",
+                endDate: "2026-12-05",
+                activities: [
+                    { id: "act-ud-1", activityId: "udaipur-city-palace", name: "City Palace Museum & Courtyard Walk", category: "Heritage & Monuments", cost: 400, date: "2026-12-01", time: "09:30 AM", duration: "3.0 Hours", ticketRequired: true, fixedSlot: false },
+                    { id: "act-ud-2", activityId: "udaipur-pichola-cruise", name: "Lake Pichola Sunset Boat Ride to Jagmandir", category: "Sightseeing", cost: 800, date: "2026-12-02", time: "04:30 PM", duration: "2.0 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "04:30 PM" }
+                ]
+            }
+        ],
+        expenses: [
+            { id: "exp-u1", name: "Lake View Heritage Resort (4 Nights)", category: "Stay", amount: 8500, date: "Dec 01, 2026" }
+        ],
+        activeTargetStopId: "stop-udaipur"
+    }
 };
+
+// State Persistence Helper Functions
+function saveCurrentTripState() {
+    try {
+        localStorage.setItem('GLOBETROTTER_ACTIVE_TRIP', JSON.stringify(window.GLOBETROTTER_STATE));
+    } catch(e) {
+        console.warn('LocalStorage save failed:', e);
+    }
+}
+
+function loadActiveTripState() {
+    try {
+        const saved = localStorage.getItem('GLOBETROTTER_ACTIVE_TRIP');
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            if (parsed && parsed.trip && parsed.stops) {
+                window.GLOBETROTTER_STATE = parsed;
+                return true;
+            }
+        }
+    } catch(e) {
+        console.warn('LocalStorage load failed:', e);
+    }
+    return false;
+}
+
+function switchToPresetTrip(presetKey) {
+    if (window.GLOBETROTTER_PRESET_TRIPS[presetKey]) {
+        window.GLOBETROTTER_STATE = JSON.parse(JSON.stringify(window.GLOBETROTTER_PRESET_TRIPS[presetKey]));
+        saveCurrentTripState();
+        showToast(`✓ Loaded trip: "${window.GLOBETROTTER_STATE.trip.title}"`, 'success');
+        return true;
+    }
+    return false;
+}
+
+// Global Application State (Defaults to Golden Triangle unless custom active trip loaded)
+window.GLOBETROTTER_STATE = JSON.parse(JSON.stringify(window.GLOBETROTTER_PRESET_TRIPS["golden_triangle"]));
+
+// -------------------------------------------------------------
+// CREATE NEW TRIP FORM HANDLER (SMOOTH ROUTING & CREATION)
+// -------------------------------------------------------------
+
+function handleCreateTripSubmit(event) {
+    if (event) event.preventDefault();
+
+    const titleInput = document.getElementById('title');
+    const citySelect = document.getElementById('primary_city');
+    const budgetInput = document.getElementById('budget');
+    const startDateInput = document.getElementById('start_date');
+    const endDateInput = document.getElementById('end_date');
+    const notesInput = document.getElementById('notes');
+
+    const titleVal = titleInput && titleInput.value.trim() ? titleInput.value.trim() : 'Goa Beach & Heritage Getaway';
+    const cityVal = citySelect && citySelect.value.trim() ? citySelect.value.trim() : 'Goa';
+    const budgetVal = budgetInput && budgetInput.value ? parseFloat(budgetInput.value) : 25000;
+    const startVal = startDateInput && startDateInput.value ? startDateInput.value : '2026-10-12';
+    const endVal = endDateInput && endDateInput.value ? endDateInput.value : '2026-10-20';
+    const notesVal = notesInput ? notesInput.value.trim() : '';
+
+    const cityId = cityVal.toLowerCase().replace(/\s+/g, '-');
+    let cityObj = null;
+    if (typeof GLOBETROTTER_CITIES !== 'undefined') {
+        cityObj = getCityById(cityId);
+    }
+    if (!cityObj) {
+        cityObj = { id: cityId, name: cityVal, state: 'India', activities: [] };
+    }
+
+    const stopId = `stop-${Date.now()}`;
+    const initialActivities = [];
+
+    if (cityObj.activities && cityObj.activities.length > 0) {
+        // Pre-populate top 2 catalog activities for selected city
+        cityObj.activities.slice(0, 2).forEach((act, idx) => {
+            initialActivities.push({
+                id: `act-${Date.now()}-${idx}`,
+                activityId: act.id,
+                name: act.name,
+                category: act.category,
+                cost: act.cost,
+                date: startVal,
+                time: act.preferredTime || "09:00 AM",
+                duration: act.duration,
+                fixedSlot: !!act.fixedSlot,
+                preferredTime: act.preferredTime || null
+            });
+        });
+    }
+
+    const newTripState = {
+        trip: {
+            id: `trip-${Date.now()}`,
+            title: titleVal,
+            targetBudget: budgetVal,
+            startDate: startVal,
+            endDate: endVal,
+            description: notesVal || `Custom travel trip to ${cityObj.name}`,
+            shareToken: `gt-share-${Date.now()}`
+        },
+        stops: [
+            {
+                id: stopId,
+                cityId: cityId,
+                cityName: cityObj.name || cityVal,
+                stateName: cityObj.state || 'India',
+                startDate: startVal,
+                endDate: endVal,
+                activities: initialActivities
+            }
+        ],
+        expenses: [
+            { id: `exp-init-${Date.now()}`, name: `Hotel Reservation in ${cityObj.name}`, category: "Stay", amount: Math.round(budgetVal * 0.4), date: startVal }
+        ],
+        activeTargetStopId: stopId
+    };
+
+    window.GLOBETROTTER_STATE = newTripState;
+    saveCurrentTripState();
+
+    showToast(`✓ Created new trip: "${titleVal}" for ${cityObj.name}! Redirecting to Builder...`, 'success');
+
+    setTimeout(() => {
+        const path = window.location.pathname;
+        if (path.includes('.html')) {
+            window.location.href = 'itinerary_builder.html';
+        } else {
+            // Django URL redirect
+            const navLink = document.querySelector('a[href*="itinerary_builder"]');
+            if (navLink) {
+                window.location.href = navLink.getAttribute('href');
+            } else {
+                window.location.href = '/trips/builder/';
+            }
+        }
+    }, 600);
+
+    return false;
+}
 
 // -------------------------------------------------------------
 // DATE & TIME UTILITIES + PER-DATE CONFLICT RESOLUTION
@@ -255,6 +466,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initApp() {
+    // Attempt loading saved state from LocalStorage
+    loadActiveTripState();
+
     window.GLOBETROTTER_STATE.stops.forEach(s => resolveStopScheduleConflicts(s));
 
     renderCityCatalogSearch();
@@ -383,6 +597,7 @@ function handleAddCitySubmit(event) {
 
     window.GLOBETROTTER_STATE.stops.push(newStop);
     window.GLOBETROTTER_STATE.activeTargetStopId = newStop.id;
+    saveCurrentTripState();
 
     renderItineraryBuilderStops();
     renderItineraryViewPage();
@@ -466,7 +681,6 @@ function filterActivityCatalogTable() {
     filtered.forEach((act, idx) => {
         const row = document.createElement('tr');
 
-        // Column 1: Title, Match Score, Context Badge, Description & Pro Tip
         const tdName = document.createElement('td');
         
         const titleLine = document.createElement('div');
@@ -477,7 +691,6 @@ function filterActivityCatalogTable() {
         strong.textContent = act.name;
         titleLine.appendChild(strong);
 
-        // AI Match Score USP Badge
         const matchScores = ["98% AI Match", "96% AI Match", "94% AI Match", "⭐ Top Rated"];
         const matchScore = matchScores[idx % matchScores.length];
         const matchBadge = document.createElement('span');
@@ -486,7 +699,6 @@ function filterActivityCatalogTable() {
         matchBadge.textContent = matchScore;
         titleLine.appendChild(matchBadge);
 
-        // Fixed Slot / Context Badge
         const badgeMeta = getContextBadgeMeta(act.name, act.preferredTime || "09:00 AM");
         if (badgeMeta) {
             const contextBadge = document.createElement('span');
@@ -508,20 +720,17 @@ function filterActivityCatalogTable() {
         tdName.appendChild(descDiv);
         tdName.appendChild(proTip);
 
-        // Column 2: Destination City
         const tdDest = document.createElement('td');
         const cityObj = getCityById(act.cityId);
         tdDest.style.cssText = "font-size: 13px; font-weight: 600;";
         tdDest.textContent = cityObj ? `${cityObj.name}, ${cityObj.state}` : act.cityId;
 
-        // Column 3: Category
         const tdCat = document.createElement('td');
         const badge = document.createElement('span');
         badge.className = 'badge badge-primary';
         badge.textContent = act.category;
         tdCat.appendChild(badge);
 
-        // Column 4: Duration & Best Slot
         const tdDur = document.createElement('td');
         tdDur.style.fontSize = "12px";
         const durText = document.createElement('div');
@@ -532,12 +741,10 @@ function filterActivityCatalogTable() {
         tdDur.appendChild(durText);
         tdDur.appendChild(timeText);
 
-        // Column 5: Est Cost
         const tdCost = document.createElement('td');
         tdCost.style.cssText = "font-weight: 700; color: var(--primary); font-size: 13px;";
         tdCost.textContent = act.cost === 0 ? 'Free' : `₹${act.cost.toLocaleString()}`;
 
-        // Column 6: Smart Action
         const tdAction = document.createElement('td');
         const addBtn = document.createElement('button');
         addBtn.className = 'btn btn-primary btn-sm';
@@ -572,7 +779,6 @@ function openAddActivityModalWithData(cityId, activityId, targetStopId) {
     const effectiveCityId = cityId || (activeStop ? activeStop.cityId : 'delhi');
     const city = getCityById(effectiveCityId) || GLOBETROTTER_CITIES[0];
 
-    // Populate Date Dropdown with activeStop's Date Range
     const dateSelect = document.getElementById('modalActivityDate');
     if (dateSelect && activeStop) {
         while (dateSelect.firstChild) {
@@ -725,6 +931,7 @@ function handleAddActivitySubmit(event) {
 
     targetStop.activities.push(newActivity);
     const wasShifted = resolveStopScheduleConflicts(targetStop);
+    saveCurrentTripState();
 
     renderItineraryBuilderStops();
     renderItineraryViewPage();
@@ -775,7 +982,7 @@ function renderItineraryViewPage() {
 
     if (titleElem) titleElem.textContent = state.trip.title;
     if (routeSubtitleElem) {
-        routeSubtitleElem.textContent = `📍 ${cityNames} • ${state.trip.startDate} to ${state.trip.endDate} (8 Days)`;
+        routeSubtitleElem.textContent = `📍 ${cityNames} • ${state.trip.startDate} to ${state.trip.endDate}`;
     }
 
     if (overviewStatsElem) {
@@ -826,7 +1033,6 @@ function renderItineraryViewPage() {
             header.appendChild(rightCost);
             card.appendChild(header);
 
-            // Group stop activities by day date
             const stopDates = getDatesArrayForStop(stop.startDate, stop.endDate);
 
             stopDates.forEach((dStr, dIdx) => {
@@ -910,7 +1116,6 @@ function renderItineraryBuilderStops() {
         window.GLOBETROTTER_STATE.activeTargetStopId = activeStop.id;
     }
 
-    // 1. Render Left Column: Trip Destinations List (City Stops)
     if (listElem) {
         while (listElem.firstChild) {
             listElem.removeChild(listElem.firstChild);
@@ -932,6 +1137,7 @@ function renderItineraryBuilderStops() {
 
             cityDiv.addEventListener('click', () => {
                 window.GLOBETROTTER_STATE.activeTargetStopId = stop.id;
+                saveCurrentTripState();
                 renderItineraryBuilderStops();
             });
 
@@ -986,7 +1192,6 @@ function renderItineraryBuilderStops() {
         });
     }
 
-    // 2. Render Main Column: Date-Aware Multi-Day Timeline & Sub-Activities Drag & Drop
     if (timelineElem) {
         while (timelineElem.firstChild) {
             timelineElem.removeChild(timelineElem.firstChild);
@@ -1164,6 +1369,7 @@ function handleStopDrop(e) {
         const stops = window.GLOBETROTTER_STATE.stops;
         const [moved] = stops.splice(draggedStopIndex, 1);
         stops.splice(targetIndex, 0, moved);
+        saveCurrentTripState();
 
         renderItineraryBuilderStops();
         renderItineraryViewPage();
@@ -1205,8 +1411,8 @@ function handleActDrop(e) {
             const [movedAct] = dayActs.splice(draggedActData.index, 1);
             dayActs.splice(targetIndex, 0, movedAct);
 
-            // Reassign times chronologically
             resolveStopScheduleConflicts(stop);
+            saveCurrentTripState();
 
             renderItineraryBuilderStops();
             renderItineraryViewPage();
@@ -1222,6 +1428,7 @@ function deleteCityStop(stopId) {
     if (window.GLOBETROTTER_STATE.activeTargetStopId === stopId) {
         window.GLOBETROTTER_STATE.activeTargetStopId = window.GLOBETROTTER_STATE.stops[0]?.id || null;
     }
+    saveCurrentTripState();
 
     renderItineraryBuilderStops();
     renderItineraryViewPage();
@@ -1236,6 +1443,7 @@ function deleteActivityFromStop(stopId, actId) {
     if (stop) {
         stop.activities = stop.activities.filter(a => a.id !== actId);
         resolveStopScheduleConflicts(stop);
+        saveCurrentTripState();
 
         renderItineraryBuilderStops();
         renderItineraryViewPage();
@@ -1281,6 +1489,8 @@ function handleAddExpenseSubmit(event) {
     };
 
     window.GLOBETROTTER_STATE.expenses.push(newExpense);
+    saveCurrentTripState();
+
     renderExpenseTable();
     recalculateBudget();
     updateTripReadiness();
@@ -1340,6 +1550,8 @@ function renderExpenseTable() {
 
 function deleteExpenseItem(expId) {
     window.GLOBETROTTER_STATE.expenses = window.GLOBETROTTER_STATE.expenses.filter(e => e.id !== expId);
+    saveCurrentTripState();
+
     renderExpenseTable();
     recalculateBudget();
     updateTripReadiness();

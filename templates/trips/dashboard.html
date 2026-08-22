@@ -63,7 +63,7 @@
             </div>
 
             <div class="grid grid-2">
-                <!-- Trip Card 1 -->
+                <!-- Trip Card 1: Golden Triangle -->
                 <div class="card trip-card">
                     <div class="trip-cover">
                         <div>
@@ -73,15 +73,15 @@
                     </div>
                     <div class="trip-body">
                         <div class="trip-meta">📍 Delhi ➔ Agra ➔ Jaipur</div>
-                        <div class="trip-meta">📅 Oct 12 – Oct 20, 2026 (8 days)</div>
+                        <div class="trip-meta">📅 Oct 20 – Oct 28, 2026 (8 days)</div>
                         <div class="trip-footer">
-                            <span style="font-weight: 600; color: var(--primary);">Est. ₹24,500</span>
-                            <a href="{% url 'itinerary_view' %}" class="btn btn-secondary btn-sm">View Itinerary</a>
+                            <span style="font-weight: 600; color: var(--primary);">Est. ₹35,000</span>
+                            <a href="{% url 'itinerary_view' %}" class="btn btn-secondary btn-sm" onclick="switchToPresetTrip('golden_triangle')">View Itinerary</a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Trip Card 2 -->
+                <!-- Trip Card 2: Kerala Retreat -->
                 <div class="card trip-card">
                     <div class="trip-cover" style="background: linear-gradient(135deg, #28a745, #5dd382);">
                         <div>
@@ -91,10 +91,10 @@
                     </div>
                     <div class="trip-body">
                         <div class="trip-meta">📍 Kochi ➔ Alleppey ➔ Munnar</div>
-                        <div class="trip-meta">📅 Aug 20 – Aug 26, 2026 (7 days)</div>
+                        <div class="trip-meta">📅 Nov 05 – Nov 12, 2026 (7 days)</div>
                         <div class="trip-footer">
-                            <span style="font-weight: 600; color: var(--success);">Est. ₹18,200</span>
-                            <a href="{% url 'itinerary_view' %}" class="btn btn-secondary btn-sm">View Itinerary</a>
+                            <span style="font-weight: 600; color: var(--success);">Est. ₹28,000</span>
+                            <a href="{% url 'itinerary_view' %}" class="btn btn-secondary btn-sm" onclick="switchToPresetTrip('kerala_backwaters')">View Itinerary</a>
                         </div>
                     </div>
                 </div>
@@ -108,6 +108,9 @@
         <div class="card" style="margin-bottom: 20px;">
             <div class="card-title" style="margin-bottom: 12px;">⚡ Quick Actions</div>
             <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="{% url 'create_trip' %}" class="btn btn-primary" style="justify-content: flex-start;">
+                    ➕ Plan a New Trip
+                </a>
                 <a href="{% url 'city_search' %}" class="btn btn-secondary" style="justify-content: flex-start;">
                     🏙️ Search Cities & Destinations
                 </a>
@@ -125,13 +128,13 @@
             <div class="card-title">💰 Active Trip Budget</div>
             <div class="card-subtitle" style="margin-bottom: 12px;">Kerala Backwaters Retreat</div>
 
-            <div class="budget-total" style="margin-bottom: 6px;">₹18,200</div>
+            <div class="budget-total" style="margin-bottom: 6px;">₹28,000</div>
             <div class="progress" style="margin-bottom: 8px;">
                 <div class="progress-bar" style="width: 65%;"></div>
             </div>
             <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--muted);">
                 <span>Spent: ₹11,830</span>
-                <span>Limit: ₹18,200</span>
+                <span>Limit: ₹28,000</span>
             </div>
         </div>
     </div>

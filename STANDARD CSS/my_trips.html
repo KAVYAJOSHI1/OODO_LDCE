@@ -6,7 +6,6 @@
     <title>My Trips | GlobeTrotter</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <nav class="navbar">
@@ -56,6 +55,12 @@
                         <option value="all">All Statuses</option>
                         <option value="upcoming">Upcoming</option>
                         <option value="in_progress">In Progress</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                    <select class="form-control" style="width: auto;">
+                        <option value="date_desc">Newest First</option>
+                        <option value="date_asc">Oldest First</option>
+                        <option value="budget_desc">Highest Budget</option>
                     </select>
                 </div>
             </div>
@@ -71,12 +76,15 @@
                 </div>
                 <div class="trip-body">
                     <div class="trip-meta">📍 Delhi ➔ Agra ➔ Jaipur</div>
-                    <div class="trip-meta">📅 Oct 12 – Oct 20, 2026 (8 days)</div>
+                    <div class="trip-meta">📅 Oct 20 – Oct 28, 2026 (8 days)</div>
+                    <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
+                        Activities: 9 planned | Budget: ₹35,000
+                    </div>
                     <div class="trip-footer">
-                        <span class="badge badge-primary">Budget ₹24.5K</span>
+                        <a href="budget.html" class="badge badge-primary">Budget ₹35K</a>
                         <div style="display: flex; gap: 6px;">
-                            <a href="itinerary_view.html" class="btn btn-secondary btn-sm">View</a>
-                            <a href="itinerary_builder.html" class="btn btn-primary btn-sm">Edit Builder</a>
+                            <a href="itinerary_view.html" class="btn btn-secondary btn-sm" onclick="switchToPresetTrip('golden_triangle')">View</a>
+                            <a href="itinerary_builder.html" class="btn btn-primary btn-sm" onclick="switchToPresetTrip('golden_triangle')">Edit Builder</a>
                         </div>
                     </div>
                 </div>
@@ -91,12 +99,15 @@
                 </div>
                 <div class="trip-body">
                     <div class="trip-meta">📍 Kochi ➔ Alleppey ➔ Munnar</div>
-                    <div class="trip-meta">📅 Aug 20 – Aug 26, 2026 (7 days)</div>
+                    <div class="trip-meta">📅 Nov 05 – Nov 12, 2026 (7 days)</div>
+                    <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
+                        Activities: 3 planned | Budget: ₹28,000
+                    </div>
                     <div class="trip-footer">
-                        <span class="badge badge-success">Budget ₹18.2K</span>
+                        <a href="budget.html" class="badge badge-success">Budget ₹28K</a>
                         <div style="display: flex; gap: 6px;">
-                            <a href="itinerary_view.html" class="btn btn-secondary btn-sm">View</a>
-                            <a href="itinerary_builder.html" class="btn btn-primary btn-sm">Edit Builder</a>
+                            <a href="itinerary_view.html" class="btn btn-secondary btn-sm" onclick="switchToPresetTrip('kerala_backwaters')">View</a>
+                            <a href="itinerary_builder.html" class="btn btn-primary btn-sm" onclick="switchToPresetTrip('kerala_backwaters')">Edit Builder</a>
                         </div>
                     </div>
                 </div>
@@ -111,12 +122,15 @@
                 </div>
                 <div class="trip-body">
                     <div class="trip-meta">📍 Udaipur ➔ Kumbhalgarh</div>
-                    <div class="trip-meta">📅 May 10 – May 14, 2026 (5 days)</div>
+                    <div class="trip-meta">📅 Dec 01 – Dec 05, 2026 (5 days)</div>
+                    <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
+                        Activities: 2 completed | Budget: ₹22,000
+                    </div>
                     <div class="trip-footer">
-                        <span class="badge badge-warning">Spent ₹14.8K</span>
+                        <a href="budget.html" class="badge badge-warning">Spent ₹22K</a>
                         <div style="display: flex; gap: 6px;">
-                            <a href="itinerary_view.html" class="btn btn-secondary btn-sm">View</a>
-                            <a href="public_trip.html" class="btn btn-secondary btn-sm">Share Link</a>
+                            <a href="itinerary_view.html" class="btn btn-secondary btn-sm" onclick="switchToPresetTrip('udaipur_trail')">View</a>
+                            <a href="itinerary_builder.html" class="btn btn-primary btn-sm" onclick="switchToPresetTrip('udaipur_trail')">Edit Builder</a>
                         </div>
                     </div>
                 </div>
@@ -125,5 +139,8 @@
     </main>
 </div>
 
+<script src="static/js/toast.js"></script>
+<script src="static/js/data.js"></script>
+<script src="static/js/itinerary.js"></script>
 </body>
 </html>
