@@ -60,6 +60,13 @@
                     <a href="{% url 'itinerary_builder' %}?trip={{ trip.id }}" class="btn btn-primary btn-sm">Edit Builder</a>
                 </div>
             </div>
+            <div style="display: flex; gap: 6px; margin-top: 8px;">
+                <a href="{% url 'trip_edit' trip.id %}" class="btn btn-secondary btn-sm" style="flex: 1;">✏️ Edit Details</a>
+                <form method="POST" action="{% url 'trip_delete' trip.id %}" onsubmit="return confirm('Delete &quot;{{ trip.name }}&quot;? This cannot be undone.');" style="flex: 1;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm" style="width: 100%;">🗑️ Delete</button>
+                </form>
+            </div>
         </div>
     </div>
     {% empty %}
