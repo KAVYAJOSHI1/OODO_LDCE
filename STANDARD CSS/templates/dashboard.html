@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard | GlobeTrotter{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+
+    <div>
+        <h1 class="page-title">
+            Welcome back 👋
+        </h1>
+
+        <p class="page-subtitle">
+            Plan your next adventure.
+        </p>
+    </div>
+
+    <a href="/create-trip/"
+       class="btn btn-primary">
+        + Plan New Trip
+    </a>
+
+</div>
+
+
+<div class="grid grid-4">
+
+    <div class="card stat-card">
+
+        <div class="stat-icon">✈️</div>
+
+        <div>
+            <div class="stat-label">
+                Total Trips
+            </div>
+
+            <div class="stat-value">
+                8
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="card stat-card">
+
+        <div class="stat-icon">🌍</div>
+
+        <div>
+            <div class="stat-label">
+                Destinations
+            </div>
+
+            <div class="stat-value">
+                24
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="card stat-card">
+
+        <div class="stat-icon">💰</div>
+
+        <div>
+            <div class="stat-label">
+                Total Spent
+            </div>
+
+            <div class="stat-value">
+                ₹42K
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="card stat-card">
+
+        <div class="stat-icon">📅</div>
+
+        <div>
+            <div class="stat-label">
+                Upcoming
+            </div>
+
+            <div class="stat-value">
+                3
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div style="margin-top:24px;">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+                <div class="card-title">
+                    Upcoming Trips
+                </div>
+
+                <div class="card-subtitle">
+                    Your next adventures
+                </div>
+            </div>
+
+            <a href="/trips/"
+               class="btn btn-secondary btn-sm">
+                View All
+            </a>
+
+        </div>
+
+        <!-- Trip cards here -->
+
+    </div>
+
+</div>
+
+{% endblock %}

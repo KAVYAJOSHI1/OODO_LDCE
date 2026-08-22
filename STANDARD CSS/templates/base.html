@@ -1,0 +1,102 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        {% block title %}GlobeTrotter{% endblock %}
+    </title>
+
+    <link rel="stylesheet"
+          href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <a href="/" class="navbar-brand">
+        <span class="brand-icon">G</span>
+        GlobeTrotter
+    </a>
+
+    <div class="navbar-menu">
+
+        <a href="/dashboard/" class="nav-link">
+            Dashboard
+        </a>
+
+        <a href="/trips/" class="nav-link">
+            My Trips
+        </a>
+
+        <a href="/profile/" class="nav-link">
+            Profile
+        </a>
+
+    </div>
+
+</nav>
+
+
+<div class="app-layout">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-title">
+            Travel
+        </div>
+
+        <a href="/dashboard/" class="sidebar-link active">
+            🏠 Dashboard
+        </a>
+
+        <a href="/trips/" class="sidebar-link">
+            ✈️ My Trips
+        </a>
+
+        <a href="/create-trip/" class="sidebar-link">
+            ➕ Plan Trip
+        </a>
+
+        <a href="/calendar/" class="sidebar-link">
+            📅 Calendar
+        </a>
+
+        <a href="/explore/" class="sidebar-link">
+            🌍 Explore
+        </a>
+
+
+        <div class="sidebar-title"
+             style="margin-top:20px;">
+            Account
+        </div>
+
+        <a href="/profile/" class="sidebar-link">
+            👤 Profile
+        </a>
+
+        <a href="/logout/" class="sidebar-link">
+            🚪 Logout
+        </a>
+
+    </aside>
+
+
+    <main class="main-content">
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+</div>
+
+</body>
+</html>
