@@ -725,9 +725,10 @@ def admin_system_reseed(request):
     """POST /api/admin/system/reseed/"""
     try:
         call_command('seed_travel_data')
+        call_command('seed_community_data')
         return JsonResponse({
             "ok": True,
-            "message": "Demo travel catalog data re-seeded successfully."
+            "message": "Demo travel catalog and active community trips re-seeded successfully."
         })
     except Exception as e:
         return JsonResponse({
