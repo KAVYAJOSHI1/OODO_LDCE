@@ -12,7 +12,7 @@
         <a href="{% url 'itinerary_view' %}" class="btn btn-secondary">
             👁️ Preview Itinerary
         </a>
-        <a href="{% url 'my_trips' %}" class="btn btn-primary">
+        <a href="{% url 'my_trips' %}" class="btn btn-primary" onclick="showToast('Itinerary saved successfully!', 'success');">
             💾 Save & Exit
         </a>
     </div>
@@ -25,10 +25,10 @@
         <div class="card" style="margin-bottom: 20px;">
             <div class="card-header">
                 <div class="card-title">📍 Trip Stops</div>
-                <button class="btn btn-secondary btn-sm" onclick="alert('Add new city stop dialog')">+ Add City</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="openModal('addCityModal')">+ Add City</button>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 8px;">
+            <div id="builderCityList" style="display: flex; flex-direction: column; gap: 8px;">
                 <div style="padding: 10px 12px; background: var(--primary-light); border-radius: 6px; border-left: 3px solid var(--primary); display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <strong style="color: var(--primary);">Stop 1: Delhi</strong>
@@ -42,6 +42,7 @@
                         <strong>Stop 2: Agra</strong>
                         <div style="font-size: 11px; color: var(--muted);">Oct 15 - Oct 16 (2 days)</div>
                     </div>
+                    <button class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 10px;" onclick="triggerDeleteConfirmation('Stop', 'Agra', () => { this.parentElement.remove(); showToast('Stop Agra removed', 'warning'); })">×</button>
                 </div>
 
                 <div style="padding: 10px 12px; background: white; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
@@ -49,13 +50,17 @@
                         <strong>Stop 3: Jaipur</strong>
                         <div style="font-size: 11px; color: var(--muted);">Oct 17 - Oct 20 (4 days)</div>
                     </div>
+                    <button class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 10px;" onclick="triggerDeleteConfirmation('Stop', 'Jaipur', () => { this.parentElement.remove(); showToast('Stop Jaipur removed', 'warning'); })">×</button>
                 </div>
             </div>
         </div>
 
         <!-- Add Activity Quick Search -->
         <div class="card">
-            <div class="card-title" style="margin-bottom: 12px;">➕ Available Activities in Delhi</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div class="card-title">➕ Available Activities</div>
+                <button type="button" class="btn btn-primary btn-sm" onclick="openModal('addActivityModal')">+ Custom</button>
+            </div>
             <div class="search-box" style="margin-bottom: 12px;">
                 <span class="search-icon">🔍</span>
                 <input type="text" class="form-control" placeholder="Search activities...">
@@ -67,7 +72,7 @@
                         <div style="font-weight: 600;">Red Fort Tour</div>
                         <div style="font-size: 12px; color: var(--muted);">₹500 | 2.5 hrs | Sightseeing</div>
                     </div>
-                    <button class="btn btn-primary btn-sm">+ Add</button>
+                    <button class="btn btn-primary btn-sm" onclick="addActivity({name:'Red Fort Tour', cost:500, time:'10:00 AM', category:'Sightseeing'})">+ Add</button>
                 </div>
 
                 <div style="padding: 10px; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
@@ -75,15 +80,7 @@
                         <div style="font-weight: 600;">Chandni Chowk Street Food</div>
                         <div style="font-size: 12px; color: var(--muted);">₹800 | 3 hrs | Food & Dining</div>
                     </div>
-                    <button class="btn btn-primary btn-sm">+ Add</button>
-                </div>
-
-                <div style="padding: 10px; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <div style="font-weight: 600;">Qutub Minar Visit</div>
-                        <div style="font-size: 12px; color: var(--muted);">₹600 | 2 hrs | Heritage</div>
-                    </div>
-                    <button class="btn btn-primary btn-sm">+ Add</button>
+                    <button class="btn btn-primary btn-sm" onclick="addActivity({name:'Chandni Chowk Food Walk', cost:800, time:'07:00 PM', category:'Food Walk'})">+ Add</button>
                 </div>
             </div>
         </div>
@@ -97,20 +94,19 @@
                     <div class="card-title">📅 Day-by-Day Schedule — Stop 1: Delhi</div>
                     <div class="card-subtitle">Drag or reorder activities to plan your days</div>
                 </div>
-                <span class="badge badge-primary">3 Activities Scheduled</span>
+                <button type="button" class="btn btn-primary btn-sm" onclick="openModal('addActivityModal')">+ Add Activity</button>
             </div>
 
             <!-- Timeline -->
-            <div class="timeline" style="margin-top: 16px;">
+            <div class="timeline" id="builderTimeline" style="margin-top: 16px;">
 
                 <!-- Timeline Item 1 -->
                 <div class="timeline-item">
                     <div class="timeline-time">Day 1 — 09:00 AM</div>
                     <div class="timeline-title">Arrive & Check-in at Hotel Imperial</div>
                     <div class="timeline-meta">Connaught Place, New Delhi • Stay & Logistics</div>
-                    <div style="margin-top: 8px; display: flex; gap: 8px;">
+                    <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center;">
                         <span class="badge badge-primary">₹3,500 / night</span>
-                        <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px;">Edit Time</button>
                     </div>
                 </div>
 
@@ -119,9 +115,9 @@
                     <div class="timeline-time">Day 1 — 02:00 PM</div>
                     <div class="timeline-title">Qutub Minar Complex Tour</div>
                     <div class="timeline-meta">Mehrauli • Duration: 2 hrs • Ticket Included</div>
-                    <div style="margin-top: 8px; display: flex; gap: 8px;">
+                    <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center;">
                         <span class="badge badge-success">₹600</span>
-                        <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;">Remove</button>
+                        <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Activity', 'Qutub Minar Complex Tour', () => { this.closest('.timeline-item').remove(); showToast('Activity removed', 'warning'); })">Remove</button>
                     </div>
                 </div>
 
@@ -130,20 +126,9 @@
                     <div class="timeline-time">Day 1 — 07:00 PM</div>
                     <div class="timeline-title">Old Delhi Street Food Walk</div>
                     <div class="timeline-meta">Chandni Chowk • Duration: 3 hrs • Dinner & Snacks</div>
-                    <div style="margin-top: 8px; display: flex; gap: 8px;">
+                    <div style="margin-top: 8px; display: flex; gap: 8px; align-items: center;">
                         <span class="badge badge-success">₹800</span>
-                        <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;">Remove</button>
-                    </div>
-                </div>
-
-                <!-- Timeline Item 4 (Day 2) -->
-                <div class="timeline-item">
-                    <div class="timeline-time">Day 2 — 10:00 AM</div>
-                    <div class="timeline-title">Red Fort & Jama Masjid Tour</div>
-                    <div class="timeline-meta">Netaji Subhash Marg • Duration: 3.5 hrs</div>
-                    <div style="margin-top: 8px; display: flex; gap: 8px;">
-                        <span class="badge badge-success">₹500</span>
-                        <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;">Remove</button>
+                        <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Activity', 'Old Delhi Street Food Walk', () => { this.closest('.timeline-item').remove(); showToast('Activity removed', 'warning'); })">Remove</button>
                     </div>
                 </div>
 

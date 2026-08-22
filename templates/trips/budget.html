@@ -8,7 +8,7 @@
         <h1 class="page-title">💰 Budget Estimator & Expense Tracker</h1>
         <p class="page-subtitle">Golden Triangle Explorer (Target Budget: ₹25,000)</p>
     </div>
-    <button class="btn btn-primary" onclick="alert('Log expense modal')">
+    <button type="button" class="btn btn-primary" onclick="openModal('addExpenseModal')">
         + Add Custom Expense
     </button>
 </div>
@@ -131,7 +131,7 @@
 <div class="card">
     <div class="card-header">
         <div class="card-title">📝 Expense Log Details</div>
-        <button class="btn btn-secondary btn-sm">Export CSV</button>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Exported expenses to CSV!', 'info');">Export CSV</button>
     </div>
 
     <div class="table-container">
@@ -145,13 +145,13 @@
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="expenseTableBody">
                 <tr>
                     <td>Hotel Imperial Stay (3 Nights)</td>
                     <td><span class="badge badge-primary">Accommodation</span></td>
                     <td>Oct 12, 2026</td>
                     <td>₹10,500</td>
-                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;">Delete</button></td>
+                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', 'Hotel Imperial Stay', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
                 </tr>
 
                 <tr>
@@ -159,7 +159,7 @@
                     <td><span class="badge badge-primary">Transport</span></td>
                     <td>Oct 14, 2026</td>
                     <td>₹3,000</td>
-                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;">Delete</button></td>
+                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', 'Gatimaan Express Train', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
                 </tr>
 
                 <tr>
@@ -167,7 +167,7 @@
                     <td><span class="badge badge-success">Activities</span></td>
                     <td>Oct 12, 2026</td>
                     <td>₹1,200</td>
-                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;">Delete</button></td>
+                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', 'Qutub Minar Entry', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
                 </tr>
 
                 <tr>
@@ -175,7 +175,7 @@
                     <td><span class="badge badge-warning">Meals</span></td>
                     <td>Oct 12, 2026</td>
                     <td>₹1,600</td>
-                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;">Delete</button></td>
+                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', 'Chandni Chowk Food Tour', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
                 </tr>
             </tbody>
         </table>

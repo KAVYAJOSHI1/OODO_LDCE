@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}GlobeTrotter{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../../static/css/style.css">
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -53,9 +56,6 @@
         <a href="{% url 'calendar' %}" class="sidebar-link {% if request.resolver_match.url_name == 'calendar' %}active{% endif %}">
             📅 Calendar
         </a>
-        <a href="{% url 'explore' %}" class="sidebar-link {% if request.resolver_match.url_name == 'explore' %}active{% endif %}">
-            🌍 Explore
-        </a>
 
         <div class="sidebar-title" style="margin-top:20px;">Account</div>
 
@@ -80,6 +80,183 @@
         {% endblock %}
     </main>
 </div>
+
+<!-- ==========================================
+     REUSABLE MODALS
+     ========================================== -->
+
+<!-- 1. Add City Modal -->
+<div class="modal-overlay" id="addCityModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">📍 Add City Stop</h3>
+            <button class="modal-close" data-dismiss="modal">&times;</button>
+        </div>
+        <form onsubmit="return handleAddCitySubmit(event)">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="citySearchInput">Search City Catalog</label>
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="citySearchInput" class="form-control" placeholder="Search by city name..." onkeyup="filterCityResults(this.value)">
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 8px; max-height: 140px; overflow-y: auto; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 6px; padding: 8px;">
+                    <div class="city-search-item" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="document.getElementById('modalCityName').value='Udaipur'; document.getElementById('modalCityState').value='Rajasthan';">
+                        <div><strong>Udaipur</strong> <span style="font-size: 11px; color: var(--muted);">(Rajasthan)</span></div>
+                        <span class="badge badge-warning">Cost: 7.0/10</span>
+                    </div>
+                    <div class="city-search-item" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="document.getElementById('modalCityName').value='Varanasi'; document.getElementById('modalCityState').value='Uttar Pradesh';">
+                        <div><strong>Varanasi</strong> <span style="font-size: 11px; color: var(--muted);">(Uttar Pradesh)</span></div>
+                        <span class="badge badge-success">Cost: 4.8/10</span>
+                    </div>
+                    <div class="city-search-item" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; cursor: pointer;" onclick="document.getElementById('modalCityName').value='Goa'; document.getElementById('modalCityState').value='Goa';">
+                        <div><strong>Goa</strong> <span style="font-size: 11px; color: var(--muted);">(West India)</span></div>
+                        <span class="badge badge-warning">Cost: 7.8/10</span>
+                    </div>
+                    <div id="citySearchEmpty" style="display: none; padding: 12px; text-align: center; color: var(--muted); font-size: 12px;">No matching cities found in catalog.</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalCityName">City Name *</label>
+                    <input type="text" id="modalCityName" class="form-control" placeholder="e.g. Udaipur" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalCityState">State / Country</label>
+                    <input type="text" id="modalCityState" class="form-control" placeholder="e.g. Rajasthan, India" value="India">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add City</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 2. Add Activity Modal -->
+<div class="modal-overlay" id="addActivityModal">
+    <div class="modal" style="width: 540px;">
+        <div class="modal-header">
+            <h3 class="modal-title">🎯 Add New Activity</h3>
+            <button class="modal-close" data-dismiss="modal">&times;</button>
+        </div>
+        <form onsubmit="return handleAddActivitySubmit(event)">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="modalActivityName">Activity Name *</label>
+                    <input type="text" id="modalActivityName" class="form-control" placeholder="e.g. Taj Mahal Guided Tour" required>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="modalActivityCategory">Category</label>
+                        <select id="modalActivityCategory" class="form-control">
+                            <option value="Heritage & Monuments">Heritage & Monuments</option>
+                            <option value="Food Walk">Food & Culinary</option>
+                            <option value="Adventure">Adventure & Nature</option>
+                            <option value="Sightseeing">Sightseeing</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="modalActivityCost">Est. Cost (₹) *</label>
+                        <input type="number" id="modalActivityCost" class="form-control" placeholder="500" min="0" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="modalActivityTime">Start Time</label>
+                        <input type="time" id="modalActivityTime" class="form-control" value="09:00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="modalActivityDuration">Duration</label>
+                        <input type="text" id="modalActivityDuration" class="form-control" placeholder="2 Hours" value="2 Hours">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalActivityDesc">Short Description</label>
+                    <textarea id="modalActivityDesc" class="form-control" rows="2" placeholder="Guided tour details..."></textarea>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Activity</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 3. Add Expense Modal -->
+<div class="modal-overlay" id="addExpenseModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">💰 Add Custom Expense</h3>
+            <button class="modal-close" data-dismiss="modal">&times;</button>
+        </div>
+        <form onsubmit="return handleAddExpenseSubmit(event)">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="modalExpenseName">Expense Description *</label>
+                    <input type="text" id="modalExpenseName" class="form-control" placeholder="e.g. Train Ticket, Hotel Dinner" required>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="modalExpenseCategory">Category</label>
+                        <select id="modalExpenseCategory" class="form-control">
+                            <option value="Transport">Transport</option>
+                            <option value="Stay">Stay & Accommodation</option>
+                            <option value="Activities">Activities</option>
+                            <option value="Meals">Meals</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="modalExpenseAmount">Amount (₹) *</label>
+                        <input type="number" id="modalExpenseAmount" class="form-control" placeholder="1500" min="1" step="10" required>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Expense</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 4. Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteConfirmationModal">
+    <div class="modal" style="max-width: 440px;">
+        <div class="modal-header">
+            <h3 class="modal-title" id="deleteModalTitle">Delete Item?</h3>
+            <button class="modal-close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="deleteModalMessage" style="color: var(--text); font-size: 14px; margin: 0;">
+                Are you sure you want to delete this item? This action cannot be undone.
+            </p>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-danger" onclick="handleConfirmDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="{% static 'js/modals.js' %}"></script>
+<script src="{% static 'js/toast.js' %}"></script>
+<script src="{% static 'js/validation.js' %}"></script>
+<script src="{% static 'js/itinerary.js' %}"></script>
 
 {% block extra_js %}{% endblock %}
 </body>
