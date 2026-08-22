@@ -3,6 +3,22 @@
  * Modular state management, API client, modal controls, and dynamic table rendering.
  */
 
+// Sidebar Toggle & State Persistence
+function toggleAdminSidebar() {
+    const wrapper = document.querySelector('.admin-wrapper');
+    if (!wrapper) return;
+    wrapper.classList.toggle('sidebar-collapsed');
+    const isCollapsed = wrapper.classList.contains('sidebar-collapsed');
+    localStorage.setItem('admin_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
+        const wrapper = document.querySelector('.admin-wrapper');
+        if (wrapper) wrapper.classList.add('sidebar-collapsed');
+    }
+});
+
 // CSRF Token Helper
 function getCookie(name) {
     let cookieValue = null;
@@ -400,6 +416,12 @@ function filterActivitiesByCity(cityId, cityName) {
         label.textContent = `Showing activities for ${cityName}`;
     }
     loadActivities(1);
+
+    // Scroll smoothly to Activity Catalog Management section
+    const catalogEl = document.getElementById('activityCatalogSection');
+    if (catalogEl) {
+        catalogEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
 
 function clearCityActivityFilter() {

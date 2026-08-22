@@ -56,8 +56,13 @@
         <main class="admin-main">
             <!-- Header Bar -->
             <header class="admin-header">
-                <div class="admin-header-title">
-                    {% block page_title %}Admin Console{% endblock %}
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button type="button" id="sidebarToggleBtn" class="admin-sidebar-toggle-btn" onclick="toggleAdminSidebar()" title="Toggle Sidebar Navigation">
+                        <span>☰</span>
+                    </button>
+                    <div class="admin-header-title">
+                        {% block page_title %}Admin Console{% endblock %}
+                    </div>
                 </div>
 
                 <div class="admin-header-actions">
