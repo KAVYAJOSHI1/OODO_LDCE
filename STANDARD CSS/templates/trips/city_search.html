@@ -42,15 +42,25 @@ document.addEventListener('DOMContentLoaded', () => {
     renderCityGrid();
 });
 
-function renderCityGrid() {
+async function renderCityGrid() {
     const container = document.getElementById('cityGridContainer');
-    if (!container || typeof GLOBETROTTER_CITIES === 'undefined') return;
+    if (!container) return;
 
     while (container.firstChild) {
         container.removeChild(container.firstChild);
     }
 
-    GLOBETROTTER_CITIES.forEach(city => {
+    const q = document.getElementById('citySearchInputMain')?.value.trim().toLowerCase() || '';
+    const cost = document.getElementById('cityCostFilter')?.value.trim() || '';
+
+    const cities = await fetchCitiesFromAPI(q, cost);
+
+    const emptyMsg = document.getElementById('citySearchEmpty');
+    if (emptyMsg) {
+        emptyMsg.style.display = cities.length === 0 ? 'block' : 'none';
+    }
+
+    cities.forEach(city => {
         const card = document.createElement('div');
         card.className = 'card city-card-item';
         card.dataset.name = city.name.toLowerCase();
@@ -115,28 +125,7 @@ function renderCityGrid() {
 }
 
 function filterCitySearchGrid() {
-    const q = document.getElementById('citySearchInputMain')?.value.trim().toLowerCase() || '';
-    const cost = document.getElementById('cityCostFilter')?.value.trim().toLowerCase() || '';
-
-    const cards = document.querySelectorAll('.city-card-item');
-    let matchCount = 0;
-
-    cards.forEach(card => {
-        const matchesQ = !q || card.dataset.name.includes(q) || card.dataset.state.includes(q) || card.dataset.country.includes(q);
-        const matchesCost = !cost || card.dataset.cost === cost;
-
-        if (matchesQ && matchesCost) {
-            card.style.display = 'block';
-            matchCount++;
-        } else {
-            card.style.display = 'none';
-        }
-    });
-
-    const emptyMsg = document.getElementById('citySearchEmpty');
-    if (emptyMsg) {
-        emptyMsg.style.display = matchCount === 0 ? 'block' : 'none';
-    }
+    renderCityGrid();
 }
 </script>
 {% endblock %}

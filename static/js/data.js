@@ -233,10 +233,11 @@ const GLOBETROTTER_CITIES = [
     }
 ];
 
-// Helper functions for data querying
+// Helper functions for local querying
 function getCityById(cityId) {
     if (!cityId) return null;
-    return GLOBETROTTER_CITIES.find(c => c.id.toLowerCase() === cityId.toLowerCase()) || null;
+    const strId = String(cityId).toLowerCase();
+    return GLOBETROTTER_CITIES.find(c => String(c.id).toLowerCase() === strId || c.name.toLowerCase() === strId) || null;
 }
 
 function getActivitiesByCityId(cityId) {
@@ -250,5 +251,116 @@ function searchCities(query = '', costFilter = '') {
         const matchesQuery = !q || c.name.toLowerCase().includes(q) || c.state.toLowerCase().includes(q) || c.country.toLowerCase().includes(q);
         const matchesCost = !costFilter || c.costIndex.toLowerCase() === costFilter.toLowerCase();
         return matchesQuery && matchesCost;
+    });
+}
+
+// ---------------------------------------------------------------------------
+// REAL DJANGO API FETCH CLIENT (Margish API Integration Section §4)
+// ---------------------------------------------------------------------------
+
+async function fetchCitiesFromAPI(query = '', costFilter = '') {
+    try {
+        let url = `/api/travel/cities/?q=${encodeURIComponent(query)}`;
+        if (costFilter) {
+            url += `&min_cost=${encodeURIComponent(costFilter)}`;
+        }
+        const res = await fetch(url);
+        if (res.ok) {
+            const data = await res.json();
+            if (data.ok && Array.isArray(data.results)) {
+                return data.results.map(c => ({
+                    id: String(c.id),
+                    dbId: c.id,
+                    name: c.name,
+                    state: c.state || c.country || 'India',
+                    country: c.country || 'India',
+                    region: c.region || c.country || 'Destination',
+                    costIndex: c.cost_label || (c.cost_index >= 4 ? 'High' : (c.cost_index <= 2 ? 'Low' : 'Medium')),
+                    popularity: typeof c.popularity === 'number' ? `🔥 (${c.popularity})` : (c.popularity || '🔥🔥🔥🔥'),
+                    activitiesCount: c.activity_count || c.activities_count || (c.activities ? c.activities.length : 0),
+                    activities: c.activities || []
+                }));
+            }
+        }
+    } catch (err) {
+        console.warn('[GlobeTrotter API] City search endpoint unavailable, using catalog fallback:', err);
+    }
+    return searchCities(query, costFilter);
+}
+
+async function fetchActivitiesFromAPI(cityId, searchQuery = '', categoryFilter = '', budgetFilter = '', windowFilter = '') {
+    try {
+        let url = `/api/travel/activities/?q=${encodeURIComponent(searchQuery)}`;
+        
+        if (cityId) {
+            url += `&city=${encodeURIComponent(cityId)}`;
+        }
+        if (categoryFilter) {
+            url += `&type=${encodeURIComponent(categoryFilter)}`;
+        }
+        if (budgetFilter === 'free') {
+            url += `&max_cost=0`;
+        } else if (budgetFilter === '500') {
+            url += `&max_cost=500`;
+        } else if (budgetFilter === '1500') {
+            url += `&max_cost=1500`;
+        }
+
+        const res = await fetch(url);
+        if (res.ok) {
+            const data = await res.json();
+            if (data.ok && Array.isArray(data.results)) {
+                let results = data.results.map(a => {
+                    const costVal = parseFloat(a.cost || 0);
+                    return {
+                        id: String(a.id),
+                        activityId: String(a.id),
+                        cityId: String(a.city_id || cityId),
+                        cityName: a.city_name || '',
+                        name: a.name,
+                        category: a.type_display || a.type || a.category || 'Sightseeing',
+                        cost: costVal,
+                        duration: a.duration_hours ? `${a.duration_hours} Hours` : (a.duration || '2.0 Hours'),
+                        preferredTime: a.best_time || a.preferredTime || "09:00 AM",
+                        fixedSlot: !!(a.fixed_slot || a.fixedSlot || a.best_time === 'Sunset' || a.best_time === 'Sunrise'),
+                        description: a.description || ''
+                    };
+                });
+
+                // STRICT CITY FILTERING GUARANTEE: Activities from other cities NEVER appear
+                if (cityId) {
+                    const normCityId = String(cityId).toLowerCase();
+                    results = results.filter(act => {
+                        const actCity = String(act.cityId).toLowerCase();
+                        return actCity === normCityId || act.cityName.toLowerCase() === normCityId;
+                    });
+                }
+
+                return results;
+            }
+        }
+    } catch (err) {
+        console.warn('[GlobeTrotter API] Activity search endpoint unavailable, using catalog fallback:', err);
+    }
+
+    // Fallback to local catalog with strict city filtering guarantee
+    const cityObj = getCityById(cityId);
+    let localActs = cityObj ? cityObj.activities : [];
+    
+    // Guaranteed city scope
+    if (cityId) {
+        localActs = localActs.filter(act => String(act.cityId).toLowerCase() === String(cityId).toLowerCase());
+    }
+
+    return localActs.filter(act => {
+        const matchesCat = !categoryFilter || act.category === categoryFilter;
+        const matchesSearch = !searchQuery || act.name.toLowerCase().includes(searchQuery.toLowerCase()) || act.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+        let matchesBudget = true;
+        if (budgetFilter === 'free') matchesBudget = act.cost === 0;
+        else if (budgetFilter === '500') matchesBudget = act.cost <= 500;
+        else if (budgetFilter === '1500') matchesBudget = act.cost <= 1500;
+
+        return matchesCat && matchesSearch && matchesBudget;
     });
 }

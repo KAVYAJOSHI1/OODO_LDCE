@@ -482,10 +482,10 @@ function initApp() {
 }
 
 // -------------------------------------------------------------
-// 1. CITY SEARCH & CATALOG DISCOVERY
+// 1. CITY SEARCH & CATALOG DISCOVERY (API INTEGRATED)
 // -------------------------------------------------------------
 
-function renderCityCatalogSearch() {
+async function renderCityCatalogSearch() {
     const container = document.getElementById('citySearchResultsContainer');
     if (!container) return;
 
@@ -493,9 +493,9 @@ function renderCityCatalogSearch() {
         container.removeChild(container.firstChild);
     }
 
-    if (typeof GLOBETROTTER_CITIES === 'undefined') return;
+    const cities = await fetchCitiesFromAPI();
 
-    GLOBETROTTER_CITIES.forEach(city => {
+    cities.forEach(city => {
         const item = document.createElement('div');
         item.className = 'city-search-item';
         item.style.cssText = "display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--border); cursor: pointer;";
@@ -546,18 +546,18 @@ function selectCityForModal(cityId) {
     clearFieldError(nameInput);
 }
 
-function filterCityResults(query) {
+async function filterCityResults(query) {
     const costFilter = document.getElementById('cityCostFilter')?.value || '';
-    const filtered = searchCities(query, costFilter);
+    const filtered = await fetchCitiesFromAPI(query, costFilter);
 
-    const items = document.querySelectorAll('.city-search-item');
-    items.forEach((item, index) => {
-        if (GLOBETROTTER_CITIES[index]) {
-            const city = GLOBETROTTER_CITIES[index];
-            const isMatch = filtered.some(fc => fc.id === city.id);
+    const container = document.getElementById('citySearchResultsContainer');
+    if (container) {
+        container.childNodes.forEach(item => {
+            const nameText = item.querySelector('strong')?.textContent.toLowerCase() || '';
+            const isMatch = filtered.some(c => c.name.toLowerCase().includes(nameText) || nameText.includes(c.name.toLowerCase()));
             item.style.display = isMatch ? 'flex' : 'none';
-        }
-    });
+        });
+    }
 }
 
 function openAddCityModalWithData(cityId) {
@@ -610,7 +610,7 @@ function handleAddCitySubmit(event) {
 }
 
 // -------------------------------------------------------------
-// 2. MASTER ACTIVITY CATALOG & AI DISCOVERY HUB (USPs)
+// 2. MASTER ACTIVITY CATALOG & AI DISCOVERY HUB (API INTEGRATED)
 // -------------------------------------------------------------
 
 function renderActivitySearchCatalog() {
@@ -632,7 +632,7 @@ function renderActivitySearchCatalog() {
     filterActivityCatalogTable();
 }
 
-function filterActivityCatalogTable() {
+async function filterActivityCatalogTable() {
     const cityFilter = document.getElementById('activityCityFilter')?.value || 'delhi';
     const catFilter = document.getElementById('activityCategoryFilter')?.value || '';
     const budgetFilter = document.getElementById('activityBudgetFilter')?.value || '';
@@ -646,27 +646,10 @@ function filterActivityCatalogTable() {
         tableBody.removeChild(tableBody.firstChild);
     }
 
-    const cityActivities = getActivitiesByCityId(cityFilter);
+    // Call API fetch client with city-specific filter
+    const filtered = await fetchActivitiesFromAPI(cityFilter, searchQuery, catFilter, budgetFilter, windowFilter);
 
-    const filtered = cityActivities.filter((act, idx) => {
-        const matchesCat = !catFilter || act.category === catFilter;
-        const matchesSearch = !searchQuery || act.name.toLowerCase().includes(searchQuery) || act.description.toLowerCase().includes(searchQuery);
-
-        let matchesBudget = true;
-        if (budgetFilter === 'free') matchesBudget = act.cost === 0;
-        else if (budgetFilter === '500') matchesBudget = act.cost <= 500;
-        else if (budgetFilter === '1500') matchesBudget = act.cost <= 1500;
-
-        let matchesWindow = true;
-        const mins = parseTimeToMinutes(act.preferredTime || "09:00 AM");
-        if (windowFilter === 'morning') matchesWindow = mins < 720;
-        else if (windowFilter === 'evening') matchesWindow = mins >= 960 && mins <= 1140;
-        else if (windowFilter === 'night') matchesWindow = mins > 1140;
-
-        return matchesCat && matchesSearch && matchesBudget && matchesWindow;
-    });
-
-    if (filtered.length === 0) {
+    if (!filtered || filtered.length === 0) {
         const row = document.createElement('tr');
         const td = document.createElement('td');
         td.colSpan = 6;
@@ -723,7 +706,7 @@ function filterActivityCatalogTable() {
         const tdDest = document.createElement('td');
         const cityObj = getCityById(act.cityId);
         tdDest.style.cssText = "font-size: 13px; font-weight: 600;";
-        tdDest.textContent = cityObj ? `${cityObj.name}, ${cityObj.state}` : act.cityId;
+        tdDest.textContent = cityObj ? `${cityObj.name}, ${cityObj.state}` : (act.cityName || act.cityId);
 
         const tdCat = document.createElement('td');
         const badge = document.createElement('span');
