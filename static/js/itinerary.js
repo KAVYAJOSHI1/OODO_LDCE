@@ -1,49 +1,66 @@
 /**
  * GlobeTrotter - Master State Engine, Interactions & City-Strict Logic
- * Modular functions for dynamic frontend interaction & future Django view integration.
+ * Logical Multi-City Route (Delhi -> Agra -> Jaipur) with city-strict activity selection.
  */
 
-// Global Application State (Integration-Ready Frontend Data Store)
+// Global Application State (Logical & Geographically Accurate Route)
 window.GLOBETROTTER_STATE = {
     trip: {
         id: "trip-101",
         title: "Golden Triangle Explorer",
-        targetBudget: 25000,
+        targetBudget: 35000,
         startDate: "2026-10-20",
         endDate: "2026-10-28",
-        description: "Curated multi-city heritage and cultural journey.",
+        description: "Curated 8-day heritage journey covering Delhi, Agra, and Jaipur.",
         shareToken: "gt-share-883921"
     },
+    // Logically consecutive destination stops (North India Circuit)
     stops: [
         {
-            id: "stop-goa",
-            cityId: "goa",
-            cityName: "Goa",
-            stateName: "Goa, India",
+            id: "stop-delhi",
+            cityId: "delhi",
+            cityName: "New Delhi",
+            stateName: "Delhi, India",
             startDate: "2026-10-20",
-            endDate: "2026-10-23",
+            endDate: "2026-10-22",
             activities: [
-                { id: "act-1", activityId: "goa-baga", name: "Baga Beach", category: "Sightseeing", cost: 0, time: "09:00 AM", duration: "2.0 Hours" },
-                { id: "act-2", activityId: "goa-fort-aguada", name: "Fort Aguada", category: "Heritage & Monuments", cost: 300, time: "02:00 PM", duration: "2.5 Hours" }
+                { id: "act-delhi-1", activityId: "delhi-qutub-minar", name: "Qutub Minar Complex", category: "Heritage & Monuments", cost: 600, time: "09:00 AM", duration: "2.0 Hours" },
+                { id: "act-delhi-2", activityId: "delhi-chandni-chowk", name: "Chandni Chowk Food & Rickshaw Walk", category: "Food Walk", cost: 800, time: "06:00 PM", duration: "3.0 Hours" }
             ]
         },
         {
-            id: "stop-mumbai",
-            cityId: "mumbai",
-            cityName: "Mumbai",
-            stateName: "Maharashtra, India",
+            id: "stop-agra",
+            cityId: "agra",
+            cityName: "Agra",
+            stateName: "Uttar Pradesh, India",
+            startDate: "2026-10-22",
+            endDate: "2026-10-24",
+            activities: [
+                { id: "act-agra-1", activityId: "agra-taj-mahal", name: "Taj Mahal Sunrise Guided Tour", category: "Heritage & Monuments", cost: 1200, time: "06:00 AM", duration: "3.0 Hours" },
+                { id: "act-agra-2", activityId: "agra-fort", name: "Agra Fort UNESCO Site Walk", category: "Heritage & Monuments", cost: 650, time: "02:00 PM", duration: "2.5 Hours" }
+            ]
+        },
+        {
+            id: "stop-jaipur",
+            cityId: "jaipur",
+            cityName: "Jaipur",
+            stateName: "Rajasthan, India",
             startDate: "2026-10-24",
             endDate: "2026-10-28",
             activities: [
-                { id: "act-3", activityId: "mumbai-gateway", name: "Gateway of India", category: "Heritage & Monuments", cost: 0, time: "10:00 AM", duration: "1.5 Hours" }
+                { id: "act-jaipur-1", activityId: "jaipur-amer-fort", name: "Amer Fort Jeep Safari", category: "Heritage & Monuments", cost: 1500, time: "09:00 AM", duration: "3.5 Hours" },
+                { id: "act-jaipur-2", activityId: "jaipur-hawa-mahal", name: "Hawa Mahal & Museum", category: "Heritage & Monuments", cost: 200, time: "03:00 PM", duration: "1.5 Hours" }
             ]
         }
     ],
     expenses: [
-        { id: "exp-1", name: "Hotel Imperial Stay (3 Nights)", category: "Stay", amount: 10500, date: "Oct 12, 2026" },
-        { id: "exp-2", name: "Gatimaan Express Train", category: "Transport", amount: 3000, date: "Oct 14, 2026" }
+        { id: "exp-1", name: "Hotel Imperial New Delhi (2 Nights)", category: "Stay", amount: 7000, date: "Oct 20, 2026" },
+        { id: "exp-2", name: "Gatimaan Express Train (Delhi -> Agra)", category: "Transport", amount: 1500, date: "Oct 22, 2026" },
+        { id: "exp-3", name: "Heritage Hotel Agra (2 Nights)", category: "Stay", amount: 6000, date: "Oct 22, 2026" },
+        { id: "exp-4", name: "Express Highway Cab (Agra -> Jaipur)", category: "Transport", amount: 2500, date: "Oct 24, 2026" },
+        { id: "exp-5", name: "Taj Palace Jaipur (4 Nights)", category: "Stay", amount: 10000, date: "Oct 24, 2026" }
     ],
-    activeTargetStopId: null
+    activeTargetStopId: "stop-delhi"
 };
 
 // Generic Modal Confirmation Handler
@@ -153,21 +170,13 @@ function filterCityResults(query) {
     const filtered = searchCities(query, costFilter);
 
     const items = document.querySelectorAll('.city-search-item');
-    let count = 0;
-
     items.forEach((item, index) => {
         if (GLOBETROTTER_CITIES[index]) {
             const city = GLOBETROTTER_CITIES[index];
             const isMatch = filtered.some(fc => fc.id === city.id);
             item.style.display = isMatch ? 'flex' : 'none';
-            if (isMatch) count++;
         }
     });
-
-    const emptyMsg = document.getElementById('citySearchEmpty');
-    if (emptyMsg) {
-        emptyMsg.style.display = count === 0 ? 'block' : 'none';
-    }
 }
 
 function openAddCityModalWithData(cityId) {
@@ -206,6 +215,8 @@ function handleAddCitySubmit(event) {
     };
 
     window.GLOBETROTTER_STATE.stops.push(newStop);
+    window.GLOBETROTTER_STATE.activeTargetStopId = newStop.id;
+
     renderItineraryBuilderStops();
     recalculateBudget();
     updateTripReadiness();
@@ -224,6 +235,9 @@ function renderActivitySearchCatalog() {
     const citySelect = document.getElementById('activityCityFilter');
 
     if (citySelect && citySelect.options.length <= 1) {
+        while (citySelect.firstChild) {
+            citySelect.removeChild(citySelect.firstChild);
+        }
         GLOBETROTTER_CITIES.forEach(city => {
             const opt = document.createElement('option');
             opt.value = city.id;
@@ -236,7 +250,7 @@ function renderActivitySearchCatalog() {
 }
 
 function filterActivityCatalogTable() {
-    const cityFilter = document.getElementById('activityCityFilter')?.value || 'goa';
+    const cityFilter = document.getElementById('activityCityFilter')?.value || 'delhi';
     const catFilter = document.getElementById('activityCategoryFilter')?.value || '';
     const searchQuery = document.getElementById('activitySearchInput')?.value.trim().toLowerCase() || '';
     const tableBody = document.getElementById('activityCatalogTableBody');
@@ -316,16 +330,28 @@ function filterActivityCatalogTable() {
 }
 
 function openAddActivityModalWithData(cityId, activityId, targetStopId) {
-    const city = getCityById(cityId) || GLOBETROTTER_CITIES[0];
-    window.GLOBETROTTER_STATE.activeTargetStopId = targetStopId || window.GLOBETROTTER_STATE.stops[0]?.id;
-
-    // Update City Badge Notice
-    const badgeElem = document.getElementById('activityModalCityBadge');
-    if (badgeElem) {
-        badgeElem.textContent = `📍 Showing activities ONLY for: ${city.name} (${city.state})`;
+    // If targetStopId provided, activate it
+    if (targetStopId) {
+        window.GLOBETROTTER_STATE.activeTargetStopId = targetStopId;
     }
 
-    // Populate City-Strict Activity Select
+    let activeStop = window.GLOBETROTTER_STATE.stops.find(s => s.id === window.GLOBETROTTER_STATE.activeTargetStopId);
+    if (!activeStop && window.GLOBETROTTER_STATE.stops.length > 0) {
+        activeStop = window.GLOBETROTTER_STATE.stops[0];
+        window.GLOBETROTTER_STATE.activeTargetStopId = activeStop.id;
+    }
+
+    // Determine target cityId from active stop or parameter
+    const effectiveCityId = cityId || (activeStop ? activeStop.cityId : 'delhi');
+    const city = getCityById(effectiveCityId) || GLOBETROTTER_CITIES[0];
+
+    // Update Modal Header City Badge Notice
+    const badgeElem = document.getElementById('activityModalCityBadge');
+    if (badgeElem) {
+        badgeElem.textContent = `📍 Target Stop: ${activeStop ? activeStop.cityName : city.name} (${city.state})`;
+    }
+
+    // Populate City-Strict Activity Dropdown
     const selectElem = document.getElementById('modalActivitySelect');
     if (selectElem) {
         while (selectElem.firstChild) {
@@ -334,7 +360,7 @@ function openAddActivityModalWithData(cityId, activityId, targetStopId) {
 
         const defaultOpt = document.createElement('option');
         defaultOpt.value = "";
-        defaultOpt.textContent = `-- Choose ${city.name} Activity --`;
+        defaultOpt.textContent = `-- Select ${city.name} Activity --`;
         selectElem.appendChild(defaultOpt);
 
         city.activities.forEach(act => {
@@ -349,16 +375,18 @@ function openAddActivityModalWithData(cityId, activityId, targetStopId) {
     }
 
     if (activityId) {
-        onActivitySelectChange(activityId, city.id);
+        onActivitySelectChange(activityId);
     } else {
-        document.getElementById('modalActivityName').value = "";
-        document.getElementById('modalActivityCost').value = "0";
+        const nameInput = document.getElementById('modalActivityName');
+        const costInput = document.getElementById('modalActivityCost');
+        if (nameInput) nameInput.value = "";
+        if (costInput) costInput.value = "0";
     }
 
     openModal('addActivityModal');
 }
 
-function onActivitySelectChange(activityId, cityIdHint) {
+function onActivitySelectChange(activityId) {
     if (!activityId) return;
 
     let targetAct = null;
@@ -409,16 +437,18 @@ function handleAddActivitySubmit(event) {
 
     if (!isValid) return false;
 
-    const stopId = window.GLOBETROTTER_STATE.activeTargetStopId || window.GLOBETROTTER_STATE.stops[0]?.id;
-    const targetStop = window.GLOBETROTTER_STATE.stops.find(s => s.id === stopId) || window.GLOBETROTTER_STATE.stops[0];
+    let targetStop = window.GLOBETROTTER_STATE.stops.find(s => s.id === window.GLOBETROTTER_STATE.activeTargetStopId);
+    if (!targetStop && window.GLOBETROTTER_STATE.stops.length > 0) {
+        targetStop = window.GLOBETROTTER_STATE.stops[0];
+    }
 
     if (!targetStop) {
-        showToast('Please add a city stop first', 'error');
+        showToast('Please add a destination stop to your trip first!', 'error');
         return false;
     }
 
     // Check overlap conflict warning
-    const timeVal = timeInput.value || "09:00";
+    const timeVal = timeInput.value || "09:00 AM";
     const existingConflict = targetStop.activities.find(a => a.time === timeVal);
     if (existingConflict) {
         showToast(`⚠ Activities overlap at ${timeVal} on this day!`, 'warning');
@@ -441,8 +471,49 @@ function handleAddActivitySubmit(event) {
     syncCalendarView();
     closeModal('addActivityModal');
 
-    showToast(`✓ ${newActivity.name} added to ${targetStop.cityName} itinerary`, 'success');
+    showToast(`✓ Added "${newActivity.name}" to ${targetStop.cityName} stop`, 'success');
     return false;
+}
+
+// Quick Add Activity from Side Panel
+function quickAddActivityToActiveStop(activityId) {
+    let targetStop = window.GLOBETROTTER_STATE.stops.find(s => s.id === window.GLOBETROTTER_STATE.activeTargetStopId);
+    if (!targetStop && window.GLOBETROTTER_STATE.stops.length > 0) {
+        targetStop = window.GLOBETROTTER_STATE.stops[0];
+        window.GLOBETROTTER_STATE.activeTargetStopId = targetStop.id;
+    }
+
+    if (!targetStop) {
+        showToast('Please add a city stop first', 'error');
+        return;
+    }
+
+    // Find activity in catalog
+    const cityActivities = getActivitiesByCityId(targetStop.cityId);
+    const act = cityActivities.find(a => a.id === activityId) || cityActivities[0];
+
+    if (!act) {
+        showToast('Activity not available for this city', 'error');
+        return;
+    }
+
+    const newAct = {
+        id: `act-${Date.now()}`,
+        activityId: act.id,
+        name: act.name,
+        category: act.category,
+        cost: act.cost,
+        time: "10:00 AM",
+        duration: act.duration
+    };
+
+    targetStop.activities.push(newAct);
+    renderItineraryBuilderStops();
+    recalculateBudget();
+    updateTripReadiness();
+    syncCalendarView();
+
+    showToast(`✓ Added "${act.name}" to ${targetStop.cityName}`, 'success');
 }
 
 // -------------------------------------------------------------
@@ -451,34 +522,54 @@ function handleAddActivitySubmit(event) {
 
 function renderItineraryBuilderStops() {
     const listElem = document.getElementById('builderCityList');
+    const availableElem = document.getElementById('builderAvailableActivities');
     const timelineElem = document.getElementById('builderTimeline');
 
-    if (!listElem && !timelineElem) return;
+    if (!listElem && !timelineElem && !availableElem) return;
 
+    let activeStop = window.GLOBETROTTER_STATE.stops.find(s => s.id === window.GLOBETROTTER_STATE.activeTargetStopId);
+    if (!activeStop && window.GLOBETROTTER_STATE.stops.length > 0) {
+        activeStop = window.GLOBETROTTER_STATE.stops[0];
+        window.GLOBETROTTER_STATE.activeTargetStopId = activeStop.id;
+    }
+
+    // 1. Render Left Column: Trip Stops List
     if (listElem) {
         while (listElem.firstChild) {
             listElem.removeChild(listElem.firstChild);
         }
 
         window.GLOBETROTTER_STATE.stops.forEach((stop, index) => {
+            const isActive = activeStop && stop.id === activeStop.id;
+
             const cityDiv = document.createElement('div');
             cityDiv.className = 'builder-city-stop-item';
             cityDiv.setAttribute('draggable', 'true');
             cityDiv.dataset.stopId = stop.id;
             cityDiv.dataset.index = index;
-            cityDiv.style.cssText = "padding: 10px 12px; background: white; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: grab; margin-top: 8px;";
+            cityDiv.style.cssText = `padding: 10px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-top: 8px; ${
+                isActive 
+                ? 'background: var(--primary-light); border-left: 4px solid var(--primary); border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);'
+                : 'background: white; border: 1px solid var(--border);'
+            }`;
+
+            cityDiv.addEventListener('click', () => {
+                window.GLOBETROTTER_STATE.activeTargetStopId = stop.id;
+                renderItineraryBuilderStops();
+            });
 
             const left = document.createElement('div');
             const dragIcon = document.createElement('span');
-            dragIcon.style.cssText = "margin-right: 8px; color: var(--muted); font-size: 14px;";
+            dragIcon.style.cssText = "margin-right: 8px; color: var(--muted); font-size: 14px; cursor: grab;";
             dragIcon.textContent = "☰";
 
             const strong = document.createElement('strong');
+            strong.style.color = isActive ? 'var(--primary-dark)' : 'var(--dark)';
             strong.textContent = `Stop ${index + 1}: ${stop.cityName}`;
 
             const stateDiv = document.createElement('div');
-            stateDiv.style.cssText = "font-size: 11px; color: var(--muted); margin-left: 20px;";
-            stateDiv.textContent = `${stop.stateName} (${stop.activities.length} activities)`;
+            stateDiv.style.cssText = "font-size: 11px; color: var(--muted); margin-left: 22px;";
+            stateDiv.textContent = `${stop.startDate} to ${stop.endDate} (${stop.activities.length} acts)`;
 
             left.appendChild(dragIcon);
             left.appendChild(strong);
@@ -487,14 +578,12 @@ function renderItineraryBuilderStops() {
             const right = document.createElement('div');
             right.style.cssText = "display: flex; gap: 6px; align-items: center;";
 
-            const addActBtn = document.createElement('button');
-            addActBtn.className = "btn btn-secondary btn-sm";
-            addActBtn.style.cssText = "padding: 2px 8px; font-size: 11px;";
-            addActBtn.textContent = "+ Activity";
-            addActBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                openAddActivityModalWithData(stop.cityId, null, stop.id);
-            });
+            if (isActive) {
+                const activeBadge = document.createElement('span');
+                activeBadge.className = 'badge badge-primary';
+                activeBadge.textContent = 'Active';
+                right.appendChild(activeBadge);
+            }
 
             const deleteBtn = document.createElement('button');
             deleteBtn.className = "btn btn-danger btn-sm";
@@ -507,13 +596,11 @@ function renderItineraryBuilderStops() {
                 });
             });
 
-            right.appendChild(addActBtn);
             right.appendChild(deleteBtn);
 
             cityDiv.appendChild(left);
             cityDiv.appendChild(right);
 
-            // Drag and Drop Event Listeners
             cityDiv.addEventListener('dragstart', handleDragStart);
             cityDiv.addEventListener('dragover', handleDragOver);
             cityDiv.addEventListener('drop', handleDrop);
@@ -522,30 +609,103 @@ function renderItineraryBuilderStops() {
         });
     }
 
+    // 2. Render Side Panel: Available Activities (STRICTLY for activeStop.cityId)
+    if (availableElem && activeStop) {
+        while (availableElem.firstChild) {
+            availableElem.removeChild(availableElem.firstChild);
+        }
+
+        const cityCatalogActs = getActivitiesByCityId(activeStop.cityId);
+
+        if (cityCatalogActs.length === 0) {
+            const emptyDiv = document.createElement('div');
+            emptyDiv.style.cssText = "padding: 12px; font-size: 12px; color: var(--muted); text-align: center;";
+            emptyDiv.textContent = `No catalog activities found for ${activeStop.cityName}. Click "+ Custom" to add your own.`;
+            availableElem.appendChild(emptyDiv);
+        } else {
+            cityCatalogActs.forEach(act => {
+                const isAlreadyAdded = activeStop.activities.some(a => a.name.toLowerCase() === act.name.toLowerCase());
+
+                const actCard = document.createElement('div');
+                actCard.style.cssText = "padding: 10px; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center; background: white;";
+
+                const left = document.createElement('div');
+                const title = document.createElement('div');
+                title.style.cssText = "font-weight: 600; font-size: 13px; color: var(--dark);";
+                title.textContent = act.name;
+
+                const meta = document.createElement('div');
+                meta.style.cssText = "font-size: 11px; color: var(--muted);";
+                meta.textContent = `${act.cost === 0 ? 'Free' : '₹' + act.cost} | ${act.duration} | ${act.category}`;
+
+                left.appendChild(title);
+                left.appendChild(meta);
+
+                const addBtn = document.createElement('button');
+                addBtn.className = isAlreadyAdded ? 'btn btn-secondary btn-sm' : 'btn btn-primary btn-sm';
+                addBtn.style.cssText = "padding: 3px 8px; font-size: 11px;";
+                addBtn.textContent = isAlreadyAdded ? '✓ Added' : '+ Add';
+                addBtn.disabled = isAlreadyAdded;
+
+                if (!isAlreadyAdded) {
+                    addBtn.addEventListener('click', () => {
+                        quickAddActivityToActiveStop(act.id);
+                    });
+                }
+
+                actCard.appendChild(left);
+                actCard.appendChild(addBtn);
+
+                availableElem.appendChild(actCard);
+            });
+        }
+    }
+
+    // 3. Render Main Column: Timeline & Scheduled Activities
     if (timelineElem) {
         while (timelineElem.firstChild) {
             timelineElem.removeChild(timelineElem.firstChild);
         }
 
         window.GLOBETROTTER_STATE.stops.forEach(stop => {
+            const isStopActive = activeStop && stop.id === activeStop.id;
+
             const stopHeader = document.createElement('div');
-            stopHeader.style.cssText = "padding: 8px 12px; background: var(--primary-light); border-left: 4px solid var(--primary); border-radius: 4px; font-weight: 700; color: var(--primary-dark); margin: 16px 0 8px 0; display: flex; justify-content: space-between;";
+            stopHeader.style.cssText = `padding: 10px 14px; border-radius: 6px; font-weight: 700; margin: 16px 0 8px 0; display: flex; justify-content: space-between; align-items: center; ${
+                isStopActive
+                ? 'background: var(--primary-light); border-left: 5px solid var(--primary); color: var(--primary-dark);'
+                : 'background: var(--background); border-left: 5px solid var(--muted); color: var(--dark);'
+            }`;
 
             const title = document.createElement('span');
             title.textContent = `📍 Stop: ${stop.cityName} (${stop.stateName})`;
 
+            const rightBox = document.createElement('div');
+            rightBox.style.cssText = "display: flex; gap: 10px; align-items: center;";
+
             const dates = document.createElement('span');
-            dates.style.cssText = "font-size: 12px; opacity: 0.8;";
+            dates.style.cssText = "font-size: 12px; opacity: 0.8; font-weight: 400;";
             dates.textContent = `${stop.startDate} to ${stop.endDate}`;
 
+            const addActBtn = document.createElement('button');
+            addActBtn.className = 'btn btn-primary btn-sm';
+            addActBtn.style.cssText = "padding: 2px 8px; font-size: 11px;";
+            addActBtn.textContent = '+ Add Activity';
+            addActBtn.addEventListener('click', () => {
+                openAddActivityModalWithData(stop.cityId, null, stop.id);
+            });
+
+            rightBox.appendChild(dates);
+            rightBox.appendChild(addActBtn);
+
             stopHeader.appendChild(title);
-            stopHeader.appendChild(dates);
+            stopHeader.appendChild(rightBox);
             timelineElem.appendChild(stopHeader);
 
             if (stop.activities.length === 0) {
                 const emptyItem = document.createElement('div');
-                emptyItem.style.cssText = "padding: 12px; color: var(--muted); font-size: 12px; font-style: italic;";
-                emptyItem.textContent = `⚠ No activities planned for ${stop.cityName} yet. Click "+ Activity" above to add experiences.`;
+                emptyItem.style.cssText = "padding: 14px; color: var(--muted); font-size: 12px; font-style: italic; background: #fff; border: 1px dashed var(--border); border-radius: 6px;";
+                emptyItem.textContent = `⚠ No activities planned for ${stop.cityName} yet. Click "+ Add Activity" to schedule tours.`;
                 timelineElem.appendChild(emptyItem);
             } else {
                 stop.activities.forEach(act => {
@@ -627,6 +787,10 @@ function handleDrop(e) {
 
 function deleteCityStop(stopId) {
     window.GLOBETROTTER_STATE.stops = window.GLOBETROTTER_STATE.stops.filter(s => s.id !== stopId);
+    if (window.GLOBETROTTER_STATE.activeTargetStopId === stopId) {
+        window.GLOBETROTTER_STATE.activeTargetStopId = window.GLOBETROTTER_STATE.stops[0]?.id || null;
+    }
+
     renderItineraryBuilderStops();
     recalculateBudget();
     updateTripReadiness();

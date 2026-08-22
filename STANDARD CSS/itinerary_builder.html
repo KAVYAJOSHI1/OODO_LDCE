@@ -1,245 +1,92 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Itinerary Builder | GlobeTrotter</title>
-    <link rel="stylesheet" href="style.css">
-</head>
+{% extends "base.html" %}
 
-<body>
+{% block title %}Itinerary Builder | GlobeTrotter{% endblock %}
 
-<nav class="navbar">
-    <a href="dashboard.html" class="navbar-brand">
-        <span class="brand-icon">G</span>
-        GlobeTrotter
-    </a>
-    <div class="navbar-menu">
-        <a href="dashboard.html" class="nav-link">Dashboard</a>
-        <a href="my_trips.html" class="nav-link active">My Trips</a>
-        <a href="profile.html" class="nav-link">Profile</a>
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">🛠️ Itinerary Builder</h1>
+        <p class="page-subtitle">Golden Triangle Explorer — Delhi ➔ Agra ➔ Jaipur (Oct 20 – Oct 28, 2026)</p>
     </div>
-</nav>
-
-<div class="app-layout">
-    <aside class="sidebar">
-        <div class="sidebar-title">Travel</div>
-        <a href="dashboard.html" class="sidebar-link">🏠 Dashboard</a>
-        <a href="my_trips.html" class="sidebar-link active">✈️ My Trips</a>
-        <a href="create_trip.html" class="sidebar-link">➕ Plan Trip</a>
-        <a href="city_search.html" class="sidebar-link">🏙️ Cities</a>
-        <a href="activity_search.html" class="sidebar-link">🎯 Activities</a>
-        <a href="calendar.html" class="sidebar-link">📅 Calendar</a>
-        <a href="budget.html" class="sidebar-link">📊 Budget</a>
-        <div class="sidebar-title" style="margin-top:20px;">Account</div>
-        <a href="profile.html" class="sidebar-link">👤 Profile</a>
-        <a href="login.html" class="sidebar-link">🚪 Logout</a>
-    </aside>
-
-    <main class="main-content">
-        <div class="page-header">
-            <div>
-                <h1 class="page-title">🛠️ Itinerary Builder</h1>
-                <p class="page-subtitle">Golden Triangle Explorer (Oct 12 – Oct 20, 2026)</p>
-            </div>
-            <div style="display: flex; gap: 10px;">
-                <a href="itinerary_view.html" class="btn btn-secondary">👁️ Preview Itinerary</a>
-                <a href="my_trips.html" class="btn btn-primary" onclick="showToast('Itinerary saved successfully!', 'success');">💾 Save & Exit</a>
-            </div>
-        </div>
-
-        <div class="grid grid-3">
-            <div>
-                <div class="card" style="margin-bottom: 20px;">
-                    <div class="card-header">
-                        <div class="card-title">📍 Trip Stops</div>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="openModal('addCityModal')">+ Add City</button>
-                    </div>
-
-                    <div id="builderCityList" style="display: flex; flex-direction: column; gap: 8px;">
-                        <div style="padding: 10px 12px; background: var(--primary-light); border-radius: 6px; border-left: 3px solid var(--primary); display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <strong style="color: var(--primary);">Stop 1: Delhi</strong>
-                                <div style="font-size: 11px; color: var(--muted);">Oct 12 - Oct 14 (3 days)</div>
-                            </div>
-                            <span class="badge badge-primary">Active</span>
-                        </div>
-
-                        <div style="padding: 10px 12px; background: white; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
-                            <div>
-                                <strong>Stop 2: Agra</strong>
-                                <div style="font-size: 11px; color: var(--muted);">Oct 15 - Oct 16 (2 days)</div>
-                            </div>
-                            <button class="btn btn-danger btn-sm" style="padding: 2px 6px; font-size: 10px;" onclick="triggerDeleteConfirmation('Stop', 'Agra', () => { this.parentElement.remove(); showToast('Stop Agra removed', 'warning'); })">×</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <div class="card-title">➕ Available Activities</div>
-                        <button type="button" class="btn btn-primary btn-sm" onclick="openModal('addActivityModal')">+ Custom</button>
-                    </div>
-                    <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <div style="padding: 10px; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
-                            <div>
-                                <div style="font-weight: 600;">Red Fort Tour</div>
-                                <div style="font-size: 12px; color: var(--muted);">₹500 | 2.5 hrs</div>
-                            </div>
-                            <button class="btn btn-primary btn-sm" onclick="addActivity({name:'Red Fort Tour', cost:500, time:'10:00 AM', category:'Sightseeing'})">+ Add</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="grid-column: span 2;">
-                <div class="card">
-                    <div class="card-header">
-                        <div>
-                            <div class="card-title">📅 Schedule — Stop 1: Delhi</div>
-                            <div class="card-subtitle">Drag or reorder activities to plan your days</div>
-                        </div>
-                        <button type="button" class="btn btn-primary btn-sm" onclick="openModal('addActivityModal')">+ Add Activity</button>
-                    </div>
-
-                    <div class="timeline" id="builderTimeline" style="margin-top: 16px;">
-                        <div class="timeline-item">
-                            <div class="timeline-time">Day 1 — 09:00 AM</div>
-                            <div class="timeline-title">Arrive & Check-in at Hotel Imperial</div>
-                            <div class="timeline-meta">Connaught Place, New Delhi</div>
-                            <div style="margin-top: 8px;"><span class="badge badge-primary">₹3,500 / night</span></div>
-                        </div>
-
-                        <div class="timeline-item">
-                            <div class="timeline-time">Day 1 — 02:00 PM</div>
-                            <div class="timeline-title">Qutub Minar Complex Tour</div>
-                            <div class="timeline-meta">Mehrauli • Duration: 2 hrs</div>
-                            <div style="margin-top: 8px; display: flex; gap: 8px;">
-                                <span class="badge badge-success">₹600</span>
-                                <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Activity', 'Qutub Minar Tour', () => { this.closest('.timeline-item').remove(); showToast('Activity removed', 'warning'); })">Remove</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-</div>
-
-<!-- Reusable Modals for Standalone Preview -->
-<div class="modal-overlay" id="addCityModal">
-    <div class="modal">
-        <div class="modal-header">
-            <h3 class="modal-title">📍 Add City Stop</h3>
-            <button class="modal-close" data-dismiss="modal">&times;</button>
-        </div>
-        <form onsubmit="return handleAddCitySubmit(event)">
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label" for="citySearchInput">Search City Catalog</label>
-                    <input type="text" id="citySearchInput" class="form-control" placeholder="Search by city name..." onkeyup="filterCityResults(this.value)">
-                </div>
-
-                <div style="display: flex; flex-direction: column; gap: 8px; max-height: 120px; overflow-y: auto; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 6px; padding: 8px;">
-                    <div class="city-search-item" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; cursor: pointer;" onclick="document.getElementById('modalCityName').value='Udaipur'; document.getElementById('modalCityState').value='Rajasthan';">
-                        <div><strong>Udaipur</strong> <span style="font-size: 11px; color: var(--muted);">(Rajasthan)</span></div>
-                        <span class="badge badge-warning">Cost: 7.0/10</span>
-                    </div>
-                    <div class="city-search-item" style="display: flex; justify-content: space-between; align-items: center; padding: 4px 6px; cursor: pointer;" onclick="document.getElementById('modalCityName').value='Varanasi'; document.getElementById('modalCityState').value='Uttar Pradesh';">
-                        <div><strong>Varanasi</strong> <span style="font-size: 11px; color: var(--muted);">(Uttar Pradesh)</span></div>
-                        <span class="badge badge-success">Cost: 4.8/10</span>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="modalCityName">City Name *</label>
-                    <input type="text" id="modalCityName" class="form-control" placeholder="e.g. Udaipur" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label" for="modalCityState">State / Country</label>
-                    <input type="text" id="modalCityState" class="form-control" placeholder="e.g. Rajasthan, India" value="India">
-                </div>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Add City</button>
-            </div>
-        </form>
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'itinerary_view' %}" class="btn btn-secondary">
+            👁️ Preview Itinerary
+        </a>
+        <a href="{% url 'my_trips' %}" class="btn btn-primary" onclick="showToast('Itinerary saved successfully!', 'success');">
+            💾 Save & Exit
+        </a>
     </div>
 </div>
 
-<div class="modal-overlay" id="addActivityModal">
-    <div class="modal" style="width: 540px;">
-        <div class="modal-header">
-            <h3 class="modal-title">🎯 Add New Activity</h3>
-            <button class="modal-close" data-dismiss="modal">&times;</button>
-        </div>
-        <form onsubmit="return handleAddActivitySubmit(event)">
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label" for="modalActivityName">Activity Name *</label>
-                    <input type="text" id="modalActivityName" class="form-control" placeholder="e.g. Taj Mahal Guided Tour" required>
-                </div>
+<div class="grid grid-3">
 
-                <div class="grid grid-2">
-                    <div class="form-group">
-                        <label class="form-label" for="modalActivityCategory">Category</label>
-                        <select id="modalActivityCategory" class="form-control">
-                            <option value="Heritage & Monuments">Heritage & Monuments</option>
-                            <option value="Food Walk">Food & Culinary</option>
-                            <option value="Sightseeing">Sightseeing</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="modalActivityCost">Est. Cost (₹) *</label>
-                        <input type="number" id="modalActivityCost" class="form-control" placeholder="500" min="0" required>
-                    </div>
-                </div>
-
-                <div class="grid grid-2">
-                    <div class="form-group">
-                        <label class="form-label" for="modalActivityTime">Start Time</label>
-                        <input type="time" id="modalActivityTime" class="form-control" value="09:00">
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label" for="modalActivityDuration">Duration</label>
-                        <input type="text" id="modalActivityDuration" class="form-control" placeholder="2 Hours" value="2 Hours">
-                    </div>
-                </div>
+    <!-- Left Column: Trip Stops & City-Strict Available Activities (1 col) -->
+    <div>
+        <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header">
+                <div class="card-title">📍 Trip Stops</div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="openModal('addCityModal')">+ Add City</button>
             </div>
 
-            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Add Activity</button>
+            <div id="builderCityList" style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Dynamically rendered via renderItineraryBuilderStops() in itinerary.js -->
             </div>
-        </form>
-    </div>
-</div>
+        </div>
 
-<div class="modal-overlay" id="deleteConfirmationModal">
-    <div class="modal" style="max-width: 440px;">
-        <div class="modal-header">
-            <h3 class="modal-title" id="deleteModalTitle">Delete Item?</h3>
-            <button class="modal-close" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-            <p id="deleteModalMessage" style="color: var(--text); font-size: 14px; margin: 0;">
-                Are you sure you want to delete this item? This action cannot be undone.
-            </p>
-        </div>
-        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-danger" onclick="handleConfirmDelete()">Delete</button>
+        <!-- Add Activity Side Panel (City-Strict Filtered for Active Stop) -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div class="card-title">➕ Available Activities</div>
+                <button type="button" class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData()">+ Custom</button>
+            </div>
+            <div class="search-box" style="margin-bottom: 12px;">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="form-control" placeholder="Search catalog activities..." onkeyup="filterAvailableActivitiesSidePanel(this.value)">
+            </div>
+
+            <div id="builderAvailableActivities" style="display: flex; flex-direction: column; gap: 10px; max-height: 340px; overflow-y: auto;">
+                <!-- Dynamically rendered for activeStop.cityId in itinerary.js -->
+            </div>
         </div>
     </div>
+
+    <!-- Right Column: Timeline & Scheduled Activities (Spans 2 cols) -->
+    <div style="grid-column: span 2;">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">📅 Day-by-Day Schedule & Itinerary Timeline</div>
+                    <div class="card-subtitle">Drag or reorder stops to plan your multi-city journey</div>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData()">+ Add Activity</button>
+            </div>
+
+            <!-- Dynamic Timeline -->
+            <div class="timeline" id="builderTimeline" style="margin-top: 16px;">
+                <!-- Dynamically rendered via renderItineraryBuilderStops() in itinerary.js -->
+            </div>
+        </div>
+    </div>
+
 </div>
+{% endblock %}
 
-<script src="static/js/modals.js"></script>
-<script src="static/js/toast.js"></script>
-<script src="static/js/validation.js"></script>
-<script src="static/js/itinerary.js"></script>
+{% block extra_js %}
+<script>
+function filterAvailableActivitiesSidePanel(query) {
+    const q = query.trim().toLowerCase();
+    const container = document.getElementById('builderAvailableActivities');
+    if (!container) return;
 
-</body>
-</html>
+    const cards = container.children;
+    for (let card of cards) {
+        const text = card.textContent.toLowerCase();
+        if (!q || text.includes(q)) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    }
+}
+</script>
+{% endblock %}
