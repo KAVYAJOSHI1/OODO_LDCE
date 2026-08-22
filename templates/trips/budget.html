@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load icons %}
 
 {% block title %}Budget Estimator | GlobeTrotter{% endblock %}
 
@@ -9,52 +10,65 @@
 {% block content %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">💰 Budget Estimator & Expense Tracker</h1>
+        <h1 class="page-title">Budget Estimator & Expense Tracker</h1>
         {% if trip %}
-        <p class="page-subtitle">{{ trip.name }} (Target Budget: {{ trip.currency }} {{ trip.budget }})</p>
+        <p class="page-subtitle">{{ trip.name }} (Target Budget: ₹{{ trip.budget }})</p>
         {% else %}
         <p class="page-subtitle">No trip selected — <a href="{% url 'create_trip' %}">create a trip</a> to see its budget.</p>
         {% endif %}
     </div>
     {% if trip %}
     <button type="button" class="btn btn-primary" onclick="openModal('addExpenseModal')">
-        + Add Custom Expense
+        {% icon "plus-circle" size=16 %}Add Custom Expense
     </button>
     {% endif %}
 </div>
+
+{% if all_trips %}
+<div class="card" style="margin-bottom: 24px; padding: 14px 20px;">
+    <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+        <label class="form-label" for="tripSelector" style="margin-bottom: 0; white-space: nowrap;">Viewing budget for</label>
+        <select id="tripSelector" class="form-control" style="max-width: 320px;" onchange="window.location.href = '{% url 'budget' %}?trip=' + this.value">
+            {% for t in all_trips %}
+            <option value="{{ t.id }}" {% if trip and t.id == trip.id %}selected{% endif %}>{{ t.name }}{% if forloop.first %} (Latest){% endif %}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+{% endif %}
 
 {% if trip and budget %}
 <!-- Budget Overview Stats Grid -->
 <div class="grid grid-4" style="margin-bottom: 24px;">
     <div class="card stat-card">
-        <div class="stat-icon">💵</div>
+        <div class="stat-icon">{% icon "dollar-sign" size=22 %}</div>
         <div>
             <div class="stat-label">Total Allocated</div>
-            <div class="stat-value" style="color: var(--primary);">{{ trip.currency }} {{ budget.set_budget }}</div>
+            <div class="stat-value" style="color: var(--primary);">₹{{ budget.set_budget }}</div>
         </div>
     </div>
 
     <div class="card stat-card">
-        <div class="stat-icon">📊</div>
+        <div class="stat-icon">{% icon "bar-chart" size=22 %}</div>
         <div>
             <div class="stat-label">Current Total</div>
-            <div class="stat-value" style="color: var(--dark);">{{ trip.currency }} {{ budget.total_cost }}</div>
+            <div class="stat-value" style="color: var(--dark);">₹{{ budget.total_cost }}</div>
         </div>
     </div>
 
     <div class="card stat-card">
-        <div class="stat-icon">✅</div>
+        <div class="stat-icon">{% icon "check-circle" size=22 %}</div>
         <div>
             <div class="stat-label">Remaining</div>
-            <div class="stat-value" style="color: {% if budget.is_over_budget %}var(--danger){% else %}var(--success){% endif %};">{{ trip.currency }} {{ budget.remaining }}</div>
+            <div class="stat-value" style="color: {% if budget.is_over_budget %}var(--danger){% else %}var(--success){% endif %};">₹{{ budget.remaining }}</div>
         </div>
     </div>
 
     <div class="card stat-card">
-        <div class="stat-icon">📅</div>
+        <div class="stat-icon">{% icon "calendar" size=22 %}</div>
         <div>
             <div class="stat-label">Average / Day</div>
-            <div class="stat-value">{{ trip.currency }} {{ budget.daily_average }}</div>
+            <div class="stat-value">₹{{ budget.daily_average }}</div>
         </div>
     </div>
 </div>
@@ -76,8 +90,8 @@
     </div>
 
     <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--muted);">
-        <span>Logged + Estimated: {{ trip.currency }} {{ budget.total_cost }}</span>
-        <span>Max Target: {{ trip.currency }} {{ budget.set_budget }}</span>
+        <span>Logged + Estimated: ₹{{ budget.total_cost }}</span>
+        <span>Max Target: ₹{{ budget.set_budget }}</span>
     </div>
 
     {% if warning.has_warning %}
@@ -88,14 +102,14 @@
 <!-- Expense Breakdown by Category -->
 <div class="grid grid-2" style="margin-bottom: 24px;">
     <div class="card">
-        <div class="card-title" style="margin-bottom: 16px;">📂 Breakdown by Category</div>
+        <div class="card-title" style="margin-bottom: 16px;">{% icon "folder" size=16 %}Breakdown by Category</div>
 
         <div style="display: flex; flex-direction: column; gap: 14px;">
             {% for cat in budget.categories %}
             <div>
                 <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
                     <span>{{ cat.label }}</span>
-                    <span>{{ trip.currency }} {{ cat.amount }} ({{ cat.percentage|floatformat:0 }}%)</span>
+                    <span>₹{{ cat.amount }} ({{ cat.percentage|floatformat:0 }}%)</span>
                 </div>
                 <div class="progress"><div class="progress-bar" style="width: {{ cat.percentage|floatformat:0 }}%;"></div></div>
             </div>
@@ -107,15 +121,15 @@
 
     <!-- Quick Alerts / Budget Advice -->
     <div class="card">
-        <div class="card-title" style="margin-bottom: 16px;">💡 Budget Tips</div>
+        <div class="card-title" style="margin-bottom: 16px;">{% icon "lightbulb" size=16 %}Budget Tips</div>
 
         {% if budget.is_over_budget %}
         <div class="alert alert-danger">
-            <strong>Over Budget!</strong> You're {{ trip.currency }} {{ budget.over_by }} over your target of {{ trip.currency }} {{ budget.set_budget }}.
+            <strong>Over Budget!</strong> You're ₹{{ budget.over_by }} over your target of ₹{{ budget.set_budget }}.
         </div>
         {% else %}
         <div class="alert alert-success">
-            <strong>On Track!</strong> Your current plan fits within your {{ trip.currency }} {{ budget.set_budget }} target.
+            <strong>On Track!</strong> Your current plan fits within your ₹{{ budget.set_budget }} target.
         </div>
         {% endif %}
 
@@ -129,7 +143,7 @@
 <!-- Logged Expenses Table -->
 <div class="card">
     <div class="card-header">
-        <div class="card-title">📝 Logged Expenses</div>
+        <div class="card-title">Logged Expenses</div>
     </div>
 
     <div class="table-container">
@@ -149,9 +163,9 @@
                     <td>{{ exp.description }}</td>
                     <td><span class="badge badge-primary">{{ exp.category_display }}</span></td>
                     <td>{{ exp.date|default:"—" }}</td>
-                    <td>{{ trip.currency }} {{ exp.amount }}</td>
+                    <td>₹{{ exp.amount }}</td>
                     <td>
-                        <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="deleteExpense({{ exp.id }})">Delete</button>
+                        <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="deleteExpense({{ exp.id }})">{% icon "trash-2" size=14 %}Delete</button>
                     </td>
                 </tr>
                 {% empty %}

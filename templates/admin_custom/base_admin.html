@@ -1,4 +1,5 @@
 {% load static %}
+{% load icons %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,26 +24,26 @@
 
             <nav class="admin-nav">
                 <a href="{% url 'admin_dashboard_page' %}" class="admin-nav-item {% if active_tab == 'dashboard' %}active{% endif %}">
-                    <span class="admin-nav-icon">📊</span>
+                    <span class="admin-nav-icon">{% icon "bar-chart" size=18 %}</span>
                     <span>Dashboard</span>
                 </a>
                 <a href="{% url 'admin_cities_page' %}" class="admin-nav-item {% if active_tab == 'cities' %}active{% endif %}">
-                    <span class="admin-nav-icon">🏙️</span>
+                    <span class="admin-nav-icon">{% icon "building" size=18 %}</span>
                     <span>Cities & Activities</span>
                 </a>
                 <a href="{% url 'admin_trips_page' %}" class="admin-nav-item {% if active_tab == 'trips' %}active{% endif %}">
-                    <span class="admin-nav-icon">✈️</span>
+                    <span class="admin-nav-icon">{% icon "send" size=18 %}</span>
                     <span>Trips Inspection</span>
                 </a>
                 <a href="{% url 'admin_users_page' %}" class="admin-nav-item {% if active_tab == 'users' %}active{% endif %}">
-                    <span class="admin-nav-icon">👥</span>
+                    <span class="admin-nav-icon">{% icon "users" size=18 %}</span>
                     <span>User Management</span>
                 </a>
 
                 <hr style="border: 0; border-top: 1px solid #2d3748; margin: 16px 0;">
 
                 <a href="{% url 'admin_dashboard_page' %}#revenueAnalyticsSection" class="admin-nav-item">
-                    <span class="admin-nav-icon">📈</span>
+                    <span class="admin-nav-icon">{% icon "trending-up" size=18 %}</span>
                     <span>Revenue & Analytics</span>
                 </a>
             </nav>
@@ -58,7 +59,7 @@
             <header class="admin-header">
                 <div style="display: flex; align-items: center; gap: 14px;">
                     <button type="button" id="sidebarToggleBtn" class="admin-sidebar-toggle-btn" onclick="toggleAdminSidebar()" title="Toggle Sidebar Navigation">
-                        <span>☰</span>
+                        <span>{% icon "menu" size=18 %}</span>
                     </button>
                     <div class="admin-header-title">
                         {% block page_title %}Admin Console{% endblock %}
@@ -67,13 +68,13 @@
 
                 <div class="admin-header-actions">
                     <button type="button" class="admin-btn admin-btn-sm admin-btn-secondary" onclick="triggerSystemReseed()" title="Reseed demo travel data">
-                        <span>🔄</span> Reseed Demo Data
+                        {% icon "refresh-cw" size=14 %}Reseed Demo Data
                     </button>
 
                     <div class="admin-user-pill" onclick="openAdminProfileModal()" style="cursor: pointer;" title="Click to view Admin Profile details">
-                        <span>🛡️</span>
+                        {% icon "shield" size=16 %}
                         <span>{{ request.user.username }}</span>
-                        <span style="font-size: 10px; opacity: 0.7;">▼</span>
+                        {% icon "chevron-down" size=12 %}
                     </div>
 
                     <a href="{% url 'logout' %}" class="admin-btn admin-btn-sm admin-btn-danger">Logout</a>
@@ -92,8 +93,8 @@
         <div class="modal-card" style="max-width: 520px; background: #ffffff !important; border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); border: 1px solid #cbd5e1;">
             <div class="modal-header" style="background: linear-gradient(135deg, #1a202c, #2d3748); color: #ffffff; padding: 20px 24px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 44px; height: 44px; background: rgba(99, 102, 241, 0.2); border: 2px solid #6366f1; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
-                        🛡️
+                    <div style="width: 44px; height: 44px; background: rgba(99, 102, 241, 0.2); border: 2px solid #6366f1; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #6366f1;">
+                        {% icon "shield" size=22 %}
                     </div>
                     <div>
                         <h3 style="margin: 0; font-size: 18px; font-weight: 700; color: #ffffff;">Administrator Profile</h3>

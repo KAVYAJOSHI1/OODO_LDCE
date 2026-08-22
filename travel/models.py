@@ -154,7 +154,7 @@ class Trip(models.Model):
 
     # Budget
     budget = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    currency = models.CharField(max_length=3, default='USD')
+    currency = models.CharField(max_length=3, default='INR')
 
     # Number of people travelling. Multiplies per-person costs only
     # (meals + activities). Accommodation and transport are entered as

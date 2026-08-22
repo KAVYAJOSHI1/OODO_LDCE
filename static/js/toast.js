@@ -22,7 +22,7 @@ function showToast(message, type = 'success', duration = 3500) {
 
     let icon = '✓';
     if (type === 'error') icon = '✕';
-    if (type === 'warning') icon = '⚠️';
+    if (type === 'warning') icon = '';
 
     toast.innerHTML = `
         <div style="display: flex; align-items: center; gap: 8px;">

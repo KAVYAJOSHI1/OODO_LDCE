@@ -1,280 +1,164 @@
 /**
- * GlobeTrotter - Master State Engine, Interactions & Date-Aware Multi-Day Scheduler
- * Master Activity Catalog with AI Recommendations, Dynamic Routing & Multi-Trip Support.
+ * GlobeTrotter - State Engine, Interactions & Date-Aware Multi-Day Scheduler
+ * Backed by the real travel API (travel/api_urls.py) - no more localStorage/mock data.
  */
 
-// Preset Pre-Built Trips Data Store
-window.GLOBETROTTER_PRESET_TRIPS = {
-    "golden_triangle": {
-        trip: {
-            id: "trip-golden-triangle",
-            title: "Golden Triangle Explorer",
-            targetBudget: 35000,
-            startDate: "2026-10-20",
-            endDate: "2026-10-28",
-            description: "Curated 8-day heritage journey covering Delhi, Agra, and Jaipur.",
-            shareToken: "gt-share-883921"
-        },
-        stops: [
-            {
-                id: "stop-delhi",
-                cityId: "delhi",
-                cityName: "New Delhi",
-                stateName: "Delhi, India",
-                startDate: "2026-10-20",
-                endDate: "2026-10-22",
-                activities: [
-                    { id: "act-delhi-1", activityId: "delhi-qutub-minar", name: "Qutub Minar Complex", category: "Heritage & Monuments", cost: 600, date: "2026-10-20", time: "09:00 AM", duration: "3.0 Hours", ticketRequired: true, fixedSlot: false },
-                    { id: "act-delhi-2", activityId: "delhi-humayun-tomb", name: "Humayun's Tomb", category: "Heritage & Monuments", cost: 600, date: "2026-10-20", time: "12:30 PM", duration: "2.0 Hours", ticketRequired: true, fixedSlot: false },
-                    { id: "act-delhi-3", activityId: "delhi-chandni-chowk", name: "Chandni Chowk Food & Rickshaw Walk", category: "Food Walk", cost: 800, date: "2026-10-21", time: "06:30 PM", duration: "3.0 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "06:30 PM" }
-                ]
-            },
-            {
-                id: "stop-agra",
-                cityId: "agra",
-                cityName: "Agra",
-                stateName: "Uttar Pradesh, India",
-                startDate: "2026-10-22",
-                endDate: "2026-10-24",
-                activities: [
-                    { id: "act-agra-1", activityId: "agra-taj-mahal", name: "Taj Mahal Sunrise Guided Tour", category: "Heritage & Monuments", cost: 1200, date: "2026-10-22", time: "06:00 AM", duration: "3.0 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "06:00 AM" },
-                    { id: "act-agra-2", activityId: "agra-fort", name: "Agra Fort UNESCO Site Walk", category: "Heritage & Monuments", cost: 650, date: "2026-10-22", time: "09:30 AM", duration: "2.5 Hours", ticketRequired: true, fixedSlot: false },
-                    { id: "act-agra-3", activityId: "agra-mehtab-bagh", name: "Mehtab Bagh Sunset View", category: "Sightseeing", cost: 300, date: "2026-10-23", time: "04:30 PM", duration: "2.0 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "04:30 PM" }
-                ]
-            },
-            {
-                id: "stop-jaipur",
-                cityId: "jaipur",
-                cityName: "Jaipur",
-                stateName: "Rajasthan, India",
-                startDate: "2026-10-24",
-                endDate: "2026-10-28",
-                activities: [
-                    { id: "act-jaipur-1", activityId: "jaipur-amer-fort", name: "Amer Fort Jeep Safari", category: "Heritage & Monuments", cost: 1500, date: "2026-10-24", time: "09:00 AM", duration: "3.5 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "09:00 AM" },
-                    { id: "act-jaipur-2", activityId: "jaipur-hawa-mahal", name: "Hawa Mahal & Museum", category: "Heritage & Monuments", cost: 200, date: "2026-10-25", time: "01:00 PM", duration: "1.5 Hours", ticketRequired: false, fixedSlot: false },
-                    { id: "act-jaipur-3", activityId: "jaipur-nahargarh", name: "Nahargarh Fort Sunset View", category: "Sightseeing", cost: 300, date: "2026-10-25", time: "05:30 PM", duration: "2.5 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "05:30 PM" }
-                ]
-            }
-        ],
-        expenses: [
-            { id: "exp-1", name: "Hotel Imperial New Delhi (2 Nights)", category: "Stay", amount: 7000, date: "Oct 20, 2026" },
-            { id: "exp-2", name: "Gatimaan Express Train (Delhi -> Agra)", category: "Transport", amount: 1500, date: "Oct 22, 2026" },
-            { id: "exp-3", name: "Heritage Hotel Agra (2 Nights)", category: "Stay", amount: 6000, date: "Oct 22, 2026" },
-            { id: "exp-4", name: "Express Highway Cab (Agra -> Jaipur)", category: "Transport", amount: 2500, date: "Oct 24, 2026" },
-            { id: "exp-5", name: "Taj Palace Jaipur (4 Nights)", category: "Stay", amount: 10000, date: "Oct 24, 2026" }
-        ],
-        activeTargetStopId: "stop-delhi"
-    },
-    "kerala_backwaters": {
-        trip: {
-            id: "trip-kerala",
-            title: "Kerala Backwaters & Tea Garden Retreat",
-            targetBudget: 28000,
-            startDate: "2026-11-05",
-            endDate: "2026-11-12",
-            description: "Scenic 7-day tropical getaway covering Kochi, Alleppey houseboats, and Munnar hills.",
-            shareToken: "gt-share-kerala-992"
-        },
-        stops: [
-            {
-                id: "stop-kochi",
-                cityId: "kochi",
-                cityName: "Kochi",
-                stateName: "Kerala, India",
-                startDate: "2026-11-05",
-                endDate: "2026-11-07",
-                activities: [
-                    { id: "act-kochi-1", activityId: "kochi-fort", name: "Fort Kochi Heritage & Chinese Fishing Nets", category: "Sightseeing", cost: 300, date: "2026-11-05", time: "09:00 AM", duration: "2.5 Hours", ticketRequired: false, fixedSlot: false },
-                    { id: "act-kochi-2", activityId: "kochi-kathakali", name: "Traditional Kathakali Cultural Dance Center", category: "Culture", cost: 500, date: "2026-11-06", time: "05:00 PM", duration: "2.0 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "05:00 PM" }
-                ]
-            },
-            {
-                id: "stop-alleppey",
-                cityId: "alleppey",
-                cityName: "Alleppey",
-                stateName: "Kerala, India",
-                startDate: "2026-11-07",
-                endDate: "2026-11-09",
-                activities: [
-                    { id: "act-all-1", activityId: "alleppey-houseboat", name: "Punnamada Lake Overnight Houseboat Cruise", category: "Adventure", cost: 4500, date: "2026-11-07", time: "12:00 PM", duration: "24.0 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "12:00 PM" }
-                ]
-            }
-        ],
-        expenses: [
-            { id: "exp-k1", name: "Luxury Houseboat Booking Alleppey", category: "Stay", amount: 9000, date: "Nov 07, 2026" },
-            { id: "exp-k2", name: "Kochi Airport Taxi Transfer", category: "Transport", amount: 1800, date: "Nov 05, 2026" }
-        ],
-        activeTargetStopId: "stop-kochi"
-    },
-    "udaipur_trail": {
-        trip: {
-            id: "trip-udaipur",
-            title: "Udaipur Lake & Fort Trail",
-            targetBudget: 22000,
-            startDate: "2026-12-01",
-            endDate: "2026-12-05",
-            description: "5-day royal palace tour around Lake Pichola and Fateh Sagar.",
-            shareToken: "gt-share-udaipur-441"
-        },
-        stops: [
-            {
-                id: "stop-udaipur",
-                cityId: "udaipur",
-                cityName: "Udaipur",
-                stateName: "Rajasthan, India",
-                startDate: "2026-12-01",
-                endDate: "2026-12-05",
-                activities: [
-                    { id: "act-ud-1", activityId: "udaipur-city-palace", name: "City Palace Museum & Courtyard Walk", category: "Heritage & Monuments", cost: 400, date: "2026-12-01", time: "09:30 AM", duration: "3.0 Hours", ticketRequired: true, fixedSlot: false },
-                    { id: "act-ud-2", activityId: "udaipur-pichola-cruise", name: "Lake Pichola Sunset Boat Ride to Jagmandir", category: "Sightseeing", cost: 800, date: "2026-12-02", time: "04:30 PM", duration: "2.0 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "04:30 PM" }
-                ]
-            }
-        ],
-        expenses: [
-            { id: "exp-u1", name: "Lake View Heritage Resort (4 Nights)", category: "Stay", amount: 8500, date: "Dec 01, 2026" }
-        ],
-        activeTargetStopId: "stop-udaipur"
-    }
-};
-
-// State Persistence Helper Functions
-function saveCurrentTripState() {
-    try {
-        localStorage.setItem('GLOBETROTTER_ACTIVE_TRIP', JSON.stringify(window.GLOBETROTTER_STATE));
-    } catch(e) {
-        console.warn('LocalStorage save failed:', e);
-    }
-}
-
-function loadActiveTripState() {
-    try {
-        const saved = localStorage.getItem('GLOBETROTTER_ACTIVE_TRIP');
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            if (parsed && parsed.trip && parsed.stops) {
-                window.GLOBETROTTER_STATE = parsed;
-                return true;
-            }
-        }
-    } catch(e) {
-        console.warn('LocalStorage load failed:', e);
-    }
-    return false;
-}
-
-function switchToPresetTrip(presetKey) {
-    if (window.GLOBETROTTER_PRESET_TRIPS[presetKey]) {
-        window.GLOBETROTTER_STATE = JSON.parse(JSON.stringify(window.GLOBETROTTER_PRESET_TRIPS[presetKey]));
-        saveCurrentTripState();
-        showToast(`✓ Loaded trip: "${window.GLOBETROTTER_STATE.trip.title}"`, 'success');
-        return true;
-    }
-    return false;
-}
-
-// Global Application State (Defaults to Golden Triangle unless custom active trip loaded)
-window.GLOBETROTTER_STATE = JSON.parse(JSON.stringify(window.GLOBETROTTER_PRESET_TRIPS["golden_triangle"]));
-
 // -------------------------------------------------------------
-// CREATE NEW TRIP FORM HANDLER (SMOOTH ROUTING & CREATION)
+// SERVER API HELPERS
 // -------------------------------------------------------------
 
-function handleCreateTripSubmit(event) {
-    if (event) event.preventDefault();
+function getCookie(name) {
+    const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return match ? decodeURIComponent(match[1]) : null;
+}
 
-    const titleInput = document.getElementById('title');
-    const citySelect = document.getElementById('primary_city');
-    const budgetInput = document.getElementById('budget');
-    const startDateInput = document.getElementById('start_date');
-    const endDateInput = document.getElementById('end_date');
-    const notesInput = document.getElementById('notes');
-
-    const titleVal = titleInput && titleInput.value.trim() ? titleInput.value.trim() : 'Goa Beach & Heritage Getaway';
-    const cityVal = citySelect && citySelect.value.trim() ? citySelect.value.trim() : 'Goa';
-    const budgetVal = budgetInput && budgetInput.value ? parseFloat(budgetInput.value) : 25000;
-    const startVal = startDateInput && startDateInput.value ? startDateInput.value : '2026-10-12';
-    const endVal = endDateInput && endDateInput.value ? endDateInput.value : '2026-10-20';
-    const notesVal = notesInput ? notesInput.value.trim() : '';
-
-    const cityId = cityVal.toLowerCase().replace(/\s+/g, '-');
-    let cityObj = null;
-    if (typeof GLOBETROTTER_CITIES !== 'undefined') {
-        cityObj = getCityById(cityId);
-    }
-    if (!cityObj) {
-        cityObj = { id: cityId, name: cityVal, state: 'India', activities: [] };
-    }
-
-    const stopId = `stop-${Date.now()}`;
-    const initialActivities = [];
-
-    if (cityObj.activities && cityObj.activities.length > 0) {
-        // Pre-populate top 2 catalog activities for selected city
-        cityObj.activities.slice(0, 2).forEach((act, idx) => {
-            initialActivities.push({
-                id: `act-${Date.now()}-${idx}`,
-                activityId: act.id,
-                name: act.name,
-                category: act.category,
-                cost: act.cost,
-                date: startVal,
-                time: act.preferredTime || "09:00 AM",
-                duration: act.duration,
-                fixedSlot: !!act.fixedSlot,
-                preferredTime: act.preferredTime || null
-            });
+async function apiRequest(method, url, data) {
+    const opts = { method, headers: {} };
+    if (method !== 'GET') {
+        opts.headers['X-CSRFToken'] = getCookie('csrftoken');
+        const params = new URLSearchParams();
+        Object.entries(data || {}).forEach(([k, v]) => {
+            if (v !== undefined && v !== null && v !== '') params.append(k, v);
         });
+        opts.body = params;
     }
-
-    const newTripState = {
-        trip: {
-            id: `trip-${Date.now()}`,
-            title: titleVal,
-            targetBudget: budgetVal,
-            startDate: startVal,
-            endDate: endVal,
-            description: notesVal || `Custom travel trip to ${cityObj.name}`,
-            shareToken: `gt-share-${Date.now()}`
-        },
-        stops: [
-            {
-                id: stopId,
-                cityId: cityId,
-                cityName: cityObj.name || cityVal,
-                stateName: cityObj.state || 'India',
-                startDate: startVal,
-                endDate: endVal,
-                activities: initialActivities
-            }
-        ],
-        expenses: [
-            { id: `exp-init-${Date.now()}`, name: `Hotel Reservation in ${cityObj.name}`, category: "Stay", amount: Math.round(budgetVal * 0.4), date: startVal }
-        ],
-        activeTargetStopId: stopId
-    };
-
-    window.GLOBETROTTER_STATE = newTripState;
-    saveCurrentTripState();
-
-    showToast(`✓ Created new trip: "${titleVal}" for ${cityObj.name}! Redirecting to Builder...`, 'success');
-
-    setTimeout(() => {
-        const path = window.location.pathname;
-        if (path.includes('.html')) {
-            window.location.href = 'itinerary_builder.html';
-        } else {
-            // Django URL redirect
-            const navLink = document.querySelector('a[href*="itinerary_builder"]');
-            if (navLink) {
-                window.location.href = navLink.getAttribute('href');
-            } else {
-                window.location.href = '/trips/builder/';
-            }
-        }
-    }, 600);
-
-    return false;
+    const res = await fetch(url, opts);
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error || 'Request failed');
+    return json;
 }
+
+// -------------------------------------------------------------
+// CATALOG: map real City/Activity API records into the shape the
+// rendering code below already understands (id, name, state, country,
+// costIndex, activities[]...).
+// -------------------------------------------------------------
+
+function mapApiCityToLegacy(c) {
+    const costMap = { 1: 'Low', 2: 'Low', 3: 'Medium', 4: 'High', 5: 'High' };
+    return {
+        id: String(c.id),
+        name: c.name,
+        state: c.country,
+        country: c.country,
+        region: c.country,
+        costIndex: costMap[c.cost_index] || 'Medium',
+        popularity: c.popularity || 50,
+        activitiesCount: 0,
+        activities: []
+    };
+}
+
+function mapApiActivityToLegacy(a) {
+    return {
+        id: String(a.id),
+        cityId: String(a.city_id),
+        name: a.name,
+        category: a.type_display || 'Sightseeing',
+        cost: parseFloat(a.cost) || 0,
+        duration: `${parseFloat(a.duration_hours || 2).toFixed(1)} Hours`,
+        preferredTime: null,
+        fixedSlot: false,
+        description: a.description || ''
+    };
+}
+
+async function loadRealCatalog() {
+    const cityRes = await apiRequest('GET', '/api/travel/cities/?limit=200');
+    const cities = cityRes.results.map(mapApiCityToLegacy);
+
+    const actRes = await apiRequest('GET', '/api/travel/activities/?limit=1000');
+    actRes.results.forEach(a => {
+        const city = cities.find(c => c.id === String(a.city_id));
+        if (city) {
+            city.activities.push(mapApiActivityToLegacy(a));
+            city.activitiesCount = city.activities.length;
+        }
+    });
+
+    GLOBETROTTER_CITIES = cities;
+    return cities;
+}
+
+// Kicked off immediately (script executes synchronously during page parse),
+// so it's already in flight by the time DOMContentLoaded fires below.
+window.GLOBETROTTER_CATALOG_READY = loadRealCatalog();
+
+// -------------------------------------------------------------
+// TRIP STATE: hydrate the working state from the real trip on the
+// server instead of localStorage. window.GLOBETROTTER_TRIP_ID is set
+// by the page template (itinerary_builder.html / itinerary_view.html).
+// -------------------------------------------------------------
+
+function formatTimeAmPm(timeStr) {
+    if (!timeStr) return "09:00 AM";
+    const [hStr, mStr] = timeStr.split(':');
+    let h = parseInt(hStr, 10);
+    if (isNaN(h)) return "09:00 AM";
+    const m = (mStr || "00").padStart(2, '0');
+    const period = h >= 12 ? "PM" : "AM";
+    if (h === 0) h = 12; else if (h > 12) h -= 12;
+    return `${String(h).padStart(2, '0')}:${m} ${period}`;
+}
+
+function emptyTripState() {
+    return {
+        trip: { id: null, title: 'No Trip Selected', targetBudget: 0, startDate: '', endDate: '', description: '', shareToken: '' },
+        stops: [],
+        expenses: [],
+        activeTargetStopId: null
+    };
+}
+
+function mapApiTripToLegacyState(data) {
+    const trip = data.trip;
+    const stops = data.stops.map(s => ({
+        id: String(s.id),
+        cityId: String(s.city.id),
+        cityName: s.city.name,
+        stateName: s.city.country,
+        startDate: s.arrival_date || trip.start_date,
+        endDate: s.departure_date || trip.end_date,
+        activities: s.activities.map(ta => ({
+            id: String(ta.id),
+            activityId: String(ta.activity.id),
+            name: ta.activity.name,
+            category: ta.activity.type_display || 'Sightseeing',
+            cost: parseFloat(ta.cost) || 0,
+            date: ta.scheduled_date,
+            time: formatTimeAmPm(ta.scheduled_time),
+            duration: `${parseFloat(ta.activity.duration_hours || 2).toFixed(1)} Hours`,
+            fixedSlot: false,
+            preferredTime: null
+        }))
+    }));
+
+    return {
+        trip: {
+            id: String(trip.id),
+            title: trip.name,
+            targetBudget: parseFloat(trip.budget) || 0,
+            startDate: trip.start_date,
+            endDate: trip.end_date,
+            description: trip.description,
+            shareToken: trip.share_token || ''
+        },
+        stops,
+        expenses: [],
+        activeTargetStopId: stops[0] ? stops[0].id : null
+    };
+}
+
+async function hydrateStateFromServer() {
+    if (!window.GLOBETROTTER_TRIP_ID) {
+        window.GLOBETROTTER_STATE = emptyTripState();
+        return;
+    }
+    const data = await apiRequest('GET', `/api/travel/trips/${window.GLOBETROTTER_TRIP_ID}/itinerary/`);
+    window.GLOBETROTTER_STATE = mapApiTripToLegacyState(data);
+}
+
+window.GLOBETROTTER_STATE = emptyTripState();
 
 // -------------------------------------------------------------
 // DATE & TIME UTILITIES + PER-DATE CONFLICT RESOLUTION
@@ -282,6 +166,7 @@ function handleCreateTripSubmit(event) {
 
 function getDatesArrayForStop(startDateStr, endDateStr) {
     const dates = [];
+    if (!startDateStr || !endDateStr) return dates;
     let curr = new Date(startDateStr);
     const end = new Date(endDateStr);
 
@@ -305,7 +190,7 @@ function parseTimeToMinutes(timeStr) {
     const isAM = str.includes("AM");
     const cleanStr = str.replace(/(AM|PM)/g, "").trim();
     const parts = cleanStr.split(":");
-    
+
     let hours = parseInt(parts[0], 10) || 9;
     let minutes = parseInt(parts[1], 10) || 0;
 
@@ -345,16 +230,16 @@ function getContextBadgeMeta(actName, timeStr) {
     const mins = parseTimeToMinutes(timeStr);
 
     if (name.includes("sunrise") || (mins >= 330 && mins <= 450)) {
-        return { label: "🌅 Sunrise Slot", type: "warning" };
+        return { label: "Sunrise Slot", type: "warning" };
     }
     if (name.includes("sunset") || (mins >= 990 && mins <= 1140)) {
-        return { label: "🌆 Sunset Slot", type: "warning" };
+        return { label: "Sunset Slot", type: "warning" };
     }
     if (name.includes("food") || name.includes("night market") || (mins >= 1110 && mins <= 1380)) {
-        return { label: "🌙 Evening/Night Food", type: "primary" };
+        return { label: "Evening/Night Food", type: "primary" };
     }
     if (name.includes("taj mahal") || name.includes("qutub") || name.includes("fort") || name.includes("museum") || name.includes("palace") || name.includes("safari")) {
-        return { label: "🎟️ Timed Entry Ticket", type: "success" };
+        return { label: "Timed Entry Ticket", type: "success" };
     }
     return null;
 }
@@ -362,43 +247,34 @@ function getContextBadgeMeta(actName, timeStr) {
 function getProTipForActivity(actName) {
     if (!actName) return "Recommended highlight for itinerary planning.";
     const name = actName.toLowerCase();
-    if (name.includes("taj mahal")) return "💡 Best visited at 06:00 AM to avoid crowds and catch soft sunrise lighting.";
-    if (name.includes("qutub")) return "💡 Open until dusk. Wheelchair accessible path around the main minaret.";
-    if (name.includes("chandni chowk")) return "💡 Includes rickshaw ride. Best explored around 06:30 PM for street food.";
-    if (name.includes("amer fort")) return "💡 Jeep safari included up the hill. Book morning slot to skip line.";
-    if (name.includes("hawa mahal")) return "💡 Great photo point from opposing rooftop café across the main avenue.";
-    if (name.includes("nahargarh")) return "💡 Panoramic sunset spot overlooking the Pink City. Arrive by 05:00 PM.";
-    if (name.includes("baga")) return "💡 High demand for water sports. Best early morning or late afternoon.";
-    if (name.includes("cruise")) return "💡 Fixed 05:30 PM sunset departure from Panjim jetty with live cultural show.";
-    return "💡 Popular experience with high traveler rating. Reserve early for optimal slot.";
+    if (name.includes("taj mahal")) return "Best visited at 06:00 AM to avoid crowds and catch soft sunrise lighting.";
+    if (name.includes("qutub")) return "Open until dusk. Wheelchair accessible path around the main minaret.";
+    if (name.includes("chandni chowk")) return "Includes rickshaw ride. Best explored around 06:30 PM for street food.";
+    if (name.includes("amer fort")) return "Jeep safari included up the hill. Book morning slot to skip line.";
+    if (name.includes("hawa mahal")) return "Great photo point from opposing rooftop café across the main avenue.";
+    if (name.includes("nahargarh")) return "Panoramic sunset spot overlooking the Pink City. Arrive by 05:00 PM.";
+    if (name.includes("baga")) return "High demand for water sports. Best early morning or late afternoon.";
+    if (name.includes("cruise")) return "Fixed 05:30 PM sunset departure from Panjim jetty with live cultural show.";
+    return "Popular experience with high traveler rating. Reserve early for optimal slot.";
 }
 
 function resolveStopScheduleConflicts(stop) {
     if (!stop || !stop.activities || stop.activities.length === 0) return false;
 
     let shiftOccurred = false;
-
-    // Group activities by specific Date
     const dates = getDatesArrayForStop(stop.startDate, stop.endDate);
 
     dates.forEach(dStr => {
         const dayActs = stop.activities.filter(a => a.date === dStr || !a.date);
-        
-        // Ensure default date if missing
         dayActs.forEach(a => { if (!a.date) a.date = dStr; });
-
-        // Enforce fixed slots
         dayActs.forEach(act => {
             if (act.preferredTime && act.fixedSlot) {
                 act.time = act.preferredTime;
             }
         });
-
-        // Sort chronologically by start time
         dayActs.sort((a, b) => parseTimeToMinutes(a.time) - parseTimeToMinutes(b.time));
 
-        const bufferMinutes = 30; // 30 min transit buffer
-
+        const bufferMinutes = 30;
         for (let i = 0; i < dayActs.length - 1; i++) {
             const current = dayActs[i];
             const next = dayActs[i + 1];
@@ -406,7 +282,6 @@ function resolveStopScheduleConflicts(stop) {
             const startMin = parseTimeToMinutes(current.time);
             const durMin = parseDurationToMinutes(current.duration);
             const currentEndMin = startMin + durMin;
-
             const nextStartMin = parseTimeToMinutes(next.time);
 
             if (nextStartMin < currentEndMin + bufferMinutes) {
@@ -414,24 +289,21 @@ function resolveStopScheduleConflicts(stop) {
                     const newNextStartMins = currentEndMin + bufferMinutes;
                     next.time = minutesToFormattedTime(newNextStartMins);
                     shiftOccurred = true;
-                } else {
-                    if (!current.fixedSlot) {
-                        const nextFixedStart = parseTimeToMinutes(next.time);
-                        const availableEnd = nextFixedStart - bufferMinutes;
-                        if (currentEndMin > availableEnd) {
-                            const newCurrentStart = Math.max(360, availableEnd - durMin);
-                            current.time = minutesToFormattedTime(newCurrentStart);
-                            shiftOccurred = true;
-                        }
+                } else if (!current.fixedSlot) {
+                    const nextFixedStart = parseTimeToMinutes(next.time);
+                    const availableEnd = nextFixedStart - bufferMinutes;
+                    if (currentEndMin > availableEnd) {
+                        const newCurrentStart = Math.max(360, availableEnd - durMin);
+                        current.time = minutesToFormattedTime(newCurrentStart);
+                        shiftOccurred = true;
                     }
                 }
             }
         }
     });
 
-    // Final sorting of all stop activities by date then time
     stop.activities.sort((a, b) => {
-        if (a.date !== b.date) return a.date.localeCompare(b.date);
+        if (a.date !== b.date) return (a.date || '').localeCompare(b.date || '');
         return parseTimeToMinutes(a.time) - parseTimeToMinutes(b.time);
     });
 
@@ -465,9 +337,19 @@ document.addEventListener('DOMContentLoaded', () => {
     initApp();
 });
 
-function initApp() {
-    // Attempt loading saved state from LocalStorage
-    loadActiveTripState();
+async function initApp() {
+    try {
+        await window.GLOBETROTTER_CATALOG_READY;
+    } catch (e) {
+        console.warn('Catalog load failed:', e);
+    }
+
+    try {
+        await hydrateStateFromServer();
+    } catch (e) {
+        console.warn('Trip load failed:', e);
+        showToast('Could not load trip data from the server.', 'error');
+    }
 
     window.GLOBETROTTER_STATE.stops.forEach(s => resolveStopScheduleConflicts(s));
 
@@ -475,17 +357,16 @@ function initApp() {
     renderActivitySearchCatalog();
     renderItineraryBuilderStops();
     renderItineraryViewPage();
-    renderExpenseTable();
     recalculateBudget();
     updateTripReadiness();
     syncCalendarView();
 }
 
 // -------------------------------------------------------------
-// 1. CITY SEARCH & CATALOG DISCOVERY (API INTEGRATED)
+// 1. CITY SEARCH & CATALOG DISCOVERY
 // -------------------------------------------------------------
 
-async function renderCityCatalogSearch() {
+function renderCityCatalogSearch() {
     const container = document.getElementById('citySearchResultsContainer');
     if (!container) return;
 
@@ -493,9 +374,9 @@ async function renderCityCatalogSearch() {
         container.removeChild(container.firstChild);
     }
 
-    const cities = await fetchCitiesFromAPI();
+    if (typeof GLOBETROTTER_CITIES === 'undefined') return;
 
-    cities.forEach(city => {
+    GLOBETROTTER_CITIES.forEach(city => {
         const item = document.createElement('div');
         item.className = 'city-search-item';
         item.style.cssText = "display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px solid var(--border); cursor: pointer;";
@@ -506,7 +387,7 @@ async function renderCityCatalogSearch() {
 
         const spanState = document.createElement('span');
         spanState.style.cssText = "font-size: 11px; color: var(--muted); margin-left: 6px;";
-        spanState.textContent = `(${city.state}, ${city.country})`;
+        spanState.textContent = `(${city.country})`;
 
         const meta = document.createElement('div');
         meta.style.cssText = "font-size: 11px; color: var(--muted); margin-top: 2px;";
@@ -540,24 +421,24 @@ function selectCityForModal(cityId) {
     const idInput = document.getElementById('modalCityId');
 
     if (nameInput) nameInput.value = city.name;
-    if (stateInput) stateInput.value = `${city.state}, ${city.country}`;
+    if (stateInput) stateInput.value = `${city.country}`;
     if (idInput) idInput.value = city.id;
 
     clearFieldError(nameInput);
 }
 
-async function filterCityResults(query) {
+function filterCityResults(query) {
     const costFilter = document.getElementById('cityCostFilter')?.value || '';
-    const filtered = await fetchCitiesFromAPI(query, costFilter);
+    const filtered = searchCities(query, costFilter);
 
-    const container = document.getElementById('citySearchResultsContainer');
-    if (container) {
-        container.childNodes.forEach(item => {
-            const nameText = item.querySelector('strong')?.textContent.toLowerCase() || '';
-            const isMatch = filtered.some(c => c.name.toLowerCase().includes(nameText) || nameText.includes(c.name.toLowerCase()));
+    const items = document.querySelectorAll('.city-search-item');
+    items.forEach((item, index) => {
+        if (GLOBETROTTER_CITIES[index]) {
+            const city = GLOBETROTTER_CITIES[index];
+            const isMatch = filtered.some(fc => fc.id === city.id);
             item.style.display = isMatch ? 'flex' : 'none';
-        });
-    }
+        }
+    });
 }
 
 function openAddCityModalWithData(cityId) {
@@ -567,73 +448,79 @@ function openAddCityModalWithData(cityId) {
     openModal('addCityModal');
 }
 
-function handleAddCitySubmit(event) {
+async function handleAddCitySubmit(event) {
     if (event) event.preventDefault();
 
+    if (!window.GLOBETROTTER_TRIP_ID) {
+        showToast('Create a trip first, then add cities to it.', 'error');
+        return false;
+    }
+
     const nameInput = document.getElementById('modalCityName');
-    const stateInput = document.getElementById('modalCityState');
     const idInput = document.getElementById('modalCityId');
 
     clearFieldError(nameInput);
 
-    if (!nameInput.value.trim()) {
-        setFieldError(nameInput, 'City name is required');
+    const cityId = idInput?.value;
+    if (!cityId || !nameInput.value.trim()) {
+        setFieldError(nameInput, 'Pick a city from the search results');
         return false;
     }
 
-    const cityId = idInput?.value || nameInput.value.trim().toLowerCase().replace(/\s+/g, '-');
-    const cityName = nameInput.value.trim();
-    const stateName = stateInput ? stateInput.value.trim() : 'India';
+    try {
+        const trip = window.GLOBETROTTER_STATE.trip;
+        await apiRequest('POST', `/api/travel/trips/${window.GLOBETROTTER_TRIP_ID}/stops/add/`, {
+            city_id: cityId,
+            arrival_date: trip.startDate,
+            departure_date: trip.endDate,
+        });
 
-    const newStop = {
-        id: `stop-${Date.now()}`,
-        cityId: cityId,
-        cityName: cityName,
-        stateName: stateName,
-        startDate: "2026-10-24",
-        endDate: "2026-10-26",
-        activities: []
-    };
+        await hydrateStateFromServer();
+        window.GLOBETROTTER_STATE.stops.forEach(s => resolveStopScheduleConflicts(s));
 
-    window.GLOBETROTTER_STATE.stops.push(newStop);
-    window.GLOBETROTTER_STATE.activeTargetStopId = newStop.id;
-    saveCurrentTripState();
+        renderItineraryBuilderStops();
+        renderItineraryViewPage();
+        recalculateBudget();
+        updateTripReadiness();
+        syncCalendarView();
+        closeModal('addCityModal');
 
-    renderItineraryBuilderStops();
-    renderItineraryViewPage();
-    recalculateBudget();
-    updateTripReadiness();
-    closeModal('addCityModal');
-
-    showToast(`${cityName} added to itinerary`, 'success');
+        showToast(`${nameInput.value.trim()} added to itinerary`, 'success');
+    } catch (e) {
+        showToast(`Could not add city: ${e.message}`, 'error');
+    }
     return false;
 }
 
 // -------------------------------------------------------------
-// 2. MASTER ACTIVITY CATALOG & AI DISCOVERY HUB (API INTEGRATED)
+// 2. MASTER ACTIVITY CATALOG & AI DISCOVERY HUB (USPs)
 // -------------------------------------------------------------
 
 function renderActivitySearchCatalog() {
-    const tableBody = document.getElementById('activityCatalogTableBody');
     const citySelect = document.getElementById('activityCityFilter');
 
-    if (citySelect && citySelect.options.length <= 1) {
+    if (citySelect && typeof GLOBETROTTER_CITIES !== 'undefined') {
+        const previousValue = citySelect.value;
         while (citySelect.firstChild) {
             citySelect.removeChild(citySelect.firstChild);
         }
         GLOBETROTTER_CITIES.forEach(city => {
             const opt = document.createElement('option');
             opt.value = city.id;
-            opt.textContent = `${city.name} (${city.state})`;
+            opt.textContent = `${city.name} (${city.country})`;
             citySelect.appendChild(opt);
         });
+        if (GLOBETROTTER_CITIES.some(c => c.id === previousValue)) {
+            citySelect.value = previousValue;
+        }
     }
 
     filterActivityCatalogTable();
 }
 
-async function filterActivityCatalogTable() {
-    const cityFilter = document.getElementById('activityCityFilter')?.value || 'delhi';
+function filterActivityCatalogTable() {
+    const defaultCity = (typeof GLOBETROTTER_CITIES !== 'undefined' && GLOBETROTTER_CITIES[0]) ? GLOBETROTTER_CITIES[0].id : '';
+    const cityFilter = document.getElementById('activityCityFilter')?.value || defaultCity;
     const catFilter = document.getElementById('activityCategoryFilter')?.value || '';
     const budgetFilter = document.getElementById('activityBudgetFilter')?.value || '';
     const windowFilter = document.getElementById('activityWindowFilter')?.value || '';
@@ -646,10 +533,29 @@ async function filterActivityCatalogTable() {
         tableBody.removeChild(tableBody.firstChild);
     }
 
-    // Call API fetch client with city-specific filter
-    const filtered = await fetchActivitiesFromAPI(cityFilter, searchQuery, catFilter, budgetFilter, windowFilter);
+    const cityActivities = getActivitiesByCityId(cityFilter);
 
-    if (!filtered || filtered.length === 0) {
+    const filtered = cityActivities.filter((act) => {
+        const matchesCat = !catFilter || act.category === catFilter;
+        const matchesSearch = !searchQuery || act.name.toLowerCase().includes(searchQuery) || act.description.toLowerCase().includes(searchQuery);
+
+        let matchesBudget = true;
+        if (budgetFilter === 'free') matchesBudget = act.cost === 0;
+        else if (budgetFilter === '500') matchesBudget = act.cost <= 500;
+        else if (budgetFilter === '1500') matchesBudget = act.cost <= 1500;
+
+        let matchesWindow = true;
+        if (windowFilter) {
+            const mins = parseTimeToMinutes(act.preferredTime || "09:00 AM");
+            if (windowFilter === 'morning') matchesWindow = mins < 720;
+            else if (windowFilter === 'evening') matchesWindow = mins >= 960 && mins <= 1140;
+            else if (windowFilter === 'night') matchesWindow = mins > 1140;
+        }
+
+        return matchesCat && matchesSearch && matchesBudget && matchesWindow;
+    });
+
+    if (filtered.length === 0) {
         const row = document.createElement('tr');
         const td = document.createElement('td');
         td.colSpan = 6;
@@ -665,7 +571,6 @@ async function filterActivityCatalogTable() {
         const row = document.createElement('tr');
 
         const tdName = document.createElement('td');
-        
         const titleLine = document.createElement('div');
         titleLine.style.cssText = "display: flex; align-items: center; gap: 8px; flex-wrap: wrap;";
 
@@ -674,7 +579,7 @@ async function filterActivityCatalogTable() {
         strong.textContent = act.name;
         titleLine.appendChild(strong);
 
-        const matchScores = ["98% AI Match", "96% AI Match", "94% AI Match", "⭐ Top Rated"];
+        const matchScores = ["98% AI Match", "96% AI Match", "94% AI Match", "Top Rated"];
         const matchScore = matchScores[idx % matchScores.length];
         const matchBadge = document.createElement('span');
         matchBadge.className = 'badge badge-success';
@@ -706,7 +611,7 @@ async function filterActivityCatalogTable() {
         const tdDest = document.createElement('td');
         const cityObj = getCityById(act.cityId);
         tdDest.style.cssText = "font-size: 13px; font-weight: 600;";
-        tdDest.textContent = cityObj ? `${cityObj.name}, ${cityObj.state}` : (act.cityName || act.cityId);
+        tdDest.textContent = cityObj ? `${cityObj.name}, ${cityObj.country}` : act.cityId;
 
         const tdCat = document.createElement('td');
         const badge = document.createElement('span');
@@ -720,7 +625,7 @@ async function filterActivityCatalogTable() {
         durText.textContent = act.duration;
         const timeText = document.createElement('div');
         timeText.style.cssText = "color: var(--muted); font-size: 11px;";
-        timeText.textContent = `Slot: ${act.preferredTime || '09:00 AM'}`;
+        timeText.textContent = `Slot: ${act.preferredTime || 'Flexible'}`;
         tdDur.appendChild(durText);
         tdDur.appendChild(timeText);
 
@@ -749,21 +654,31 @@ async function filterActivityCatalogTable() {
 }
 
 function openAddActivityModalWithData(cityId, activityId, targetStopId) {
+    if (!window.GLOBETROTTER_TRIP_ID || window.GLOBETROTTER_STATE.stops.length === 0) {
+        showToast('Add a city stop to your trip before scheduling activities.', 'error');
+        return;
+    }
+
     if (targetStopId) {
         window.GLOBETROTTER_STATE.activeTargetStopId = targetStopId;
     }
 
     let activeStop = window.GLOBETROTTER_STATE.stops.find(s => s.id === window.GLOBETROTTER_STATE.activeTargetStopId);
-    if (!activeStop && window.GLOBETROTTER_STATE.stops.length > 0) {
+    if (!activeStop) {
         activeStop = window.GLOBETROTTER_STATE.stops[0];
         window.GLOBETROTTER_STATE.activeTargetStopId = activeStop.id;
     }
 
-    const effectiveCityId = cityId || (activeStop ? activeStop.cityId : 'delhi');
-    const city = getCityById(effectiveCityId) || GLOBETROTTER_CITIES[0];
+    const fallbackCityId = (typeof GLOBETROTTER_CITIES !== 'undefined' && GLOBETROTTER_CITIES[0]) ? GLOBETROTTER_CITIES[0].id : null;
+    const effectiveCityId = cityId || activeStop.cityId || fallbackCityId;
+    const city = getCityById(effectiveCityId);
+    if (!city) {
+        showToast('No catalog data available for this city yet.', 'error');
+        return;
+    }
 
     const dateSelect = document.getElementById('modalActivityDate');
-    if (dateSelect && activeStop) {
+    if (dateSelect) {
         while (dateSelect.firstChild) {
             dateSelect.removeChild(dateSelect.firstChild);
         }
@@ -776,13 +691,12 @@ function openAddActivityModalWithData(cityId, activityId, targetStopId) {
         });
     }
 
-    let suggestedStartTime = "09:00 AM";
     const timeInput = document.getElementById('modalActivityTime');
-    if (timeInput) timeInput.value = suggestedStartTime;
+    if (timeInput) timeInput.value = "09:00";
 
     const badgeElem = document.getElementById('activityModalCityBadge');
     if (badgeElem) {
-        badgeElem.textContent = `📍 Target Stop: ${activeStop ? activeStop.cityName : city.name} (${activeStop ? activeStop.startDate + ' to ' + activeStop.endDate : ''})`;
+        badgeElem.textContent = `Target Stop: ${activeStop.cityName} (${activeStop.startDate} to ${activeStop.endDate})`;
     }
 
     const selectElem = document.getElementById('modalActivitySelect');
@@ -835,7 +749,6 @@ function onActivitySelectChange(activityId) {
     const catInput = document.getElementById('modalActivityCategory');
     const durInput = document.getElementById('modalActivityDuration');
     const descInput = document.getElementById('modalActivityDesc');
-    const timeInput = document.getElementById('modalActivityTime');
 
     if (nameInput) nameInput.value = targetAct.name;
     if (costInput) costInput.value = targetAct.cost;
@@ -843,38 +756,22 @@ function onActivitySelectChange(activityId) {
     if (durInput) durInput.value = targetAct.duration;
     if (descInput) descInput.value = targetAct.description;
 
-    if (timeInput && targetAct.preferredTime) {
-        timeInput.value = targetAct.preferredTime;
-    }
-
     clearFieldError(nameInput);
     clearFieldError(costInput);
 }
 
-function handleAddActivitySubmit(event) {
+async function handleAddActivitySubmit(event) {
     if (event) event.preventDefault();
 
-    const nameInput = document.getElementById('modalActivityName');
-    const costInput = document.getElementById('modalActivityCost');
+    const selectElem = document.getElementById('modalActivitySelect');
     const dateInput = document.getElementById('modalActivityDate');
     const timeInput = document.getElementById('modalActivityTime');
-    const catInput = document.getElementById('modalActivityCategory');
-    const durInput = document.getElementById('modalActivityDuration');
 
-    clearFieldError(nameInput);
-    clearFieldError(costInput);
-
-    let isValid = true;
-    if (!nameInput.value.trim()) {
-        setFieldError(nameInput, 'Activity name is required');
-        isValid = false;
+    const activityId = selectElem ? selectElem.value : '';
+    if (!activityId) {
+        showToast('Please select an activity from the catalog dropdown.', 'error');
+        return false;
     }
-    if (costInput.value === "" || parseFloat(costInput.value) < 0) {
-        setFieldError(costInput, 'Please enter a valid cost');
-        isValid = false;
-    }
-
-    if (!isValid) return false;
 
     let targetStop = window.GLOBETROTTER_STATE.stops.find(s => s.id === window.GLOBETROTTER_STATE.activeTargetStopId);
     if (!targetStop && window.GLOBETROTTER_STATE.stops.length > 0) {
@@ -887,46 +784,29 @@ function handleAddActivitySubmit(event) {
     }
 
     const selectedDate = dateInput ? dateInput.value : targetStop.startDate;
-    const timeVal = timeInput.value || "09:00 AM";
-    const actName = nameInput.value.trim();
+    const selectedTime = timeInput && timeInput.value ? timeInput.value : '09:00';
 
-    let matchedCatalogAct = null;
-    GLOBETROTTER_CITIES.forEach(c => {
-        const found = c.activities.find(a => a.name.toLowerCase() === actName.toLowerCase());
-        if (found) matchedCatalogAct = found;
-    });
+    try {
+        await apiRequest('POST', `/api/travel/stops/${targetStop.id}/activities/add/`, {
+            activity_id: activityId,
+            scheduled_date: selectedDate,
+            scheduled_time: selectedTime,
+        });
 
-    const isFixed = matchedCatalogAct ? !!matchedCatalogAct.fixedSlot : false;
-    const prefTime = matchedCatalogAct ? matchedCatalogAct.preferredTime : null;
+        await hydrateStateFromServer();
+        window.GLOBETROTTER_STATE.activeTargetStopId = targetStop.id;
+        window.GLOBETROTTER_STATE.stops.forEach(s => resolveStopScheduleConflicts(s));
 
-    const newActivity = {
-        id: `act-${Date.now()}`,
-        activityId: `custom-${Date.now()}`,
-        name: actName,
-        category: catInput ? catInput.value : 'Sightseeing',
-        cost: parseFloat(costInput.value),
-        date: selectedDate,
-        time: timeVal,
-        duration: durInput ? durInput.value : '2.0 Hours',
-        fixedSlot: isFixed,
-        preferredTime: prefTime
-    };
+        renderItineraryBuilderStops();
+        renderItineraryViewPage();
+        recalculateBudget();
+        updateTripReadiness();
+        syncCalendarView();
+        closeModal('addActivityModal');
 
-    targetStop.activities.push(newActivity);
-    const wasShifted = resolveStopScheduleConflicts(targetStop);
-    saveCurrentTripState();
-
-    renderItineraryBuilderStops();
-    renderItineraryViewPage();
-    recalculateBudget();
-    updateTripReadiness();
-    syncCalendarView();
-    closeModal('addActivityModal');
-
-    if (wasShifted) {
-        showToast(`⏱️ "${newActivity.name}" added on ${formatDateToReadable(selectedDate)}. Daily schedule auto-adjusted to prevent overlap.`, 'info');
-    } else {
-        showToast(`✓ Added "${newActivity.name}" to ${targetStop.cityName} on ${formatDateToReadable(selectedDate)} (${newActivity.time})`, 'success');
+        showToast(`Added activity to ${targetStop.cityName} on ${formatDateToReadable(selectedDate)}`, 'success');
+    } catch (e) {
+        showToast(`Could not add activity: ${e.message}`, 'error');
     }
 
     return false;
@@ -945,7 +825,7 @@ function renderItineraryViewPage() {
     if (!container && !titleElem) return;
 
     const state = window.GLOBETROTTER_STATE;
-    const cityNames = state.stops.map(s => s.cityName).join(" ➔ ");
+    const cityNames = state.stops.map(s => s.cityName).join(" → ") || "No stops yet";
     let totalActs = 0;
     let totalActCost = 0;
 
@@ -956,25 +836,29 @@ function renderItineraryViewPage() {
         });
     });
 
-    let totalExpenseCost = 0;
-    state.expenses.forEach(e => {
-        totalExpenseCost += e.amount;
-    });
-
-    const grandTotalSpent = totalActCost + totalExpenseCost;
-
     if (titleElem) titleElem.textContent = state.trip.title;
     if (routeSubtitleElem) {
-        routeSubtitleElem.textContent = `📍 ${cityNames} • ${state.trip.startDate} to ${state.trip.endDate}`;
+        routeSubtitleElem.textContent = `${cityNames} • ${state.trip.startDate || 'TBD'} to ${state.trip.endDate || 'TBD'}`;
     }
 
     if (overviewStatsElem) {
-        overviewStatsElem.textContent = `${state.stops.length} Destination Stops • ${totalActs} Scheduled Activities • ₹${grandTotalSpent.toLocaleString()} Budget`;
+        overviewStatsElem.textContent = `${state.stops.length} Destination Stops • ${totalActs} Scheduled Activities • ₹${totalActCost.toLocaleString()} Activity Spend`;
     }
 
     if (container) {
         while (container.firstChild) {
             container.removeChild(container.firstChild);
+        }
+
+        if (state.stops.length === 0) {
+            const empty = document.createElement('div');
+            empty.className = 'card';
+            empty.style.cssText = "text-align: center; padding: 32px; color: var(--muted);";
+            empty.textContent = window.GLOBETROTTER_TRIP_ID
+                ? 'No stops added yet. Head to the Itinerary Builder to add cities and activities.'
+                : 'No trip selected. Create a trip to see its itinerary here.';
+            container.appendChild(empty);
+            return;
         }
 
         state.stops.forEach((stop, index) => {
@@ -1024,7 +908,7 @@ function renderItineraryViewPage() {
 
                 const dayHeader = document.createElement('div');
                 dayHeader.style.cssText = "font-weight: 700; font-size: 14px; color: var(--dark); margin-bottom: 8px; display: flex; justify-content: space-between;";
-                dayHeader.textContent = `📅 Day ${dIdx + 1} — ${formatDateToReadable(dStr)}`;
+                dayHeader.textContent = `Day ${dIdx + 1} — ${formatDateToReadable(dStr)}`;
 
                 const dayActs = stop.activities.filter(a => a.date === dStr);
 
@@ -1104,6 +988,15 @@ function renderItineraryBuilderStops() {
             listElem.removeChild(listElem.firstChild);
         }
 
+        if (window.GLOBETROTTER_STATE.stops.length === 0) {
+            const empty = document.createElement('div');
+            empty.style.cssText = "padding: 12px; color: var(--muted); font-size: 12px; font-style: italic;";
+            empty.textContent = window.GLOBETROTTER_TRIP_ID
+                ? 'No cities yet — click "+ Add City" to start building your itinerary.'
+                : 'Create a trip first to start adding cities.';
+            listElem.appendChild(empty);
+        }
+
         window.GLOBETROTTER_STATE.stops.forEach((stop, index) => {
             const isActive = activeStop && stop.id === activeStop.id;
 
@@ -1113,21 +1006,20 @@ function renderItineraryBuilderStops() {
             cityDiv.dataset.stopId = stop.id;
             cityDiv.dataset.index = index;
             cityDiv.style.cssText = `padding: 10px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; margin-top: 8px; ${
-                isActive 
+                isActive
                 ? 'background: var(--primary-light); border-left: 4px solid var(--primary); border-top: 1px solid var(--border); border-right: 1px solid var(--border); border-bottom: 1px solid var(--border);'
                 : 'background: white; border: 1px solid var(--border);'
             }`;
 
             cityDiv.addEventListener('click', () => {
                 window.GLOBETROTTER_STATE.activeTargetStopId = stop.id;
-                saveCurrentTripState();
                 renderItineraryBuilderStops();
             });
 
             const left = document.createElement('div');
             const dragIcon = document.createElement('span');
             dragIcon.style.cssText = "margin-right: 8px; color: var(--muted); font-size: 14px; cursor: grab;";
-            dragIcon.textContent = "☰";
+            dragIcon.textContent = "";
 
             const strong = document.createElement('strong');
             strong.style.color = isActive ? 'var(--primary-dark)' : 'var(--dark)';
@@ -1191,7 +1083,7 @@ function renderItineraryBuilderStops() {
             }`;
 
             const title = document.createElement('span');
-            title.textContent = `📍 Destination Stop: ${stop.cityName} (${stop.stateName})`;
+            title.textContent = `Destination Stop: ${stop.cityName} (${stop.stateName})`;
 
             const rightBox = document.createElement('div');
             rightBox.style.cssText = "display: flex; gap: 10px; align-items: center;";
@@ -1225,9 +1117,9 @@ function renderItineraryBuilderStops() {
 
                 const dayHeader = document.createElement('div');
                 dayHeader.style.cssText = "font-weight: 700; font-size: 14px; color: var(--dark); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 6px;";
-                
+
                 const dayTitle = document.createElement('span');
-                dayTitle.textContent = `📅 Day ${dIdx + 1} — ${formatDateToReadable(dStr)}`;
+                dayTitle.textContent = `Day ${dIdx + 1} — ${formatDateToReadable(dStr)}`;
 
                 const dayAddBtn = document.createElement('button');
                 dayAddBtn.className = 'btn btn-secondary btn-sm';
@@ -1251,20 +1143,10 @@ function renderItineraryBuilderStops() {
                     emptyItem.textContent = `No activities planned for Day ${dIdx + 1}. Click "+ Add to Day" to schedule tours.`;
                     dayBox.appendChild(emptyItem);
                 } else {
-                    dayActs.forEach((act, actIdx) => {
+                    dayActs.forEach((act) => {
                         const item = document.createElement('div');
                         item.className = 'timeline-item';
-                        item.setAttribute('draggable', 'true');
-                        item.dataset.actId = act.id;
-                        item.dataset.stopId = stop.id;
-                        item.dataset.date = dStr;
-                        item.dataset.actIndex = actIdx;
-                        item.style.cssText = "cursor: move; position: relative; padding-left: 28px; margin-bottom: 12px;";
-
-                        const dragHandle = document.createElement('span');
-                        dragHandle.style.cssText = "position: absolute; left: 0; top: 0; color: var(--muted); cursor: grab; font-size: 14px;";
-                        dragHandle.textContent = "☰";
-                        item.appendChild(dragHandle);
+                        item.style.cssText = "position: relative; padding-left: 28px; margin-bottom: 12px;";
 
                         const startMins = parseTimeToMinutes(act.time);
                         const durMins = parseDurationToMinutes(act.duration);
@@ -1317,10 +1199,6 @@ function renderItineraryBuilderStops() {
                         item.appendChild(metaDiv);
                         item.appendChild(actionDiv);
 
-                        item.addEventListener('dragstart', handleActDragStart);
-                        item.addEventListener('dragover', handleActDragOver);
-                        item.addEventListener('drop', handleActDrop);
-
                         dayBox.appendChild(item);
                     });
                 }
@@ -1331,7 +1209,7 @@ function renderItineraryBuilderStops() {
     }
 }
 
-// Drag & Drop Handler Functions for City Stops
+// Drag & Drop Handler Functions for City Stops (persisted via the real API)
 let draggedStopIndex = null;
 
 function handleStopDragStart(e) {
@@ -1344,7 +1222,7 @@ function handleStopDragOver(e) {
     return false;
 }
 
-function handleStopDrop(e) {
+async function handleStopDrop(e) {
     if (e.stopPropagation) e.stopPropagation();
 
     const targetIndex = parseInt(this.dataset.index);
@@ -1352,194 +1230,63 @@ function handleStopDrop(e) {
         const stops = window.GLOBETROTTER_STATE.stops;
         const [moved] = stops.splice(draggedStopIndex, 1);
         stops.splice(targetIndex, 0, moved);
-        saveCurrentTripState();
-
         renderItineraryBuilderStops();
+
+        try {
+            await apiRequest('POST', `/api/travel/trips/${window.GLOBETROTTER_TRIP_ID}/stops/reorder/`, {
+                order: stops.map(s => s.id).join(','),
+            });
+            showToast('Destination stop order updated', 'success');
+        } catch (err) {
+            showToast(`Could not save new order: ${err.message}`, 'error');
+            await hydrateStateFromServer();
+            renderItineraryBuilderStops();
+        }
+
         renderItineraryViewPage();
         syncCalendarView();
-        showToast('✓ Destination stop order updated', 'success');
-    }
-    return false;
-}
-
-// Drag & Drop Handler Functions for Sub-Activities within/between days
-let draggedActData = null;
-
-function handleActDragStart(e) {
-    draggedActData = {
-        stopId: this.dataset.stopId,
-        actId: this.dataset.actId,
-        date: this.dataset.date,
-        index: parseInt(this.dataset.actIndex)
-    };
-    e.dataTransfer.effectAllowed = 'move';
-}
-
-function handleActDragOver(e) {
-    if (e.preventDefault) e.preventDefault();
-    return false;
-}
-
-function handleActDrop(e) {
-    if (e.stopPropagation) e.stopPropagation();
-
-    const targetStopId = this.dataset.stopId;
-    const targetDate = this.dataset.date;
-    const targetIndex = parseInt(this.dataset.actIndex);
-
-    if (draggedActData && draggedActData.stopId === targetStopId && draggedActData.date === targetDate && draggedActData.index !== targetIndex) {
-        const stop = window.GLOBETROTTER_STATE.stops.find(s => s.id === targetStopId);
-        if (stop) {
-            const dayActs = stop.activities.filter(a => a.date === targetDate);
-            const [movedAct] = dayActs.splice(draggedActData.index, 1);
-            dayActs.splice(targetIndex, 0, movedAct);
-
-            resolveStopScheduleConflicts(stop);
-            saveCurrentTripState();
-
-            renderItineraryBuilderStops();
-            renderItineraryViewPage();
-            syncCalendarView();
-            showToast('✓ Sub-activity order rearranged', 'success');
-        }
     }
     return false;
 }
 
 function deleteCityStop(stopId) {
-    window.GLOBETROTTER_STATE.stops = window.GLOBETROTTER_STATE.stops.filter(s => s.id !== stopId);
-    if (window.GLOBETROTTER_STATE.activeTargetStopId === stopId) {
-        window.GLOBETROTTER_STATE.activeTargetStopId = window.GLOBETROTTER_STATE.stops[0]?.id || null;
-    }
-    saveCurrentTripState();
+    apiRequest('POST', `/api/travel/stops/${stopId}/delete/`)
+        .then(async () => {
+            await hydrateStateFromServer();
+            window.GLOBETROTTER_STATE.stops.forEach(s => resolveStopScheduleConflicts(s));
 
-    renderItineraryBuilderStops();
-    renderItineraryViewPage();
-    recalculateBudget();
-    updateTripReadiness();
-    syncCalendarView();
-    showToast('City stop removed', 'warning');
+            renderItineraryBuilderStops();
+            renderItineraryViewPage();
+            recalculateBudget();
+            updateTripReadiness();
+            syncCalendarView();
+            showToast('City stop removed', 'warning');
+        })
+        .catch(e => showToast(`Could not remove stop: ${e.message}`, 'error'));
 }
 
 function deleteActivityFromStop(stopId, actId) {
-    const stop = window.GLOBETROTTER_STATE.stops.find(s => s.id === stopId);
-    if (stop) {
-        stop.activities = stop.activities.filter(a => a.id !== actId);
-        resolveStopScheduleConflicts(stop);
-        saveCurrentTripState();
+    apiRequest('POST', `/api/travel/trip-activities/${actId}/delete/`)
+        .then(async () => {
+            await hydrateStateFromServer();
+            window.GLOBETROTTER_STATE.activeTargetStopId = stopId;
+            window.GLOBETROTTER_STATE.stops.forEach(s => resolveStopScheduleConflicts(s));
 
-        renderItineraryBuilderStops();
-        renderItineraryViewPage();
-        recalculateBudget();
-        updateTripReadiness();
-        syncCalendarView();
-        showToast('Activity removed', 'warning');
-    }
+            renderItineraryBuilderStops();
+            renderItineraryViewPage();
+            recalculateBudget();
+            updateTripReadiness();
+            syncCalendarView();
+            showToast('Activity removed', 'warning');
+        })
+        .catch(e => showToast(`Could not remove activity: ${e.message}`, 'error'));
 }
 
 // -------------------------------------------------------------
-// 4. DYNAMIC BUDGET RECALCULATION & EXPENSES
+// 4. BUDGET SUMMARY WIDGET (full breakdown lives on the
+//    server-rendered budget.html; this just keeps the readiness
+//    widget and any inline stat elements in sync where present)
 // -------------------------------------------------------------
-
-function handleAddExpenseSubmit(event) {
-    if (event) event.preventDefault();
-
-    const nameInput = document.getElementById('modalExpenseName');
-    const amountInput = document.getElementById('modalExpenseAmount');
-    const catInput = document.getElementById('modalExpenseCategory');
-
-    clearFieldError(nameInput);
-    clearFieldError(amountInput);
-
-    let isValid = true;
-    if (!nameInput.value.trim()) {
-        setFieldError(nameInput, 'Expense description is required');
-        isValid = false;
-    }
-    if (!amountInput.value || parseFloat(amountInput.value) < 0) {
-        setFieldError(amountInput, 'Enter a valid positive amount');
-        isValid = false;
-    }
-
-    if (!isValid) return false;
-
-    const newExpense = {
-        id: `exp-${Date.now()}`,
-        name: nameInput.value.trim(),
-        amount: parseFloat(amountInput.value),
-        category: catInput ? catInput.value : 'Other',
-        date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    };
-
-    window.GLOBETROTTER_STATE.expenses.push(newExpense);
-    saveCurrentTripState();
-
-    renderExpenseTable();
-    recalculateBudget();
-    updateTripReadiness();
-    closeModal('addExpenseModal');
-
-    showToast('Expense added successfully!', 'success');
-    return false;
-}
-
-function renderExpenseTable() {
-    const tableBody = document.getElementById('expenseTableBody');
-    if (!tableBody) return;
-
-    while (tableBody.firstChild) {
-        tableBody.removeChild(tableBody.firstChild);
-    }
-
-    window.GLOBETROTTER_STATE.expenses.forEach(exp => {
-        const row = document.createElement('tr');
-
-        const tdName = document.createElement('td');
-        tdName.textContent = exp.name;
-
-        const tdCat = document.createElement('td');
-        const badge = document.createElement('span');
-        badge.className = 'badge badge-primary';
-        badge.textContent = exp.category;
-        tdCat.appendChild(badge);
-
-        const tdDate = document.createElement('td');
-        tdDate.textContent = exp.date;
-
-        const tdAmount = document.createElement('td');
-        tdAmount.textContent = `₹${exp.amount.toLocaleString()}`;
-
-        const tdAction = document.createElement('td');
-        const deleteBtn = document.createElement('button');
-        deleteBtn.className = 'btn btn-danger btn-sm';
-        deleteBtn.style.cssText = "padding: 2px 8px; font-size: 11px;";
-        deleteBtn.textContent = 'Delete';
-        deleteBtn.addEventListener('click', () => {
-            triggerDeleteConfirmation('Expense', exp.name, () => {
-                deleteExpenseItem(exp.id);
-            });
-        });
-        tdAction.appendChild(deleteBtn);
-
-        row.appendChild(tdName);
-        row.appendChild(tdCat);
-        row.appendChild(tdDate);
-        row.appendChild(tdAmount);
-        row.appendChild(tdAction);
-
-        tableBody.appendChild(row);
-    });
-}
-
-function deleteExpenseItem(expId) {
-    window.GLOBETROTTER_STATE.expenses = window.GLOBETROTTER_STATE.expenses.filter(e => e.id !== expId);
-    saveCurrentTripState();
-
-    renderExpenseTable();
-    recalculateBudget();
-    updateTripReadiness();
-    showToast('Expense deleted', 'warning');
-}
 
 function recalculateBudget() {
     let activityTotal = 0;
@@ -1549,17 +1296,10 @@ function recalculateBudget() {
         });
     });
 
-    let expenseTotal = 0;
-    window.GLOBETROTTER_STATE.expenses.forEach(e => {
-        expenseTotal += e.amount;
-    });
-
-    const totalSpent = activityTotal + expenseTotal;
-    const targetBudget = window.GLOBETROTTER_STATE.trip.targetBudget;
+    const totalSpent = activityTotal;
+    const targetBudget = window.GLOBETROTTER_STATE.trip.targetBudget || 0;
     const remaining = targetBudget - totalSpent;
-    const durationDays = 8;
-    const avgPerDay = Math.round(totalSpent / durationDays);
-    const utilPercent = Math.min(Math.round((totalSpent / targetBudget) * 100), 100);
+    const utilPercent = targetBudget > 0 ? Math.min(Math.round((totalSpent / targetBudget) * 100), 100) : 0;
 
     const totalAllocElem = document.getElementById('statTotalAllocated');
     if (totalAllocElem) totalAllocElem.textContent = `₹${targetBudget.toLocaleString()}`;
@@ -1573,23 +1313,8 @@ function recalculateBudget() {
         remainingElem.style.color = remaining < 0 ? 'var(--danger)' : 'var(--success)';
     }
 
-    const avgElem = document.getElementById('statAvgPerDay');
-    if (avgElem) avgElem.textContent = `₹${avgPerDay.toLocaleString()}`;
-
     const progressBar = document.getElementById('budgetProgressBar');
     if (progressBar) progressBar.style.width = `${utilPercent}%`;
-
-    const statusBadge = document.getElementById('budgetStatusBadge');
-    if (statusBadge) {
-        if (remaining < 0) {
-            statusBadge.className = 'badge badge-danger';
-            statusBadge.textContent = 'Over Budget';
-            showToast(`⚠ Target budget exceeded by ₹${Math.abs(remaining).toLocaleString()}`, 'warning');
-        } else {
-            statusBadge.className = 'badge badge-success';
-            statusBadge.textContent = 'Within Limit';
-        }
-    }
 }
 
 // -------------------------------------------------------------
@@ -1607,8 +1332,7 @@ function updateTripReadiness() {
     });
     if (hasActivities) score += 20;
 
-    if (window.GLOBETROTTER_STATE.expenses.length > 0 || hasActivities) score += 20;
-
+    if (hasActivities) score += 20;
     if (window.GLOBETROTTER_STATE.trip.shareToken) score += 20;
 
     const readinessBar = document.getElementById('tripReadinessProgressBar');
@@ -1638,7 +1362,7 @@ function syncCalendarView() {
 
             const header = document.createElement('div');
             header.style.cssText = "display: flex; justify-content: space-between; font-weight: 700; color: var(--dark);";
-            header.textContent = `📍 ${stop.cityName} — ${act.name}`;
+            header.textContent = `${stop.cityName} — ${act.name}`;
 
             const badge = document.createElement('span');
             badge.className = 'badge badge-primary';

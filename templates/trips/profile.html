@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load icons %}
 
 {% block title %}Profile & Settings | GlobeTrotter{% endblock %}
 
@@ -32,7 +33,7 @@
                     <div style="font-size: 11px; color: var(--muted);">Cities</div>
                 </div>
                 <div>
-                    <div style="font-size: 18px; font-weight: 700; color: var(--dark);">{{ stats.spent }}</div>
+                    <div style="font-size: 18px; font-weight: 700; color: var(--dark);">₹{{ stats.spent }}</div>
                     <div style="font-size: 11px; color: var(--muted);">Spent</div>
                 </div>
             </div>
@@ -42,7 +43,7 @@
     <!-- Right Column: Profile Edit Form (2 cols) -->
     <div style="grid-column: span 2;">
         <div class="card">
-            <div class="card-title" style="margin-bottom: 20px;">Edit Account Information</div>
+            <div class="card-title" style="margin-bottom: 20px;">{% icon "edit-2" size=16 %}Edit Account Information</div>
 
             <form method="POST" action="{% url 'profile' %}">
                 {% csrf_token %}

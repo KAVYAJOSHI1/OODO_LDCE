@@ -1,11 +1,12 @@
 {% extends "base.html" %}
+{% load icons %}
 
 {% block title %}Calendar & Schedule | GlobeTrotter{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">📅 Travel Calendar & Schedule</h1>
+        <h1 class="page-title">Travel Calendar & Schedule</h1>
         {% if trip %}
         <p class="page-subtitle">{{ trip.name }} — day-by-day schedule of every planned activity.</p>
         {% else %}
@@ -20,7 +21,7 @@
     <div class="card">
         <div class="card-header">
             <div>
-                <div class="card-title">📅 Day {{ day.day_number }} — {{ day.date }}</div>
+                <div class="card-title">{% icon "calendar" size=16 %}Day {{ day.day_number }} — {{ day.date }}</div>
                 <div class="card-subtitle">{{ day.city|default:"No stop scheduled" }}{% if day.country %}, {{ day.country }}{% endif %}</div>
             </div>
             <span class="badge badge-primary">₹{{ day.day_cost }}</span>
@@ -31,7 +32,7 @@
             <div class="timeline-item">
                 <div class="timeline-time">{{ act.scheduled_time|default:"Unscheduled" }}{% if act.end_time %} – {{ act.end_time }}{% endif %}</div>
                 <div class="timeline-title">{{ act.activity.name }}</div>
-                <div class="timeline-meta">{{ act.activity.type_display }} • {{ act.activity.duration_hours }}h • Est: {{ act.cost }}</div>
+                <div class="timeline-meta">{{ act.activity.type_display }} • {{ act.activity.duration_hours }}h • Est: ₹{{ act.cost }}</div>
             </div>
             {% endfor %}
         </div>

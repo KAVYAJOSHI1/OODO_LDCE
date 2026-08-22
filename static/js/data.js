@@ -11,7 +11,7 @@ let GLOBETROTTER_CITIES = [
         country: "India",
         region: "West India",
         costIndex: "Medium",
-        popularity: "🔥🔥🔥🔥",
+        popularity: "80",
         activitiesCount: 8,
         activities: [
             { id: "goa-baga", cityId: "goa", name: "Baga Beach Sunset & Shacks", category: "Sightseeing", cost: 0, duration: "2.0 Hours", preferredTime: "05:00 PM", fixedSlot: true, description: "Relax and enjoy Goa's famous beach coastline during sunset hours." },
@@ -31,7 +31,7 @@ let GLOBETROTTER_CITIES = [
         country: "India",
         region: "West India",
         costIndex: "High",
-        popularity: "🔥🔥🔥🔥🔥",
+        popularity: "95",
         activitiesCount: 8,
         activities: [
             { id: "mumbai-gateway", cityId: "mumbai", name: "Gateway of India", category: "Heritage & Monuments", cost: 0, duration: "1.5 Hours", preferredTime: "09:00 AM", fixedSlot: false, description: "Iconic arch monument built during the 20th century in Mumbai." },
@@ -51,7 +51,7 @@ let GLOBETROTTER_CITIES = [
         country: "India",
         region: "North India",
         costIndex: "Medium",
-        popularity: "🔥🔥🔥🔥🔥",
+        popularity: "95",
         activitiesCount: 8,
         activities: [
             { id: "delhi-india-gate", cityId: "delhi", name: "India Gate & Kartavya Path", category: "Heritage & Monuments", cost: 0, duration: "1.5 Hours", preferredTime: "05:00 PM", fixedSlot: false, description: "War memorial located astride the Rajpath in New Delhi." },
@@ -71,7 +71,7 @@ let GLOBETROTTER_CITIES = [
         country: "India",
         region: "North India",
         costIndex: "Medium",
-        popularity: "🔥🔥🔥🔥",
+        popularity: "80",
         activitiesCount: 8,
         activities: [
             { id: "jaipur-amer-fort", cityId: "jaipur", name: "Amer Fort Jeep Safari", category: "Heritage & Monuments", cost: 1500, duration: "3.5 Hours", preferredTime: "09:00 AM", fixedSlot: true, description: "Majestic hilltop fort known for its Hindu artistic elements and Sheesh Mahal." },
@@ -91,7 +91,7 @@ let GLOBETROTTER_CITIES = [
         country: "India",
         region: "North India",
         costIndex: "Medium",
-        popularity: "🔥🔥🔥🔥🔥",
+        popularity: "95",
         activitiesCount: 6,
         activities: [
             { id: "agra-taj-mahal", cityId: "agra", name: "Taj Mahal Sunrise Guided Tour", category: "Heritage & Monuments", cost: 1200, duration: "3.0 Hours", preferredTime: "06:00 AM", fixedSlot: true, description: "World-famous ivory-white marble mausoleum during early morning sunrise slot." },
@@ -109,7 +109,7 @@ let GLOBETROTTER_CITIES = [
         country: "India",
         region: "West India",
         costIndex: "Low",
-        popularity: "🔥🔥🔥🔥",
+        popularity: "80",
         activitiesCount: 7,
         activities: [
             { id: "ahmedabad-sabarmati-ashram", cityId: "ahmedabad", name: "Sabarmati Ashram Tour", category: "Heritage & Monuments", cost: 0, duration: "2.0 Hours", preferredTime: "09:00 AM", fixedSlot: false, description: "Mahatma Gandhi's headquarters during the Indian independence movement." },
@@ -128,7 +128,7 @@ let GLOBETROTTER_CITIES = [
         country: "India",
         region: "North India",
         costIndex: "Medium",
-        popularity: "🔥🔥🔥🔥",
+        popularity: "80",
         activitiesCount: 6,
         activities: [
             { id: "udaipur-city-palace", cityId: "udaipur", name: "Udaipur City Palace Museum", category: "Heritage & Monuments", cost: 400, duration: "3.0 Hours", preferredTime: "09:30 AM", fixedSlot: false, description: "Palace complex built over 400 years with panoramic views of Lake Pichola." },
@@ -146,7 +146,7 @@ let GLOBETROTTER_CITIES = [
         country: "India",
         region: "South India",
         costIndex: "High",
-        popularity: "🔥🔥🔥🔥",
+        popularity: "80",
         activitiesCount: 7,
         activities: [
             { id: "bengaluru-palace", cityId: "bengaluru", name: "Bangalore Palace Tour", category: "Heritage & Monuments", cost: 480, duration: "2.5 Hours", preferredTime: "10:00 AM", fixedSlot: false, description: "Tudor-style castle built by King Chamaraja Wodeyar in 1887." },
@@ -165,7 +165,7 @@ let GLOBETROTTER_CITIES = [
         country: "France",
         region: "Europe",
         costIndex: "High",
-        popularity: "🔥🔥🔥🔥🔥",
+        popularity: "95",
         activitiesCount: 6,
         activities: [
             { id: "paris-eiffel-tower", cityId: "paris", name: "Eiffel Tower Summit Ticket", category: "Sightseeing", cost: 2800, duration: "3.0 Hours", preferredTime: "10:00 AM", fixedSlot: true, description: "Iconic wrought-iron lattice tower on the Champ de Mars." },
@@ -183,7 +183,7 @@ let GLOBETROTTER_CITIES = [
         country: "United Arab Emirates",
         region: "Middle East",
         costIndex: "High",
-        popularity: "🔥🔥🔥🔥🔥",
+        popularity: "95",
         activitiesCount: 7,
         activities: [
             { id: "dubai-burj-khalifa", cityId: "dubai", name: "Burj Khalifa 124th Floor Deck", category: "Sightseeing", cost: 4500, duration: "2.5 Hours", preferredTime: "04:30 PM", fixedSlot: true, description: "World's tallest skyscraper offering prime sunset views of Dubai skyline." },
@@ -202,7 +202,7 @@ let GLOBETROTTER_CITIES = [
         country: "Japan",
         region: "East Asia",
         costIndex: "High",
-        popularity: "🔥🔥🔥🔥🔥",
+        popularity: "95",
         activitiesCount: 6,
         activities: [
             { id: "tokyo-skytree", cityId: "tokyo", name: "Tokyo Skytree Observation Deck", category: "Sightseeing", cost: 2100, duration: "2.0 Hours", preferredTime: "04:30 PM", fixedSlot: true, description: "Tallest structure in Japan with 360-degree observation deck at sunset." },
@@ -220,7 +220,7 @@ let GLOBETROTTER_CITIES = [
         country: "Singapore",
         region: "Southeast Asia",
         costIndex: "High",
-        popularity: "🔥🔥🔥🔥🔥",
+        popularity: "95",
         activitiesCount: 6,
         activities: [
             { id: "singapore-mbs-skypark", cityId: "singapore", name: "Marina Bay Sands Skypark Deck", category: "Sightseeing", cost: 2200, duration: "2.0 Hours", preferredTime: "05:00 PM", fixedSlot: true, description: "Observation deck sitting 57 levels above Singapore for sunset." },
@@ -276,7 +276,7 @@ async function fetchCitiesFromAPI(query = '', costFilter = '') {
                     country: c.country || 'India',
                     region: c.region || c.country || 'Destination',
                     costIndex: c.cost_label || (c.cost_index >= 4 ? 'High' : (c.cost_index <= 2 ? 'Low' : 'Medium')),
-                    popularity: typeof c.popularity === 'number' ? `🔥 (${c.popularity})` : (c.popularity || '🔥🔥🔥🔥'),
+                    popularity: typeof c.popularity === 'number' ? c.popularity : (c.popularity || 50),
                     activitiesCount: c.activity_count || c.activities_count || (c.activities ? c.activities.length : 0),
                     activities: c.activities || []
                 }));

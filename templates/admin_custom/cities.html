@@ -1,4 +1,5 @@
 {% extends "admin_custom/base_admin.html" %}
+{% load icons %}
 
 {% block title %}Cities & Activities Studio — Custom Admin{% endblock %}
 {% block page_title %}Cities & Activities Studio{% endblock %}
@@ -8,11 +9,11 @@
 <div class="admin-card">
     <div class="admin-card-header">
         <div class="admin-card-title">
-            <span>🏙️</span> City Catalog Management
+            {% icon "building" size=18 %}City Catalog Management
         </div>
         <div style="display:flex; gap:10px;">
             <a href="{% url 'admin_api:export-cities' %}" class="admin-btn admin-btn-secondary">
-                <span>📥</span> Export Cities CSV
+                {% icon "download" size=16 %}Export Cities CSV
             </a>
             <button type="button" class="admin-btn admin-btn-primary" onclick="openAddCityModal()">
                 <span>+</span> Add City
@@ -58,7 +59,7 @@
                 </tr>
             </thead>
             <tbody id="citiesTableBody">
-                <tr><td colspan="7" class="admin-loading">⟳ Loading cities...</td></tr>
+                <tr><td colspan="7" class="admin-loading">Loading cities...</td></tr>
             </tbody>
         </table>
     </div>
@@ -71,12 +72,12 @@
 <div class="admin-card" id="activityCatalogSection" style="margin-top: 32px;">
     <div class="admin-card-header">
         <div class="admin-card-title">
-            <span>🎟️</span> Activity Catalog Management
+            {% icon "ticket" size=18 %}Activity Catalog Management
             <span id="selectedCityNotice" class="admin-badge admin-badge-warning" style="display:none; margin-left:12px;"></span>
         </div>
         <div style="display:flex; gap:10px;">
             <a href="{% url 'admin_api:export-activities' %}" class="admin-btn admin-btn-secondary admin-btn-sm">
-                <span>📥</span> Export CSV
+                {% icon "download" size=16 %}Export CSV
             </a>
             <button type="button" class="admin-btn admin-btn-secondary admin-btn-sm" onclick="clearCityActivityFilter()">Show All Cities</button>
             <button type="button" class="admin-btn admin-btn-primary" onclick="openAddActivityModal()">
@@ -120,7 +121,7 @@
                 </tr>
             </thead>
             <tbody id="activitiesTableBody">
-                <tr><td colspan="7" class="admin-loading">⟳ Loading activities...</td></tr>
+                <tr><td colspan="7" class="admin-loading">Loading activities...</td></tr>
             </tbody>
         </table>
     </div>

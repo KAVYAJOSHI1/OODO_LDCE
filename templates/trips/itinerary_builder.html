@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load icons %}
 
 {% block title %}Itinerary Builder | GlobeTrotter{% endblock %}
 
@@ -9,7 +10,7 @@
 {% block content %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">🛠️ Itinerary Builder</h1>
+        <h1 class="page-title">Itinerary Builder</h1>
         {% if trip %}
         <p class="page-subtitle">{{ trip.name }} — {{ trip.start_date|default:"TBD" }} to {{ trip.end_date|default:"TBD" }}</p>
         {% else %}
@@ -18,10 +19,10 @@
     </div>
     <div style="display: flex; gap: 10px;">
         <a href="{% url 'itinerary_view' %}{% if trip %}?trip={{ trip.id }}{% endif %}" class="btn btn-secondary">
-            👁️ Preview Itinerary
+            {% icon "eye" size=16 %}Preview Itinerary
         </a>
         <a href="{% url 'my_trips' %}" class="btn btn-primary">
-            💾 Save & Exit
+            {% icon "save" size=16 %}Save & Exit
         </a>
     </div>
 </div>
@@ -32,10 +33,10 @@
     <div>
         <div class="card" style="margin-bottom: 20px;">
             <div class="card-header">
-                <div class="card-title">📍 Trip Destinations & Stops</div>
-                <button type="button" class="btn btn-secondary btn-sm" onclick="openModal('addCityModal')">+ Add City</button>
+                <div class="card-title">{% icon "map-pin" size=16 %}Trip Destinations & Stops</div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="openModal('addCityModal')">{% icon "plus-circle" size=14 %}Add City</button>
             </div>
-            <div class="card-subtitle" style="margin-bottom: 10px;">Drag ☰ handle to reorder city stops</div>
+            <div class="card-subtitle" style="margin-bottom: 10px;">{% icon "grip" size=14 %}Drag handle to reorder city stops</div>
 
             <div id="builderCityList" style="display: flex; flex-direction: column; gap: 8px;">
                 <!-- Dynamically rendered via renderItineraryBuilderStops() in itinerary.js -->
@@ -48,10 +49,10 @@
         <div class="card">
             <div class="card-header">
                 <div>
-                    <div class="card-title">📅 Date-Aware Day-by-Day Schedule & Timeline</div>
-                    <div class="card-subtitle">Drag ☰ sub-activities to reorder daily schedule. Time slots auto-adjust!</div>
+                    <div class="card-title">{% icon "calendar" size=16 %}Date-Aware Day-by-Day Schedule & Timeline</div>
+                    <div class="card-subtitle">Drag sub-activities to reorder daily schedule. Time slots auto-adjust!</div>
                 </div>
-                <button type="button" class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData()">+ Add Activity</button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData()">{% icon "plus-circle" size=14 %}Add Activity</button>
             </div>
 
             <!-- Dynamic Date-Aware Timeline -->

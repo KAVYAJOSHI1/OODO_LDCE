@@ -317,7 +317,7 @@ async function loadCities(page = 1) {
     });
 
     const tbody = document.getElementById('citiesTableBody');
-    if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="admin-loading">⟳ Loading cities...</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="admin-loading">Loading cities...</td></tr>';
 
     const res = await apiFetch(`/api/admin/cities/?${query}`);
     if (res.ok) {
@@ -429,7 +429,7 @@ async function loadActivities(page = 1) {
     });
 
     const tbody = document.getElementById('activitiesTableBody');
-    if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="admin-loading">⟳ Loading activities...</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="admin-loading">Loading activities...</td></tr>';
 
     const res = await apiFetch(`/api/admin/activities/?${query}`);
     if (res.ok) {
@@ -461,7 +461,7 @@ function renderActivitiesTable(activities) {
             <td><span class="admin-badge admin-badge-primary">${escapeHtml(a.category)}</span></td>
             <td>₹${a.cost}</td>
             <td>${a.duration_hours} hrs</td>
-            <td>★ ${a.rating}</td>
+            <td>${a.rating}</td>
             <td>${a.popularity}/100</td>
             <td>
                 <button class="admin-btn admin-btn-sm admin-btn-secondary" onclick="editActivityModal(${JSON.stringify(a).replace(/"/g, '&quot;')})">Edit</button>
@@ -629,7 +629,7 @@ async function loadTrips(page = 1) {
     });
 
     const tbody = document.getElementById('tripsTableBody');
-    if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="admin-loading">⟳ Loading trips...</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="8" class="admin-loading">Loading trips...</td></tr>';
 
     const res = await apiFetch(`/api/admin/trips/?${query}`);
     if (res.ok) {
@@ -766,7 +766,7 @@ async function loadUsers(page = 1) {
     });
 
     const tbody = document.getElementById('usersTableBody');
-    if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="admin-loading">⟳ Loading users...</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="admin-loading">Loading users...</td></tr>';
 
     const res = await apiFetch(`/api/admin/users/?${query}`);
     if (res.ok) {

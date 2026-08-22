@@ -31,13 +31,19 @@ def _form_errors_to_messages(request, form):
             messages.error(request, f"{label}{error}")
 
 
+def _post_login_redirect(user):
+    return "admin_dashboard_page" if user.is_staff else "dashboard"
+
+
 def home(request):
-    return redirect("dashboard" if request.user.is_authenticated else "login")
+    if not request.user.is_authenticated:
+        return redirect("login")
+    return redirect(_post_login_redirect(request.user))
 
 
 def signup_view(request):
     if request.user.is_authenticated:
-        return redirect("dashboard")
+        return redirect(_post_login_redirect(request.user))
 
     form = SignupForm(request.POST or None)
     if request.method == "POST":
@@ -45,7 +51,7 @@ def signup_view(request):
             user = form.save()
             login(request, user, backend="travel.backends.EmailOrUsernameBackend")
             messages.success(request, f"Welcome to GlobeTrotter, {user.first_name or user.username}!")
-            return redirect("dashboard")
+            return redirect(_post_login_redirect(user))
         _form_errors_to_messages(request, form)
 
     return render(request, "auth/signup.html", {"form": form})
@@ -53,7 +59,7 @@ def signup_view(request):
 
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect("dashboard")
+        return redirect(_post_login_redirect(request.user))
 
     form = LoginForm(request.POST or None)
     if request.method == "POST":
@@ -71,7 +77,7 @@ def login_view(request):
                     next_url, allowed_hosts={request.get_host()}, require_https=request.is_secure()
                 ):
                     return redirect(next_url)
-                return redirect("dashboard")
+                return redirect(_post_login_redirect(user))
             messages.error(request, "Invalid username/email or password.")
         else:
             messages.error(request, "Please enter both your username/email and password.")
@@ -87,10 +93,15 @@ def logout_view(request):
 
 @login_required
 def dashboard(request):
-    trips = Trip.objects.filter(user=request.user)
+    trips = Trip.objects.filter(user=request.user).prefetch_related("stops__city")
+    cities = {stop.city_id for trip in trips for stop in trip.stops.all()}
+    total_spent = sum((trip.get_total_cost() for trip in trips), Decimal("0.00"))
+
     context = {
         "trips": trips,
         "trips_count": trips.count(),
+        "cities_count": len(cities),
+        "total_spent": total_spent,
         "upcoming_count": trips.filter(status__in=["planning", "upcoming"]).count(),
     }
     return render(request, "trips/dashboard.html", context)
@@ -124,7 +135,8 @@ def create_trip(request):
         else:
             _form_errors_to_messages(request, form)
 
-    return render(request, "trips/create_trip.html", {"form": form, "is_edit": False})
+    cities = City.objects.all().order_by("-popularity", "name")
+    return render(request, "trips/create_trip.html", {"form": form, "is_edit": False, "cities": cities})
 
 
 @login_required
@@ -147,6 +159,7 @@ def trip_edit(request, trip_id):
             trip.start_date = data["start_date"]
             trip.end_date = data["end_date"]
             trip.budget = data["budget"]
+            trip.travelers = data["travelers"]
             trip.save()
             messages.success(request, f'"{trip.name}" updated.')
             return redirect("trip_detail", trip_id=trip.pk)
@@ -157,6 +170,7 @@ def trip_edit(request, trip_id):
             "start_date": trip.start_date,
             "end_date": trip.end_date,
             "budget": trip.budget,
+            "travelers": trip.travelers,
             "description": trip.description,
         })
 
@@ -194,18 +208,20 @@ def itinerary_view(request):
 
 @login_required
 def city_search(request):
-    return render(request, "trips/city_search.html")
+    trip = _users_trip_or_first(request, request.GET.get("trip"))
+    return render(request, "trips/city_search.html", {"trip": trip})
 
 
 @login_required
 def activity_search(request):
-    return render(request, "trips/activity_search.html")
+    trip = _users_trip_or_first(request, request.GET.get("trip"))
+    return render(request, "trips/activity_search.html", {"trip": trip})
 
 
 @login_required
 def budget(request):
     trip = _users_trip_or_first(request, request.GET.get("trip"))
-    context = {"trip": trip}
+    context = {"trip": trip, "all_trips": Trip.objects.filter(user=request.user)}
     if trip:
         context["budget"] = BudgetService.calculate_trip_budget(trip.id)
         context["warning"] = BudgetService.get_budget_warning(trip.id)

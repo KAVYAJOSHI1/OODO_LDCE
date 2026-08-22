@@ -1,49 +1,50 @@
 {% extends "base.html" %}
+{% load icons %}
 
 {% block title %}Dashboard | GlobeTrotter{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">Welcome back, {{ request.user.first_name|default:"Traveler" }} 👋</h1>
+        <h1 class="page-title">Welcome back, {{ request.user.first_name|default:"Traveler" }}</h1>
         <p class="page-subtitle">Plan, manage, and optimize your travel itineraries seamlessly.</p>
     </div>
     <a href="{% url 'create_trip' %}" class="btn btn-primary">
-        + Plan New Trip
+        {% icon "plus-circle" size=16 %}Plan New Trip
     </a>
 </div>
 
 <!-- Stats Grid -->
 <div class="grid grid-4">
     <div class="card stat-card">
-        <div class="stat-icon">✈️</div>
+        <div class="stat-icon">{% icon "send" size=22 %}</div>
         <div>
             <div class="stat-label">Total Trips</div>
-            <div class="stat-value">{{ trips_count|default:"8" }}</div>
+            <div class="stat-value">{{ trips_count }}</div>
         </div>
     </div>
 
     <div class="card stat-card">
-        <div class="stat-icon">🌍</div>
+        <div class="stat-icon">{% icon "map-pin" size=22 %}</div>
         <div>
             <div class="stat-label">Destinations</div>
-            <div class="stat-value">{{ cities_count|default:"24" }}</div>
+            <div class="stat-value">{{ cities_count }}</div>
         </div>
     </div>
 
     <div class="card stat-card">
-        <div class="stat-icon">💰</div>
+        <div class="stat-icon">{% icon "dollar-sign" size=22 %}</div>
         <div>
             <div class="stat-label">Total Spent</div>
-            <div class="stat-value">₹{{ total_spent|default:"42K" }}</div>
+            <div class="stat-value">₹{{ total_spent }}</div>
         </div>
     </div>
 
     <div class="card stat-card">
-        <div class="stat-icon">📅</div>
+        <div class="stat-icon">{% icon "calendar" size=22 %}</div>
         <div>
             <div class="stat-label">Upcoming Trips</div>
-            <div class="stat-value">{{ upcoming_count|default:"3" }}</div>
+            <div class="stat-value">{{ upcoming_count }}</div>
         </div>
     </div>
 </div>
@@ -72,10 +73,10 @@
                         </div>
                     </div>
                     <div class="trip-body">
-                        <div class="trip-meta">📍 {% for stop in trip.stops.all %}{{ stop.city.name }}{% if not forloop.last %} ➔ {% endif %}{% empty %}No stops added yet{% endfor %}</div>
-                        <div class="trip-meta">📅 {{ trip.start_date|default:"TBD" }} – {{ trip.end_date|default:"TBD" }} ({{ trip.get_duration_days }} days)</div>
+                        <div class="trip-meta">{% for stop in trip.stops.all %}{{ stop.city.name }}{% if not forloop.last %} → {% endif %}{% empty %}No stops added yet{% endfor %}</div>
+                        <div class="trip-meta">{{ trip.start_date|default:"TBD" }} – {{ trip.end_date|default:"TBD" }} ({{ trip.get_duration_days }} days)</div>
                         <div class="trip-footer">
-                            <span style="font-weight: 600; color: var(--primary);">Est. {{ trip.currency }} {{ trip.budget }}</span>
+                            <span style="font-weight: 600; color: var(--primary);">Est. ₹{{ trip.budget }}</span>
                             <a href="{% url 'itinerary_view' %}?trip={{ trip.id }}" class="btn btn-secondary btn-sm">View Itinerary</a>
                         </div>
                     </div>
@@ -83,7 +84,7 @@
                 {% empty %}
                 <div class="card" style="grid-column: span 2; text-align: center; padding: 32px;">
                     <p style="color: var(--muted); margin-bottom: 16px;">No trips yet. Plan your first adventure!</p>
-                    <a href="{% url 'create_trip' %}" class="btn btn-primary">➕ Plan a New Trip</a>
+                    <a href="{% url 'create_trip' %}" class="btn btn-primary">Plan a New Trip</a>
                 </div>
                 {% endfor %}
             </div>
@@ -94,20 +95,20 @@
     <div>
         <!-- Quick Tools Card -->
         <div class="card" style="margin-bottom: 20px;">
-            <div class="card-title" style="margin-bottom: 12px;">⚡ Quick Actions</div>
+            <div class="card-title" style="margin-bottom: 12px;">Quick Actions</div>
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 <a href="{% url 'create_trip' %}" class="btn btn-primary" style="justify-content: flex-start;">
-                    ➕ Plan a New Trip
+                    {% icon "plus-circle" size=16 %}Plan a New Trip
                 </a>
                 <a href="{% url 'city_search' %}" class="btn btn-secondary" style="justify-content: flex-start;">
-                    🏙️ Search Cities & Destinations
+                    {% icon "search" size=16 %}Search Cities & Destinations
                 </a>
                 <a href="{% url 'activity_search' %}" class="btn btn-secondary" style="justify-content: flex-start;">
-                    🎯 Explore Popular Activities
+                    {% icon "target" size=16 %}Explore Popular Activities
                 </a>
                 {% if trips %}
                 <a href="{% url 'budget' %}?trip={{ trips.0.id }}" class="btn btn-secondary" style="justify-content: flex-start;">
-                    📊 Check Budget Estimator
+                    {% icon "credit-card" size=16 %}Check Budget Estimator
                 </a>
                 {% endif %}
             </div>
@@ -116,16 +117,16 @@
         {% if trips %}
         <!-- Budget Overview Widget -->
         <div class="card">
-            <div class="card-title">💰 Latest Trip Budget</div>
+            <div class="card-title">Latest Trip Budget</div>
             <div class="card-subtitle" style="margin-bottom: 12px;">{{ trips.0.name }}</div>
 
-            <div class="budget-total" style="margin-bottom: 6px;">{{ trips.0.currency }} {{ trips.0.budget }}</div>
+            <div class="budget-total" style="margin-bottom: 6px;">₹{{ trips.0.budget }}</div>
             <div class="progress" style="margin-bottom: 8px;">
                 <div class="progress-bar" style="width: {{ trips.0.get_budget_percentage|floatformat:0 }}%;"></div>
             </div>
             <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--muted);">
-                <span>Spent: {{ trips.0.currency }} {{ trips.0.get_total_cost }}</span>
-                <span>Limit: {{ trips.0.currency }} {{ trips.0.budget }}</span>
+                <span>Spent: ₹{{ trips.0.get_total_cost }}</span>
+                <span>Limit: ₹{{ trips.0.budget }}</span>
             </div>
         </div>
         {% endif %}

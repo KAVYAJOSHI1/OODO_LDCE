@@ -1,4 +1,5 @@
 {% load static %}
+{% load icons %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}GlobeTrotter{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>.gt-icon{margin-right:8px;}.stat-icon .gt-icon,.search-icon .gt-icon{margin-right:0;}</style>
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -20,13 +22,13 @@
 
     <div class="navbar-menu">
         <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-            Dashboard
+            {% icon "home" size=16 %}Dashboard
         </a>
         <a href="{% url 'my_trips' %}" class="nav-link {% if request.resolver_match.url_name == 'my_trips' %}active{% endif %}">
-            My Trips
+            {% icon "send" size=16 %}My Trips
         </a>
         <a href="{% url 'profile' %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
-            Profile
+            {% icon "user" size=16 %}Profile
         </a>
     </div>
 </nav>
@@ -36,31 +38,34 @@
         <div class="sidebar-title">Travel</div>
 
         <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-            🏠 Dashboard
+            {% icon "home" %}Dashboard
         </a>
         <a href="{% url 'my_trips' %}" class="sidebar-link {% if request.resolver_match.url_name == 'my_trips' %}active{% endif %}">
-            ✈️ My Trips
+            {% icon "send" %}My Trips
         </a>
         <a href="{% url 'create_trip' %}" class="sidebar-link {% if request.resolver_match.url_name == 'create_trip' %}active{% endif %}">
-            ➕ Plan Trip
+            {% icon "plus-circle" %}Plan Trip
         </a>
         <a href="{% url 'city_search' %}" class="sidebar-link {% if request.resolver_match.url_name == 'city_search' %}active{% endif %}">
-            🏙️ Cities
+            {% icon "map-pin" %}Cities
         </a>
         <a href="{% url 'activity_search' %}" class="sidebar-link {% if request.resolver_match.url_name == 'activity_search' %}active{% endif %}">
-            🎯 Activities
+            {% icon "target" %}Activities
         </a>
         <a href="{% url 'calendar' %}" class="sidebar-link {% if request.resolver_match.url_name == 'calendar' %}active{% endif %}">
-            📅 Calendar
+            {% icon "calendar" %}Calendar
+        </a>
+        <a href="{% url 'budget' %}" class="sidebar-link {% if request.resolver_match.url_name == 'budget' %}active{% endif %}">
+            {% icon "credit-card" %}Budget
         </a>
 
         <div class="sidebar-title" style="margin-top:20px;">Account</div>
 
         <a href="{% url 'profile' %}" class="sidebar-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
-            👤 Profile
+            {% icon "user" %}Profile
         </a>
         <a href="{% url 'logout' %}" class="sidebar-link">
-            🚪 Logout
+            {% icon "log-out" %}Logout
         </a>
     </aside>
 
@@ -86,7 +91,7 @@
 <div class="modal-overlay" id="addCityModal">
     <div class="modal">
         <div class="modal-header">
-            <h3 class="modal-title">📍 Add City Stop</h3>
+            <h3 class="modal-title">Add City Stop</h3>
             <button class="modal-close" data-dismiss="modal">&times;</button>
         </div>
         <form onsubmit="return handleAddCitySubmit(event)">
@@ -94,7 +99,7 @@
                 <div class="form-group">
                     <label class="form-label" for="citySearchInput">Search City Catalog</label>
                     <div class="search-box">
-                        <span class="search-icon">🔍</span>
+                        <span class="search-icon">{% icon "search" size=16 %}</span>
                         <input type="text" id="citySearchInput" class="form-control" placeholder="Search by city name..." onkeyup="filterCityResults(this.value)">
                     </div>
                 </div>
@@ -117,7 +122,7 @@
 
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Add City</button>
+                <button type="submit" class="btn btn-primary">{% icon "plus-circle" size=16 %}Add City</button>
             </div>
         </form>
     </div>
@@ -127,14 +132,14 @@
 <div class="modal-overlay" id="addActivityModal">
     <div class="modal" style="width: 540px;">
         <div class="modal-header">
-            <h3 class="modal-title" id="addActivityModalTitle">🎯 Add Activity to Stop</h3>
+            <h3 class="modal-title" id="addActivityModalTitle">Add Activity to Stop</h3>
             <button class="modal-close" data-dismiss="modal">&times;</button>
         </div>
         <form onsubmit="return handleAddActivitySubmit(event)">
             <div class="modal-body">
                 <!-- City Context Notification -->
                 <div id="activityModalCityBadge" style="margin-bottom: 14px; padding: 8px 12px; background: var(--primary-light); border-left: 3px solid var(--primary); border-radius: 4px; font-size: 12px; color: var(--primary-dark); font-weight: 600;">
-                    📍 Showing activities for: Goa
+                    Showing activities for: Goa
                 </div>
 
                 <div class="form-group">
@@ -169,7 +174,7 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="modalActivityCost">Est. Cost (₹) *</label>
-                        <input type="number" id="modalActivityCost" class="form-control" placeholder="0" min="0" required>
+                        <input type="number" id="modalActivityCost" class="form-control" placeholder="0" min="0" step="any" required>
                     </div>
                 </div>
 
@@ -192,7 +197,7 @@
 
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Add Activity</button>
+                <button type="submit" class="btn btn-primary">{% icon "plus-circle" size=16 %}Add Activity</button>
             </div>
         </form>
     </div>
@@ -202,7 +207,7 @@
 <div class="modal-overlay" id="addExpenseModal">
     <div class="modal">
         <div class="modal-header">
-            <h3 class="modal-title">💰 Add Custom Expense</h3>
+            <h3 class="modal-title">Add Custom Expense</h3>
             <button class="modal-close" data-dismiss="modal">&times;</button>
         </div>
         <form onsubmit="return handleAddExpenseSubmit(event)">
@@ -226,14 +231,14 @@
 
                     <div class="form-group">
                         <label class="form-label" for="modalExpenseAmount">Amount (₹) *</label>
-                        <input type="number" id="modalExpenseAmount" class="form-control" placeholder="1500" min="0" step="10" required>
+                        <input type="number" id="modalExpenseAmount" class="form-control" placeholder="1500" min="0" step="any" required>
                     </div>
                 </div>
             </div>
 
             <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Add Expense</button>
+                <button type="submit" class="btn btn-primary">{% icon "plus-circle" size=16 %}Add Expense</button>
             </div>
         </form>
     </div>
@@ -253,7 +258,7 @@
         </div>
         <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-danger" onclick="handleConfirmDelete()">Delete</button>
+            <button type="button" class="btn btn-danger" onclick="handleConfirmDelete()">{% icon "trash-2" size=16 %}Delete</button>
         </div>
     </div>
 </div>

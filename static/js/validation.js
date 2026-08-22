@@ -16,7 +16,7 @@ function setFieldError(fieldInput, errorMessage) {
         errorElem.className = 'form-error';
         fieldInput.parentElement.appendChild(errorElem);
     }
-    errorElem.innerHTML = `⚠️ ${errorMessage}`;
+    errorElem.innerHTML = `${errorMessage}`;
 }
 
 function clearFieldError(fieldInput) {

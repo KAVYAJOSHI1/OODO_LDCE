@@ -1,4 +1,5 @@
 {% extends "admin_custom/base_admin.html" %}
+{% load icons %}
 
 {% block title %}Trips Inspection — Custom Admin{% endblock %}
 {% block page_title %}Trip Inspection & Public Visibility Manager{% endblock %}
@@ -7,10 +8,10 @@
 <div class="admin-card">
     <div class="admin-card-header">
         <div class="admin-card-title">
-            <span>✈️</span> User Trips Directory
+            {% icon "send" size=18 %}User Trips Directory
         </div>
         <a href="{% url 'admin_api:export-trips' %}" class="admin-btn admin-btn-secondary">
-            <span>📥</span> Export Trips CSV
+            {% icon "download" size=16 %}Export Trips CSV
         </a>
     </div>
 
@@ -51,7 +52,7 @@
                 </tr>
             </thead>
             <tbody id="tripsTableBody">
-                <tr><td colspan="8" class="admin-loading">⟳ Loading trips...</td></tr>
+                <tr><td colspan="8" class="admin-loading">Loading trips...</td></tr>
             </tbody>
         </table>
     </div>
@@ -68,7 +69,7 @@
             <button class="admin-modal-close" onclick="closeAdminModal('tripInspectModal')">&times;</button>
         </div>
         <div class="admin-modal-body" id="tripInspectContent">
-            <div class="admin-loading">⟳ Loading trip itinerary breakdown...</div>
+            <div class="admin-loading">Loading trip itinerary breakdown...</div>
         </div>
         <div class="admin-modal-footer">
             <button type="button" class="admin-btn admin-btn-secondary" onclick="closeAdminModal('tripInspectModal')">Close</button>

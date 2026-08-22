@@ -1,12 +1,21 @@
 {% extends "base.html" %}
+{% load icons %}
 
 {% block title %}Explore Cities | GlobeTrotter{% endblock %}
+
+{% block extra_head %}
+{% if trip %}<script>window.GLOBETROTTER_TRIP_ID = {{ trip.id }};</script>{% endif %}
+{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">🏙️ Explore Destinations & Cities</h1>
-        <p class="page-subtitle">Discover top Indian and global travel destinations with cost indices, activity counts, and state insights.</p>
+        <h1 class="page-title">Explore Destinations & Cities</h1>
+        {% if trip %}
+        <p class="page-subtitle">Discover destinations to add to <strong>{{ trip.name }}</strong>.</p>
+        {% else %}
+        <p class="page-subtitle">Discover top destinations — <a href="{% url 'create_trip' %}">create a trip</a> to start adding them.</p>
+        {% endif %}
     </div>
 </div>
 
@@ -14,7 +23,7 @@
 <div class="card" style="margin-bottom: 24px;">
     <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
         <div class="search-box" style="flex: 1; min-width: 260px;">
-            <span class="search-icon">🔍</span>
+            <span class="search-icon">{% icon "search" size=16 %}</span>
             <input type="text" id="citySearchInputMain" class="form-control" placeholder="Search by city name, state or country..." onkeyup="filterCitySearchGrid()">
         </div>
         <select id="cityCostFilter" class="form-control" style="width: auto;" onchange="filterCitySearchGrid()">
@@ -32,7 +41,7 @@
 </div>
 
 <div id="citySearchEmpty" style="display: none; text-align: center; padding: 40px; color: var(--muted);" class="card">
-    🔍 No destination cities found matching your search query.
+    No destination cities found matching your search query.
 </div>
 {% endblock %}
 
@@ -99,7 +108,7 @@ async function renderCityGrid() {
 
         const metaBox = document.createElement('div');
         metaBox.style.cssText = "font-size: 12px; color: var(--text); background: var(--background); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;";
-        metaBox.textContent = `📍 Country: ${city.country} | 🎯 Activities: ${city.activitiesCount} Total`;
+        metaBox.textContent = `Country: ${city.country} | Activities: ${city.activitiesCount} Total`;
 
         const footer = document.createElement('div');
         footer.style.cssText = "display: flex; justify-content: space-between; align-items: center;";

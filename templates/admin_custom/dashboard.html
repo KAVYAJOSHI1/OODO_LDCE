@@ -1,4 +1,5 @@
 {% extends "admin_custom/base_admin.html" %}
+{% load icons %}
 
 {% block title %}Admin Dashboard — GlobeTrotter{% endblock %}
 {% block page_title %}System Overview & Analytics{% endblock %}
@@ -7,7 +8,7 @@
 <!-- KPI Stats Grid -->
 <div class="admin-stats-grid">
     <div class="admin-stat-card" style="border-left: 4px solid #6366f1;">
-        <div class="admin-stat-icon-wrapper" style="background: #e0e7ff; color: #4338ca;">💰</div>
+        <div class="admin-stat-icon-wrapper" style="background: #e0e7ff; color: #4338ca;">{% icon "dollar-sign" size=20 %}</div>
         <div class="admin-stat-info">
             <span class="admin-stat-value" id="statEstRevenue">₹...</span>
             <span class="admin-stat-label">Est. Platform Revenue (10%)</span>
@@ -15,7 +16,7 @@
     </div>
 
     <div class="admin-stat-card" style="border-left: 4px solid #10b981;">
-        <div class="admin-stat-icon-wrapper" style="background: #d1fae5; color: #047857;">📈</div>
+        <div class="admin-stat-icon-wrapper" style="background: #d1fae5; color: #047857;">{% icon "trending-up" size=20 %}</div>
         <div class="admin-stat-info">
             <span class="admin-stat-value" id="statAvgRevUser">₹...</span>
             <span class="admin-stat-label">Avg Revenue / Registered User</span>
@@ -23,7 +24,7 @@
     </div>
 
     <div class="admin-stat-card">
-        <div class="admin-stat-icon-wrapper">👥</div>
+        <div class="admin-stat-icon-wrapper">{% icon "users" size=20 %}</div>
         <div class="admin-stat-info">
             <span class="admin-stat-value" id="statTotalUsers">...</span>
             <span class="admin-stat-label">Total Registered Users</span>
@@ -31,7 +32,7 @@
     </div>
 
     <div class="admin-stat-card">
-        <div class="admin-stat-icon-wrapper">✈️</div>
+        <div class="admin-stat-icon-wrapper">{% icon "send" size=20 %}</div>
         <div class="admin-stat-info">
             <span class="admin-stat-value" id="statActiveTrips">...</span>
             <span class="admin-stat-label">Active Planned Trips</span>
@@ -39,7 +40,7 @@
     </div>
 
     <div class="admin-stat-card">
-        <div class="admin-stat-icon-wrapper">🏙️</div>
+        <div class="admin-stat-icon-wrapper">{% icon "building" size=20 %}</div>
         <div class="admin-stat-info">
             <span class="admin-stat-value" id="statTotalCities">...</span>
             <span class="admin-stat-label">Cities in Catalog</span>
@@ -47,7 +48,7 @@
     </div>
 
     <div class="admin-stat-card">
-        <div class="admin-stat-icon-wrapper">🎟️</div>
+        <div class="admin-stat-icon-wrapper">{% icon "ticket" size=20 %}</div>
         <div class="admin-stat-info">
             <span class="admin-stat-value" id="statTotalActivities">...</span>
             <span class="admin-stat-label">Activities Available</span>
@@ -55,7 +56,7 @@
     </div>
 
     <div class="admin-stat-card">
-        <div class="admin-stat-icon-wrapper">💵</div>
+        <div class="admin-stat-icon-wrapper">{% icon "dollar-sign" size=20 %}</div>
         <div class="admin-stat-info">
             <span class="admin-stat-value" id="statTotalBudget">₹...</span>
             <span class="admin-stat-label">Total Planned Budget</span>
@@ -63,7 +64,7 @@
     </div>
 
     <div class="admin-stat-card">
-        <div class="admin-stat-icon-wrapper">💳</div>
+        <div class="admin-stat-icon-wrapper">{% icon "credit-card" size=20 %}</div>
         <div class="admin-stat-info">
             <span class="admin-stat-value" id="statTotalExpenses">₹...</span>
             <span class="admin-stat-label">Total Expenses (<span id="statBudgetUtil">...</span>% util)</span>
@@ -75,7 +76,7 @@
 <div class="admin-card" id="revenueAnalyticsSection" style="margin-bottom: 24px; border-top: 4px solid #4f46e5;">
     <div class="admin-card-header" style="display: flex; justify-content: space-between; align-items: center;">
         <div class="admin-card-title" style="font-size: 18px; font-weight: 700;">
-            <span>📈</span> Financial Intelligence & Platform Revenue Breakdown
+            {% icon "trending-up" size=18 %}Financial Intelligence & Platform Revenue Breakdown
         </div>
         <span class="admin-badge admin-badge-info" style="font-size: 12px; padding: 6px 12px;">10.0% Service Commission Model</span>
     </div>
@@ -84,20 +85,20 @@
         <!-- Financial City Contribution Graph Card -->
         <div style="background: #fafafa; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
             <h4 style="margin: 0 0 16px 0; font-size: 15px; color: var(--admin-dark); display: flex; align-items: center; gap: 8px;">
-                <span>🌆</span> Revenue & Commission by Top Destination
+                {% icon "building" size=16 %}Revenue & Commission by Top Destination
             </h4>
             <div class="bar-chart-container" id="cityRevenueContainer">
-                <div class="admin-loading">⟳ Loading financial graphs...</div>
+                <div class="admin-loading">Loading financial graphs...</div>
             </div>
         </div>
 
         <!-- Expense Allocation Chart Card -->
         <div style="background: #fafafa; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
             <h4 style="margin: 0 0 16px 0; font-size: 15px; color: var(--admin-dark); display: flex; align-items: center; gap: 8px;">
-                <span>💳</span> Category Capital Distribution
+                {% icon "credit-card" size=16 %}Category Capital Distribution
             </h4>
             <div class="bar-chart-container" id="budgetBreakdownContainer">
-                <div class="admin-loading">⟳ Loading financial graphs...</div>
+                <div class="admin-loading">Loading financial graphs...</div>
             </div>
         </div>
     </div>
@@ -109,11 +110,11 @@
     <div class="admin-card">
         <div class="admin-card-header">
             <div class="admin-card-title">
-                <span>📊</span> Trip Status Distribution
+                {% icon "bar-chart" size=18 %}Trip Status Distribution
             </div>
         </div>
         <div class="bar-chart-container" id="statusChartContainer">
-            <div class="admin-loading">⟳ Loading analytics...</div>
+            <div class="admin-loading">Loading analytics...</div>
         </div>
     </div>
 
@@ -121,11 +122,11 @@
     <div class="admin-card">
         <div class="admin-card-header">
             <div class="admin-card-title">
-                <span>🌟</span> Top Destinations by Stop Count
+                {% icon "star" size=18 %}Top Destinations by Stop Count
             </div>
         </div>
         <div class="bar-chart-container" id="popularCitiesContainer">
-            <div class="admin-loading">⟳ Loading analytics...</div>
+            <div class="admin-loading">Loading analytics...</div>
         </div>
     </div>
 </div>
@@ -134,27 +135,27 @@
 <div class="admin-card" style="margin-top: 24px;">
     <div class="admin-card-header">
         <div class="admin-card-title">
-            <span>⚡</span> Quick Management Shortcuts & Data Exports
+            {% icon "zap" size=18 %}Quick Management Shortcuts & Data Exports
         </div>
     </div>
     <div style="display: flex; gap: 16px; flex-wrap: wrap;">
         <a href="{% url 'admin_cities_page' %}" class="admin-btn admin-btn-primary">
-            <span>🏙️</span> Manage Cities & Activities Studio
+            {% icon "building" size=16 %}Manage Cities & Activities Studio
         </a>
         <a href="{% url 'admin_trips_page' %}" class="admin-btn admin-btn-secondary">
-            <span>✈️</span> Inspect User Trips
+            {% icon "send" size=16 %}Inspect User Trips
         </a>
         <a href="{% url 'admin_users_page' %}" class="admin-btn admin-btn-secondary">
-            <span>👥</span> Manage User Permissions
+            {% icon "users" size=16 %}Manage User Permissions
         </a>
         <a href="{% url 'admin_api:export-cities' %}" class="admin-btn admin-btn-secondary">
-            <span>📥</span> Export Cities CSV
+            {% icon "download" size=16 %}Export Cities CSV
         </a>
         <a href="{% url 'admin_api:export-trips' %}" class="admin-btn admin-btn-secondary">
-            <span>📥</span> Export Trips CSV
+            {% icon "download" size=16 %}Export Trips CSV
         </a>
         <a href="{% url 'admin_api:export-users' %}" class="admin-btn admin-btn-secondary">
-            <span>📥</span> Export Users CSV
+            {% icon "download" size=16 %}Export Users CSV
         </a>
     </div>
 </div>

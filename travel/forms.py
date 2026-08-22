@@ -111,7 +111,11 @@ class TripForm(forms.Form):
     end_date = forms.DateField(required=False, widget=forms.DateInput(attrs={**CONTROL, "type": "date"}))
     budget = forms.DecimalField(
         max_digits=12, decimal_places=2, min_value=0, required=False,
-        widget=forms.NumberInput(attrs={**CONTROL, "min": 0, "step": 500}),
+        widget=forms.NumberInput(attrs={**CONTROL, "min": 0, "step": "any"}),
+    )
+    travelers = forms.IntegerField(
+        min_value=1, required=False,
+        widget=forms.NumberInput(attrs={**CONTROL, "min": 1, "step": 1}),
     )
     description = forms.CharField(required=False, widget=forms.Textarea(attrs={**CONTROL, "rows": 4}))
 
@@ -139,6 +143,7 @@ class TripForm(forms.Form):
             "start_date": data.get("start_date"),
             "end_date": data.get("end_date"),
             "budget": data.get("budget") or 0,
+            "travelers": data.get("travelers") or 1,
         }
 
 

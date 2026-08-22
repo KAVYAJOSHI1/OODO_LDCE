@@ -1,19 +1,20 @@
 {% extends "base.html" %}
+{% load icons %}
 
 {% block title %}Shared Itinerary | GlobeTrotter{% endblock %}
 
 {% block content %}
 {% if trip %}
 <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, var(--primary), #9a718d); color: white; padding: 32px;">
-    <span class="badge" style="background: rgba(255,255,255,0.2); color: white; margin-bottom: 12px;">🌐 Public Shared Itinerary</span>
+    <span class="badge" style="background: rgba(255,255,255,0.2); color: white; margin-bottom: 12px;">{% icon "globe" size=14 %}Public Shared Itinerary</span>
     <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 8px;">{{ trip.name }}</h1>
     <p style="opacity: 0.9; font-size: 15px; margin-bottom: 20px;">{{ trip.description|default:"A curated multi-city trip." }}</p>
 
     <div style="display: flex; gap: 20px; font-size: 14px; opacity: 0.95;">
-        <span>📍 {{ stops|length }} {{ stops|length|pluralize:"City,Cities" }}</span>
-        <span>⏱️ {{ trip.get_duration_days }} Days</span>
-        <span>💰 Approx. {{ trip.currency }} {{ trip.get_total_cost }}</span>
-        <span>👤 By {{ trip.user.first_name|default:trip.user.username }}</span>
+        <span>{{ stops|length }} {{ stops|length|pluralize:"City,Cities" }}</span>
+        <span>{{ trip.get_duration_days }} Days</span>
+        <span>Approx. ₹{{ trip.get_total_cost }}</span>
+        <span>By {{ trip.user.first_name|default:trip.user.username }}</span>
     </div>
 </div>
 
@@ -35,7 +36,7 @@
         {% csrf_token %}
         <input type="hidden" name="token" value="{{ token }}">
         <button type="submit" class="btn btn-secondary btn-lg" style="color: var(--primary); font-weight: 600;">
-            📋 Copy Trip to My Account
+            {% icon "copy" size=16 %}Copy Trip to My Account
         </button>
     </form>
 </div>
