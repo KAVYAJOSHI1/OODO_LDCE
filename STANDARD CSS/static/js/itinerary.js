@@ -1,9 +1,9 @@
 /**
- * GlobeTrotter - Master State Engine, Interactions & City-Strict Logic
- * Context-Aware Smart Time-Slot Scheduling & Conflict Resolution Engine.
+ * GlobeTrotter - Master State Engine, Interactions & Date-Aware Multi-Day Scheduler
+ * Date-Aware Activity Constraints & Drag-and-Drop Sub-Activity Reordering.
  */
 
-// Global Application State (Logical & Geographically Accurate Route)
+// Global Application State (Logical, Date-Aware & Geographically Accurate Route)
 window.GLOBETROTTER_STATE = {
     trip: {
         id: "trip-101",
@@ -14,7 +14,7 @@ window.GLOBETROTTER_STATE = {
         description: "Curated 8-day heritage journey covering Delhi, Agra, and Jaipur.",
         shareToken: "gt-share-883921"
     },
-    // Logically consecutive destination stops with context-aware time slots
+    // Logically consecutive destination stops with Date-Aware daily activities
     stops: [
         {
             id: "stop-delhi",
@@ -24,9 +24,9 @@ window.GLOBETROTTER_STATE = {
             startDate: "2026-10-20",
             endDate: "2026-10-22",
             activities: [
-                { id: "act-delhi-1", activityId: "delhi-qutub-minar", name: "Qutub Minar Complex", category: "Heritage & Monuments", cost: 600, time: "09:00 AM", duration: "3.0 Hours", ticketRequired: true, fixedSlot: false },
-                { id: "act-delhi-2", activityId: "delhi-humayun-tomb", name: "Humayun's Tomb", category: "Heritage & Monuments", cost: 600, time: "12:30 PM", duration: "2.0 Hours", ticketRequired: true, fixedSlot: false },
-                { id: "act-delhi-3", activityId: "delhi-chandni-chowk", name: "Chandni Chowk Food & Rickshaw Walk", category: "Food Walk", cost: 800, time: "06:30 PM", duration: "3.0 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "06:30 PM" }
+                { id: "act-delhi-1", activityId: "delhi-qutub-minar", name: "Qutub Minar Complex", category: "Heritage & Monuments", cost: 600, date: "2026-10-20", time: "09:00 AM", duration: "3.0 Hours", ticketRequired: true, fixedSlot: false },
+                { id: "act-delhi-2", activityId: "delhi-humayun-tomb", name: "Humayun's Tomb", category: "Heritage & Monuments", cost: 600, date: "2026-10-20", time: "12:30 PM", duration: "2.0 Hours", ticketRequired: true, fixedSlot: false },
+                { id: "act-delhi-3", activityId: "delhi-chandni-chowk", name: "Chandni Chowk Food & Rickshaw Walk", category: "Food Walk", cost: 800, date: "2026-10-21", time: "06:30 PM", duration: "3.0 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "06:30 PM" }
             ]
         },
         {
@@ -37,9 +37,9 @@ window.GLOBETROTTER_STATE = {
             startDate: "2026-10-22",
             endDate: "2026-10-24",
             activities: [
-                { id: "act-agra-1", activityId: "agra-taj-mahal", name: "Taj Mahal Sunrise Guided Tour", category: "Heritage & Monuments", cost: 1200, time: "06:00 AM", duration: "3.0 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "06:00 AM" },
-                { id: "act-agra-2", activityId: "agra-fort", name: "Agra Fort UNESCO Site Walk", category: "Heritage & Monuments", cost: 650, time: "09:30 AM", duration: "2.5 Hours", ticketRequired: true, fixedSlot: false },
-                { id: "act-agra-3", activityId: "agra-mehtab-bagh", name: "Mehtab Bagh Sunset View", category: "Sightseeing", cost: 300, time: "04:30 PM", duration: "2.0 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "04:30 PM" }
+                { id: "act-agra-1", activityId: "agra-taj-mahal", name: "Taj Mahal Sunrise Guided Tour", category: "Heritage & Monuments", cost: 1200, date: "2026-10-22", time: "06:00 AM", duration: "3.0 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "06:00 AM" },
+                { id: "act-agra-2", activityId: "agra-fort", name: "Agra Fort UNESCO Site Walk", category: "Heritage & Monuments", cost: 650, date: "2026-10-22", time: "09:30 AM", duration: "2.5 Hours", ticketRequired: true, fixedSlot: false },
+                { id: "act-agra-3", activityId: "agra-mehtab-bagh", name: "Mehtab Bagh Sunset View", category: "Sightseeing", cost: 300, date: "2026-10-23", time: "04:30 PM", duration: "2.0 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "04:30 PM" }
             ]
         },
         {
@@ -50,9 +50,9 @@ window.GLOBETROTTER_STATE = {
             startDate: "2026-10-24",
             endDate: "2026-10-28",
             activities: [
-                { id: "act-jaipur-1", activityId: "jaipur-amer-fort", name: "Amer Fort Jeep Safari", category: "Heritage & Monuments", cost: 1500, time: "09:00 AM", duration: "3.5 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "09:00 AM" },
-                { id: "act-jaipur-2", activityId: "jaipur-hawa-mahal", name: "Hawa Mahal & Museum", category: "Heritage & Monuments", cost: 200, time: "01:00 PM", duration: "1.5 Hours", ticketRequired: false, fixedSlot: false },
-                { id: "act-jaipur-3", activityId: "jaipur-nahargarh", name: "Nahargarh Fort Sunset View", category: "Sightseeing", cost: 300, time: "05:30 PM", duration: "2.5 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "05:30 PM" }
+                { id: "act-jaipur-1", activityId: "jaipur-amer-fort", name: "Amer Fort Jeep Safari", category: "Heritage & Monuments", cost: 1500, date: "2026-10-24", time: "09:00 AM", duration: "3.5 Hours", ticketRequired: true, fixedSlot: true, preferredTime: "09:00 AM" },
+                { id: "act-jaipur-2", activityId: "jaipur-hawa-mahal", name: "Hawa Mahal & Museum", category: "Heritage & Monuments", cost: 200, date: "2026-10-25", time: "01:00 PM", duration: "1.5 Hours", ticketRequired: false, fixedSlot: false },
+                { id: "act-jaipur-3", activityId: "jaipur-nahargarh", name: "Nahargarh Fort Sunset View", category: "Sightseeing", cost: 300, date: "2026-10-25", time: "05:30 PM", duration: "2.5 Hours", ticketRequired: false, fixedSlot: true, preferredTime: "05:30 PM" }
             ]
         }
     ],
@@ -67,13 +67,30 @@ window.GLOBETROTTER_STATE = {
 };
 
 // -------------------------------------------------------------
-// TIME UTILITIES & CONTEXT-AWARE CONFLICT RESOLUTION
+// DATE & TIME UTILITIES + PER-DATE CONFLICT RESOLUTION
 // -------------------------------------------------------------
 
+function getDatesArrayForStop(startDateStr, endDateStr) {
+    const dates = [];
+    let curr = new Date(startDateStr);
+    const end = new Date(endDateStr);
+
+    while (curr <= end) {
+        dates.push(curr.toISOString().split('T')[0]);
+        curr.setDate(curr.getDate() + 1);
+    }
+    return dates;
+}
+
+function formatDateToReadable(dateStr) {
+    if (!dateStr) return "";
+    const dt = new Date(dateStr);
+    return dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+}
+
 function parseTimeToMinutes(timeStr) {
-    if (!timeStr) return 540; // 09:00 AM default
+    if (!timeStr) return 540;
     const str = timeStr.trim().toUpperCase();
-    
     const isPM = str.includes("PM");
     const isAM = str.includes("AM");
     const cleanStr = str.replace(/(AM|PM)/g, "").trim();
@@ -135,53 +152,65 @@ function getContextBadgeMeta(actName, timeStr) {
 function resolveStopScheduleConflicts(stop) {
     if (!stop || !stop.activities || stop.activities.length === 0) return false;
 
-    // 1. Enforce fixed preferred times for activities that have fixedSlot: true
-    stop.activities.forEach(act => {
-        if (act.preferredTime && act.fixedSlot) {
-            act.time = act.preferredTime;
-        }
-    });
-
-    // 2. Sort activities chronologically by start time
-    stop.activities.sort((a, b) => parseTimeToMinutes(a.time) - parseTimeToMinutes(b.time));
-
     let shiftOccurred = false;
-    const bufferMinutes = 30; // 30 mins travel & ticket check-in buffer
 
-    for (let i = 0; i < stop.activities.length - 1; i++) {
-        const current = stop.activities[i];
-        const next = stop.activities[i + 1];
+    // Group activities by specific Date
+    const dates = getDatesArrayForStop(stop.startDate, stop.endDate);
 
-        const startMin = parseTimeToMinutes(current.time);
-        const durMin = parseDurationToMinutes(current.duration);
-        const currentEndMin = startMin + durMin;
+    dates.forEach(dStr => {
+        const dayActs = stop.activities.filter(a => a.date === dStr || !a.date);
+        
+        // Ensure default date if missing
+        dayActs.forEach(a => { if (!a.date) a.date = dStr; });
 
-        const nextStartMin = parseTimeToMinutes(next.time);
+        // Enforce fixed slots
+        dayActs.forEach(act => {
+            if (act.preferredTime && act.fixedSlot) {
+                act.time = act.preferredTime;
+            }
+        });
 
-        // Strict Overlap Check: if next starts before current finishes + 30m buffer
-        if (nextStartMin < currentEndMin + bufferMinutes) {
-            // If next activity has a fixed slot (e.g. Sunset / Night Food), do not push it!
-            if (!next.fixedSlot) {
-                const newNextStartMins = currentEndMin + bufferMinutes;
-                next.time = minutesToFormattedTime(newNextStartMins);
-                shiftOccurred = true;
-            } else {
-                // Next is fixed; if current is flexible, current should end before next starts!
-                if (!current.fixedSlot) {
-                    const nextFixedStart = parseTimeToMinutes(next.time);
-                    const availableEnd = nextFixedStart - bufferMinutes;
-                    if (currentEndMin > availableEnd) {
-                        const newCurrentStart = Math.max(360, availableEnd - durMin); // 6:00 AM lower bound
-                        current.time = minutesToFormattedTime(newCurrentStart);
-                        shiftOccurred = true;
+        // Sort chronologically by start time
+        dayActs.sort((a, b) => parseTimeToMinutes(a.time) - parseTimeToMinutes(b.time));
+
+        const bufferMinutes = 30; // 30 min transit buffer
+
+        for (let i = 0; i < dayActs.length - 1; i++) {
+            const current = dayActs[i];
+            const next = dayActs[i + 1];
+
+            const startMin = parseTimeToMinutes(current.time);
+            const durMin = parseDurationToMinutes(current.duration);
+            const currentEndMin = startMin + durMin;
+
+            const nextStartMin = parseTimeToMinutes(next.time);
+
+            if (nextStartMin < currentEndMin + bufferMinutes) {
+                if (!next.fixedSlot) {
+                    const newNextStartMins = currentEndMin + bufferMinutes;
+                    next.time = minutesToFormattedTime(newNextStartMins);
+                    shiftOccurred = true;
+                } else {
+                    if (!current.fixedSlot) {
+                        const nextFixedStart = parseTimeToMinutes(next.time);
+                        const availableEnd = nextFixedStart - bufferMinutes;
+                        if (currentEndMin > availableEnd) {
+                            const newCurrentStart = Math.max(360, availableEnd - durMin);
+                            current.time = minutesToFormattedTime(newCurrentStart);
+                            shiftOccurred = true;
+                        }
                     }
                 }
             }
         }
-    }
+    });
 
-    // Re-sort after adjustment
-    stop.activities.sort((a, b) => parseTimeToMinutes(a.time) - parseTimeToMinutes(b.time));
+    // Final sorting of all stop activities by date then time
+    stop.activities.sort((a, b) => {
+        if (a.date !== b.date) return a.date.localeCompare(b.date);
+        return parseTimeToMinutes(a.time) - parseTimeToMinutes(b.time);
+    });
+
     return shiftOccurred;
 }
 
@@ -353,7 +382,7 @@ function handleAddCitySubmit(event) {
 }
 
 // -------------------------------------------------------------
-// 2. CITY-STRICT ACTIVITY SEARCH & CONTEXT-AWARE MODALS
+// 2. CITY-STRICT ACTIVITY SEARCH & DATE-AWARE MODALS
 // -------------------------------------------------------------
 
 function renderActivitySearchCatalog() {
@@ -479,22 +508,28 @@ function openAddActivityModalWithData(cityId, activityId, targetStopId) {
     const effectiveCityId = cityId || (activeStop ? activeStop.cityId : 'delhi');
     const city = getCityById(effectiveCityId) || GLOBETROTTER_CITIES[0];
 
-    // Calculate smart non-overlapping next available start time for activeStop
-    let suggestedStartTime = "09:00 AM";
-    if (activeStop && activeStop.activities.length > 0) {
-        const lastAct = activeStop.activities[activeStop.activities.length - 1];
-        const lastStartMins = parseTimeToMinutes(lastAct.time);
-        const lastDurMins = parseDurationToMinutes(lastAct.duration);
-        const nextMins = lastStartMins + lastDurMins + 30; // 30 min buffer
-        suggestedStartTime = minutesToFormattedTime(nextMins);
+    // Populate Date Dropdown with activeStop's Date Range
+    const dateSelect = document.getElementById('modalActivityDate');
+    if (dateSelect && activeStop) {
+        while (dateSelect.firstChild) {
+            dateSelect.removeChild(dateSelect.firstChild);
+        }
+        const stopDates = getDatesArrayForStop(activeStop.startDate, activeStop.endDate);
+        stopDates.forEach((dStr, idx) => {
+            const opt = document.createElement('option');
+            opt.value = dStr;
+            opt.textContent = `Day ${idx + 1}: ${formatDateToReadable(dStr)}`;
+            dateSelect.appendChild(opt);
+        });
     }
 
+    let suggestedStartTime = "09:00 AM";
     const timeInput = document.getElementById('modalActivityTime');
     if (timeInput) timeInput.value = suggestedStartTime;
 
     const badgeElem = document.getElementById('activityModalCityBadge');
     if (badgeElem) {
-        badgeElem.textContent = `📍 Target Stop: ${activeStop ? activeStop.cityName : city.name} (${city.state}) • Smart Slot: ${suggestedStartTime}`;
+        badgeElem.textContent = `📍 Target Stop: ${activeStop ? activeStop.cityName : city.name} (${activeStop ? activeStop.startDate + ' to ' + activeStop.endDate : ''})`;
     }
 
     const selectElem = document.getElementById('modalActivitySelect');
@@ -555,7 +590,6 @@ function onActivitySelectChange(activityId) {
     if (durInput) durInput.value = targetAct.duration;
     if (descInput) descInput.value = targetAct.description;
 
-    // Use preferred domain context time if specified e.g. 06:30 PM for Chandni Chowk / Sunset
     if (timeInput && targetAct.preferredTime) {
         timeInput.value = targetAct.preferredTime;
     }
@@ -569,6 +603,7 @@ function handleAddActivitySubmit(event) {
 
     const nameInput = document.getElementById('modalActivityName');
     const costInput = document.getElementById('modalActivityCost');
+    const dateInput = document.getElementById('modalActivityDate');
     const timeInput = document.getElementById('modalActivityTime');
     const catInput = document.getElementById('modalActivityCategory');
     const durInput = document.getElementById('modalActivityDuration');
@@ -598,6 +633,7 @@ function handleAddActivitySubmit(event) {
         return false;
     }
 
+    const selectedDate = dateInput ? dateInput.value : targetStop.startDate;
     const timeVal = timeInput.value || "09:00 AM";
     const actName = nameInput.value.trim();
 
@@ -616,6 +652,7 @@ function handleAddActivitySubmit(event) {
         name: actName,
         category: catInput ? catInput.value : 'Sightseeing',
         cost: parseFloat(costInput.value),
+        date: selectedDate,
         time: timeVal,
         duration: durInput ? durInput.value : '2.0 Hours',
         fixedSlot: isFixed,
@@ -623,8 +660,6 @@ function handleAddActivitySubmit(event) {
     };
 
     targetStop.activities.push(newActivity);
-
-    // Resolve overlaps, shift flexible activities forward, preserve fixed domain slots
     const wasShifted = resolveStopScheduleConflicts(targetStop);
 
     renderItineraryBuilderStops();
@@ -635,73 +670,16 @@ function handleAddActivitySubmit(event) {
     closeModal('addActivityModal');
 
     if (wasShifted) {
-        showToast(`⏱️ Smart Rearrange: "${newActivity.name}" scheduled. Subsequent activities auto-shifted to prevent overlap (+30m transit buffer). Fixed slots preserved!`, 'info');
+        showToast(`⏱️ "${newActivity.name}" added on ${formatDateToReadable(selectedDate)}. Daily schedule auto-adjusted to prevent overlap.`, 'info');
     } else {
-        showToast(`✓ Added "${newActivity.name}" to ${targetStop.cityName} (${newActivity.time})`, 'success');
+        showToast(`✓ Added "${newActivity.name}" to ${targetStop.cityName} on ${formatDateToReadable(selectedDate)} (${newActivity.time})`, 'success');
     }
 
     return false;
 }
 
-function quickAddActivityToActiveStop(activityId) {
-    let targetStop = window.GLOBETROTTER_STATE.stops.find(s => s.id === window.GLOBETROTTER_STATE.activeTargetStopId);
-    if (!targetStop && window.GLOBETROTTER_STATE.stops.length > 0) {
-        targetStop = window.GLOBETROTTER_STATE.stops[0];
-        window.GLOBETROTTER_STATE.activeTargetStopId = targetStop.id;
-    }
-
-    if (!targetStop) {
-        showToast('Please add a city stop first', 'error');
-        return;
-    }
-
-    const cityActivities = getActivitiesByCityId(targetStop.cityId);
-    const act = cityActivities.find(a => a.id === activityId) || cityActivities[0];
-
-    if (!act) {
-        showToast('Activity not available for this city', 'error');
-        return;
-    }
-
-    // Determine initial slot: fixed preferred time vs smart non-overlapping end time
-    let assignedTime = act.preferredTime || "09:00 AM";
-    if (!act.fixedSlot && targetStop.activities.length > 0) {
-        const lastAct = targetStop.activities[targetStop.activities.length - 1];
-        const lastStartMins = parseTimeToMinutes(lastAct.time);
-        const lastDurMins = parseDurationToMinutes(lastAct.duration);
-        assignedTime = minutesToFormattedTime(lastStartMins + lastDurMins + 30);
-    }
-
-    const newAct = {
-        id: `act-${Date.now()}`,
-        activityId: act.id,
-        name: act.name,
-        category: act.category,
-        cost: act.cost,
-        time: assignedTime,
-        duration: act.duration,
-        fixedSlot: !!act.fixedSlot,
-        preferredTime: act.preferredTime || null
-    };
-
-    targetStop.activities.push(newAct);
-    const wasShifted = resolveStopScheduleConflicts(targetStop);
-
-    renderItineraryBuilderStops();
-    renderItineraryViewPage();
-    recalculateBudget();
-    updateTripReadiness();
-    syncCalendarView();
-
-    if (wasShifted) {
-        showToast(`⏱️ Added "${act.name}". Smart schedule adjusted around fixed domain slots (+30m buffer).`, 'info');
-    } else {
-        showToast(`✓ Added "${act.name}" to ${targetStop.cityName} (${newAct.time})`, 'success');
-    }
-}
-
 // -------------------------------------------------------------
-// 3. ITINERARY BUILDER & PREVIEW PAGE MAPPING
+// 3. ITINERARY BUILDER & PREVIEW PAGE MAPPING (DATE-AWARE)
 // -------------------------------------------------------------
 
 function renderItineraryViewPage() {
@@ -738,7 +716,7 @@ function renderItineraryViewPage() {
     }
 
     if (overviewStatsElem) {
-        overviewStatsElem.textContent = `${state.stops.length} Cities • ${totalActs} Activities • ₹${grandTotalSpent.toLocaleString()} Total Budget (Avg. ₹${avgPerDay.toLocaleString()} / day)`;
+        overviewStatsElem.textContent = `${state.stops.length} Destination Stops • ${totalActs} Scheduled Activities • ₹${grandTotalSpent.toLocaleString()} Budget`;
     }
 
     if (container) {
@@ -747,12 +725,11 @@ function renderItineraryViewPage() {
         }
 
         state.stops.forEach((stop, index) => {
-            let stopActTotal = 0;
-            stop.activities.forEach(a => stopActTotal += a.cost);
+            resolveStopScheduleConflicts(stop);
 
             const card = document.createElement('div');
             card.className = 'card';
-            card.style.marginBottom = '20px';
+            card.style.marginBottom = '24px';
 
             const header = document.createElement('div');
             header.className = 'card-header';
@@ -769,11 +746,14 @@ function renderItineraryViewPage() {
 
             const sub = document.createElement('div');
             sub.style.cssText = "font-size: 12px; color: var(--muted); margin-top: 2px;";
-            sub.textContent = `Dates: ${stop.startDate} to ${stop.endDate} (${stop.activities.length} activities scheduled)`;
+            sub.textContent = `Dates: ${stop.startDate} to ${stop.endDate} (${stop.activities.length} total activities)`;
 
             left.appendChild(badge);
             left.appendChild(title);
             left.appendChild(sub);
+
+            let stopActTotal = 0;
+            stop.activities.forEach(a => stopActTotal += a.cost);
 
             const rightCost = document.createElement('span');
             rightCost.style.cssText = "font-weight: 600; color: var(--primary); font-size: 15px;";
@@ -783,55 +763,73 @@ function renderItineraryViewPage() {
             header.appendChild(rightCost);
             card.appendChild(header);
 
-            const timeline = document.createElement('div');
-            timeline.className = 'timeline';
-            timeline.style.marginTop = '12px';
+            // Group stop activities by day date
+            const stopDates = getDatesArrayForStop(stop.startDate, stop.endDate);
 
-            if (stop.activities.length === 0) {
-                const emptyItem = document.createElement('div');
-                emptyItem.style.cssText = "padding: 12px; color: var(--muted); font-size: 12px; font-style: italic;";
-                emptyItem.textContent = `No scheduled activities for ${stop.cityName}.`;
-                timeline.appendChild(emptyItem);
-            } else {
-                stop.activities.forEach(act => {
-                    const item = document.createElement('div');
-                    item.className = 'timeline-item';
+            stopDates.forEach((dStr, dIdx) => {
+                const dayBox = document.createElement('div');
+                dayBox.style.cssText = "margin-top: 14px; padding: 12px 14px; background: var(--background); border-radius: 6px; border: 1px solid var(--border);";
 
-                    const startMins = parseTimeToMinutes(act.time);
-                    const durMins = parseDurationToMinutes(act.duration);
-                    const endMins = startMins + durMins;
-                    const endTimeStr = minutesToFormattedTime(endMins);
+                const dayHeader = document.createElement('div');
+                dayHeader.style.cssText = "font-weight: 700; font-size: 14px; color: var(--dark); margin-bottom: 8px; display: flex; justify-content: space-between;";
+                dayHeader.textContent = `📅 Day ${dIdx + 1} — ${formatDateToReadable(dStr)}`;
 
-                    const tTime = document.createElement('div');
-                    tTime.className = 'timeline-time';
-                    tTime.textContent = `${act.time} – ${endTimeStr}`;
+                const dayActs = stop.activities.filter(a => a.date === dStr);
 
-                    const tTitle = document.createElement('div');
-                    tTitle.className = 'timeline-title';
-                    tTitle.textContent = act.name;
+                dayBox.appendChild(dayHeader);
 
-                    const contextMeta = getContextBadgeMeta(act.name, act.time);
-                    if (contextMeta) {
-                        const contextBadge = document.createElement('span');
-                        contextBadge.className = `badge badge-${contextMeta.type}`;
-                        contextBadge.style.cssText = "margin-left: 8px; font-size: 10px;";
-                        contextBadge.textContent = contextMeta.label;
-                        tTitle.appendChild(contextBadge);
-                    }
+                if (dayActs.length === 0) {
+                    const emptyItem = document.createElement('div');
+                    emptyItem.style.cssText = "padding: 8px; color: var(--muted); font-size: 12px; font-style: italic;";
+                    emptyItem.textContent = `No activities scheduled for Day ${dIdx + 1}.`;
+                    dayBox.appendChild(emptyItem);
+                } else {
+                    const timeline = document.createElement('div');
+                    timeline.className = 'timeline';
 
-                    const tMeta = document.createElement('div');
-                    tMeta.className = 'timeline-meta';
-                    tMeta.textContent = `${act.category} • Duration: ${act.duration} • Est: ${act.cost === 0 ? 'Free' : '₹' + act.cost.toLocaleString()}`;
+                    dayActs.forEach(act => {
+                        const item = document.createElement('div');
+                        item.className = 'timeline-item';
 
-                    item.appendChild(tTime);
-                    item.appendChild(tTitle);
-                    item.appendChild(tMeta);
+                        const startMins = parseTimeToMinutes(act.time);
+                        const durMins = parseDurationToMinutes(act.duration);
+                        const endMins = startMins + durMins;
+                        const endTimeStr = minutesToFormattedTime(endMins);
 
-                    timeline.appendChild(item);
-                });
-            }
+                        const tTime = document.createElement('div');
+                        tTime.className = 'timeline-time';
+                        tTime.textContent = `${act.time} – ${endTimeStr}`;
 
-            card.appendChild(timeline);
+                        const tTitle = document.createElement('div');
+                        tTitle.className = 'timeline-title';
+                        tTitle.textContent = act.name;
+
+                        const contextMeta = getContextBadgeMeta(act.name, act.time);
+                        if (contextMeta) {
+                            const contextBadge = document.createElement('span');
+                            contextBadge.className = `badge badge-${contextMeta.type}`;
+                            contextBadge.style.cssText = "margin-left: 8px; font-size: 10px;";
+                            contextBadge.textContent = contextMeta.label;
+                            tTitle.appendChild(contextBadge);
+                        }
+
+                        const tMeta = document.createElement('div');
+                        tMeta.className = 'timeline-meta';
+                        tMeta.textContent = `${act.category} • Duration: ${act.duration} • Est: ${act.cost === 0 ? 'Free' : '₹' + act.cost.toLocaleString()}`;
+
+                        item.appendChild(tTime);
+                        item.appendChild(tTitle);
+                        item.appendChild(tMeta);
+
+                        timeline.appendChild(item);
+                    });
+
+                    dayBox.appendChild(timeline);
+                }
+
+                card.appendChild(dayBox);
+            });
+
             container.appendChild(card);
         });
     }
@@ -839,10 +837,9 @@ function renderItineraryViewPage() {
 
 function renderItineraryBuilderStops() {
     const listElem = document.getElementById('builderCityList');
-    const availableElem = document.getElementById('builderAvailableActivities');
     const timelineElem = document.getElementById('builderTimeline');
 
-    if (!listElem && !timelineElem && !availableElem) return;
+    if (!listElem && !timelineElem) return;
 
     let activeStop = window.GLOBETROTTER_STATE.stops.find(s => s.id === window.GLOBETROTTER_STATE.activeTargetStopId);
     if (!activeStop && window.GLOBETROTTER_STATE.stops.length > 0) {
@@ -850,7 +847,7 @@ function renderItineraryBuilderStops() {
         window.GLOBETROTTER_STATE.activeTargetStopId = activeStop.id;
     }
 
-    // 1. Render Left Column: Trip Stops List
+    // 1. Render Left Column: Trip Destinations List (City Stops)
     if (listElem) {
         while (listElem.firstChild) {
             listElem.removeChild(listElem.firstChild);
@@ -918,67 +915,15 @@ function renderItineraryBuilderStops() {
             cityDiv.appendChild(left);
             cityDiv.appendChild(right);
 
-            cityDiv.addEventListener('dragstart', handleDragStart);
-            cityDiv.addEventListener('dragover', handleDragOver);
-            cityDiv.addEventListener('drop', handleDrop);
+            cityDiv.addEventListener('dragstart', handleStopDragStart);
+            cityDiv.addEventListener('dragover', handleStopDragOver);
+            cityDiv.addEventListener('drop', handleStopDrop);
 
             listElem.appendChild(cityDiv);
         });
     }
 
-    // 2. Render Side Panel: Available Activities (STRICTLY for activeStop.cityId)
-    if (availableElem && activeStop) {
-        while (availableElem.firstChild) {
-            availableElem.removeChild(availableElem.firstChild);
-        }
-
-        const cityCatalogActs = getActivitiesByCityId(activeStop.cityId);
-
-        if (cityCatalogActs.length === 0) {
-            const emptyDiv = document.createElement('div');
-            emptyDiv.style.cssText = "padding: 12px; font-size: 12px; color: var(--muted); text-align: center;";
-            emptyDiv.textContent = `No catalog activities found for ${activeStop.cityName}. Click "+ Custom" to add your own.`;
-            availableElem.appendChild(emptyDiv);
-        } else {
-            cityCatalogActs.forEach(act => {
-                const isAlreadyAdded = activeStop.activities.some(a => a.name.toLowerCase() === act.name.toLowerCase());
-
-                const actCard = document.createElement('div');
-                actCard.style.cssText = "padding: 10px; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center; background: white;";
-
-                const left = document.createElement('div');
-                const title = document.createElement('div');
-                title.style.cssText = "font-weight: 600; font-size: 13px; color: var(--dark);";
-                title.textContent = act.name;
-
-                const meta = document.createElement('div');
-                meta.style.cssText = "font-size: 11px; color: var(--muted);";
-                meta.textContent = `${act.cost === 0 ? 'Free' : '₹' + act.cost} | ${act.duration} | ${act.category}`;
-
-                left.appendChild(title);
-                left.appendChild(meta);
-
-                const addBtn = document.createElement('button');
-                addBtn.className = isAlreadyAdded ? 'btn btn-secondary btn-sm' : 'btn btn-primary btn-sm';
-                addBtn.style.cssText = "padding: 3px 8px; font-size: 11px;";
-                addBtn.textContent = isAlreadyAdded ? '✓ Added' : '+ Add';
-                addBtn.disabled = isAlreadyAdded;
-
-                if (!isAlreadyAdded) {
-                    addBtn.addEventListener('click', () => {
-                        quickAddActivityToActiveStop(act.id);
-                    });
-                }
-
-                actCard.appendChild(left);
-                actCard.appendChild(addBtn);
-
-                availableElem.appendChild(actCard);
-            });
-        }
-    }
-
-    // 3. Render Main Column: Timeline & Scheduled Activities
+    // 2. Render Main Column: Date-Aware Multi-Day Timeline & Sub-Activities Drag & Drop
     if (timelineElem) {
         while (timelineElem.firstChild) {
             timelineElem.removeChild(timelineElem.firstChild);
@@ -988,14 +933,14 @@ function renderItineraryBuilderStops() {
             const isStopActive = activeStop && stop.id === activeStop.id;
 
             const stopHeader = document.createElement('div');
-            stopHeader.style.cssText = `padding: 10px 14px; border-radius: 6px; font-weight: 700; margin: 16px 0 8px 0; display: flex; justify-content: space-between; align-items: center; ${
+            stopHeader.style.cssText = `padding: 12px 16px; border-radius: 6px; font-weight: 700; margin: 20px 0 12px 0; display: flex; justify-content: space-between; align-items: center; ${
                 isStopActive
                 ? 'background: var(--primary-light); border-left: 5px solid var(--primary); color: var(--primary-dark);'
                 : 'background: var(--background); border-left: 5px solid var(--muted); color: var(--dark);'
             }`;
 
             const title = document.createElement('span');
-            title.textContent = `📍 Stop: ${stop.cityName} (${stop.stateName})`;
+            title.textContent = `📍 Destination Stop: ${stop.cityName} (${stop.stateName})`;
 
             const rightBox = document.createElement('div');
             rightBox.style.cssText = "display: flex; gap: 10px; align-items: center;";
@@ -1006,7 +951,7 @@ function renderItineraryBuilderStops() {
 
             const addActBtn = document.createElement('button');
             addActBtn.className = 'btn btn-primary btn-sm';
-            addActBtn.style.cssText = "padding: 2px 8px; font-size: 11px;";
+            addActBtn.style.cssText = "padding: 3px 10px; font-size: 11px;";
             addActBtn.textContent = '+ Add Activity';
             addActBtn.addEventListener('click', () => {
                 openAddActivityModalWithData(stop.cityId, null, stop.id);
@@ -1019,103 +964,192 @@ function renderItineraryBuilderStops() {
             stopHeader.appendChild(rightBox);
             timelineElem.appendChild(stopHeader);
 
-            if (stop.activities.length === 0) {
-                const emptyItem = document.createElement('div');
-                emptyItem.style.cssText = "padding: 14px; color: var(--muted); font-size: 12px; font-style: italic; background: #fff; border: 1px dashed var(--border); border-radius: 6px;";
-                emptyItem.textContent = `⚠ No activities planned for ${stop.cityName} yet. Click "+ Add Activity" to schedule tours.`;
-                timelineElem.appendChild(emptyItem);
-            } else {
-                // Ensure conflicts are resolved before rendering timeline
-                resolveStopScheduleConflicts(stop);
+            resolveStopScheduleConflicts(stop);
 
-                stop.activities.forEach(act => {
-                    const item = document.createElement('div');
-                    item.className = 'timeline-item';
+            const stopDates = getDatesArrayForStop(stop.startDate, stop.endDate);
 
-                    const startMins = parseTimeToMinutes(act.time);
-                    const durMins = parseDurationToMinutes(act.duration);
-                    const endMins = startMins + durMins;
-                    const endTimeStr = minutesToFormattedTime(endMins);
+            stopDates.forEach((dStr, dIdx) => {
+                const dayBox = document.createElement('div');
+                dayBox.style.cssText = "margin-bottom: 16px; padding: 14px; background: white; border: 1px solid var(--border); border-radius: 8px;";
 
-                    const timeDiv = document.createElement('div');
-                    timeDiv.className = 'timeline-time';
-                    timeDiv.textContent = `Scheduled Slot: ${act.time} – ${endTimeStr}`;
+                const dayHeader = document.createElement('div');
+                dayHeader.style.cssText = "font-weight: 700; font-size: 14px; color: var(--dark); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 6px;";
+                
+                const dayTitle = document.createElement('span');
+                dayTitle.textContent = `📅 Day ${dIdx + 1} — ${formatDateToReadable(dStr)}`;
 
-                    const titleDiv = document.createElement('div');
-                    titleDiv.className = 'timeline-title';
-                    titleDiv.textContent = act.name;
-
-                    const contextMeta = getContextBadgeMeta(act.name, act.time);
-                    if (contextMeta) {
-                        const contextBadge = document.createElement('span');
-                        contextBadge.className = `badge badge-${contextMeta.type}`;
-                        contextBadge.style.cssText = "margin-left: 8px; font-size: 10px;";
-                        contextBadge.textContent = contextMeta.label;
-                        titleDiv.appendChild(contextBadge);
-                    }
-
-                    const metaDiv = document.createElement('div');
-                    metaDiv.className = 'timeline-meta';
-                    metaDiv.textContent = `Category: ${act.category} • Duration: ${act.duration} (+30m transit buffer)`;
-
-                    const actionDiv = document.createElement('div');
-                    actionDiv.style.cssText = "margin-top: 8px; display: flex; gap: 8px; align-items: center;";
-
-                    const badgeSpan = document.createElement('span');
-                    badgeSpan.className = 'badge badge-success';
-                    badgeSpan.textContent = act.cost === 0 ? 'Free' : `₹${act.cost.toLocaleString()}`;
-
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'btn btn-danger btn-sm';
-                    removeBtn.style.cssText = "padding: 2px 8px; font-size: 11px;";
-                    removeBtn.textContent = 'Remove';
-                    removeBtn.addEventListener('click', () => {
-                        triggerDeleteConfirmation('Activity', act.name, () => {
-                            deleteActivityFromStop(stop.id, act.id);
-                        });
-                    });
-
-                    actionDiv.appendChild(badgeSpan);
-                    actionDiv.appendChild(removeBtn);
-
-                    item.appendChild(timeDiv);
-                    item.appendChild(titleDiv);
-                    item.appendChild(metaDiv);
-                    item.appendChild(actionDiv);
-
-                    timelineElem.appendChild(item);
+                const dayAddBtn = document.createElement('button');
+                dayAddBtn.className = 'btn btn-secondary btn-sm';
+                dayAddBtn.style.cssText = "padding: 2px 8px; font-size: 11px;";
+                dayAddBtn.textContent = '+ Add to Day';
+                dayAddBtn.addEventListener('click', () => {
+                    openAddActivityModalWithData(stop.cityId, null, stop.id);
+                    const dSelect = document.getElementById('modalActivityDate');
+                    if (dSelect) dSelect.value = dStr;
                 });
-            }
+
+                dayHeader.appendChild(dayTitle);
+                dayHeader.appendChild(dayAddBtn);
+                dayBox.appendChild(dayHeader);
+
+                const dayActs = stop.activities.filter(a => a.date === dStr);
+
+                if (dayActs.length === 0) {
+                    const emptyItem = document.createElement('div');
+                    emptyItem.style.cssText = "padding: 10px; color: var(--muted); font-size: 12px; font-style: italic;";
+                    emptyItem.textContent = `No activities planned for Day ${dIdx + 1}. Click "+ Add to Day" to schedule tours.`;
+                    dayBox.appendChild(emptyItem);
+                } else {
+                    dayActs.forEach((act, actIdx) => {
+                        const item = document.createElement('div');
+                        item.className = 'timeline-item';
+                        item.setAttribute('draggable', 'true');
+                        item.dataset.actId = act.id;
+                        item.dataset.stopId = stop.id;
+                        item.dataset.date = dStr;
+                        item.dataset.actIndex = actIdx;
+                        item.style.cssText = "cursor: move; position: relative; padding-left: 28px; margin-bottom: 12px;";
+
+                        const dragHandle = document.createElement('span');
+                        dragHandle.style.cssText = "position: absolute; left: 0; top: 0; color: var(--muted); cursor: grab; font-size: 14px;";
+                        dragHandle.textContent = "☰";
+                        item.appendChild(dragHandle);
+
+                        const startMins = parseTimeToMinutes(act.time);
+                        const durMins = parseDurationToMinutes(act.duration);
+                        const endMins = startMins + durMins;
+                        const endTimeStr = minutesToFormattedTime(endMins);
+
+                        const timeDiv = document.createElement('div');
+                        timeDiv.className = 'timeline-time';
+                        timeDiv.textContent = `Slot: ${act.time} – ${endTimeStr}`;
+
+                        const titleDiv = document.createElement('div');
+                        titleDiv.className = 'timeline-title';
+                        titleDiv.textContent = act.name;
+
+                        const contextMeta = getContextBadgeMeta(act.name, act.time);
+                        if (contextMeta) {
+                            const contextBadge = document.createElement('span');
+                            contextBadge.className = `badge badge-${contextMeta.type}`;
+                            contextBadge.style.cssText = "margin-left: 8px; font-size: 10px;";
+                            contextBadge.textContent = contextMeta.label;
+                            titleDiv.appendChild(contextBadge);
+                        }
+
+                        const metaDiv = document.createElement('div');
+                        metaDiv.className = 'timeline-meta';
+                        metaDiv.textContent = `Category: ${act.category} • Duration: ${act.duration} (+30m transit buffer)`;
+
+                        const actionDiv = document.createElement('div');
+                        actionDiv.style.cssText = "margin-top: 8px; display: flex; gap: 8px; align-items: center;";
+
+                        const badgeSpan = document.createElement('span');
+                        badgeSpan.className = 'badge badge-success';
+                        badgeSpan.textContent = act.cost === 0 ? 'Free' : `₹${act.cost.toLocaleString()}`;
+
+                        const removeBtn = document.createElement('button');
+                        removeBtn.className = 'btn btn-danger btn-sm';
+                        removeBtn.style.cssText = "padding: 2px 8px; font-size: 11px;";
+                        removeBtn.textContent = 'Remove';
+                        removeBtn.addEventListener('click', () => {
+                            triggerDeleteConfirmation('Activity', act.name, () => {
+                                deleteActivityFromStop(stop.id, act.id);
+                            });
+                        });
+
+                        actionDiv.appendChild(badgeSpan);
+                        actionDiv.appendChild(removeBtn);
+
+                        item.appendChild(timeDiv);
+                        item.appendChild(titleDiv);
+                        item.appendChild(metaDiv);
+                        item.appendChild(actionDiv);
+
+                        item.addEventListener('dragstart', handleActDragStart);
+                        item.addEventListener('dragover', handleActDragOver);
+                        item.addEventListener('drop', handleActDrop);
+
+                        dayBox.appendChild(item);
+                    });
+                }
+
+                timelineElem.appendChild(dayBox);
+            });
         });
     }
 }
 
-// Drag & Drop Handler Functions
-let draggedIndex = null;
+// Drag & Drop Handler Functions for City Stops
+let draggedStopIndex = null;
 
-function handleDragStart(e) {
-    draggedIndex = parseInt(this.dataset.index);
+function handleStopDragStart(e) {
+    draggedStopIndex = parseInt(this.dataset.index);
     e.dataTransfer.effectAllowed = 'move';
 }
 
-function handleDragOver(e) {
+function handleStopDragOver(e) {
     if (e.preventDefault) e.preventDefault();
     return false;
 }
 
-function handleDrop(e) {
+function handleStopDrop(e) {
     if (e.stopPropagation) e.stopPropagation();
 
     const targetIndex = parseInt(this.dataset.index);
-    if (draggedIndex !== null && draggedIndex !== targetIndex) {
+    if (draggedStopIndex !== null && draggedStopIndex !== targetIndex) {
         const stops = window.GLOBETROTTER_STATE.stops;
-        const [moved] = stops.splice(draggedIndex, 1);
+        const [moved] = stops.splice(draggedStopIndex, 1);
         stops.splice(targetIndex, 0, moved);
 
         renderItineraryBuilderStops();
         renderItineraryViewPage();
         syncCalendarView();
-        showToast('✓ Stop order updated', 'success');
+        showToast('✓ Destination stop order updated', 'success');
+    }
+    return false;
+}
+
+// Drag & Drop Handler Functions for Sub-Activities within/between days
+let draggedActData = null;
+
+function handleActDragStart(e) {
+    draggedActData = {
+        stopId: this.dataset.stopId,
+        actId: this.dataset.actId,
+        date: this.dataset.date,
+        index: parseInt(this.dataset.actIndex)
+    };
+    e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleActDragOver(e) {
+    if (e.preventDefault) e.preventDefault();
+    return false;
+}
+
+function handleActDrop(e) {
+    if (e.stopPropagation) e.stopPropagation();
+
+    const targetStopId = this.dataset.stopId;
+    const targetDate = this.dataset.date;
+    const targetIndex = parseInt(this.dataset.actIndex);
+
+    if (draggedActData && draggedActData.stopId === targetStopId && draggedActData.date === targetDate && draggedActData.index !== targetIndex) {
+        const stop = window.GLOBETROTTER_STATE.stops.find(s => s.id === targetStopId);
+        if (stop) {
+            const dayActs = stop.activities.filter(a => a.date === targetDate);
+            const [movedAct] = dayActs.splice(draggedActData.index, 1);
+            dayActs.splice(targetIndex, 0, movedAct);
+
+            // Reassign times chronologically
+            resolveStopScheduleConflicts(stop);
+
+            renderItineraryBuilderStops();
+            renderItineraryViewPage();
+            syncCalendarView();
+            showToast('✓ Sub-activity order rearranged', 'success');
+        }
     }
     return false;
 }
@@ -1269,7 +1303,6 @@ function recalculateBudget() {
     const avgPerDay = Math.round(totalSpent / durationDays);
     const utilPercent = Math.min(Math.round((totalSpent / targetBudget) * 100), 100);
 
-    // Update DOM Elements if present
     const totalAllocElem = document.getElementById('statTotalAllocated');
     if (totalAllocElem) totalAllocElem.textContent = `₹${targetBudget.toLocaleString()}`;
 
@@ -1306,7 +1339,7 @@ function recalculateBudget() {
 // -------------------------------------------------------------
 
 function updateTripReadiness() {
-    let score = 20; // Trip Created
+    let score = 20;
 
     if (window.GLOBETROTTER_STATE.stops.length > 0) score += 20;
 
@@ -1356,7 +1389,7 @@ function syncCalendarView() {
 
             const meta = document.createElement('div');
             meta.style.cssText = "font-size: 12px; color: var(--muted); margin-top: 4px;";
-            meta.textContent = `Slot: ${act.time} – ${endTimeStr} • Est. Cost: ${act.cost === 0 ? 'Free' : '₹' + act.cost.toLocaleString()}`;
+            meta.textContent = `Date: ${formatDateToReadable(act.date)} • Slot: ${act.time} – ${endTimeStr} • Est. Cost: ${act.cost === 0 ? 'Free' : '₹' + act.cost.toLocaleString()}`;
 
             card.appendChild(header);
             card.appendChild(meta);

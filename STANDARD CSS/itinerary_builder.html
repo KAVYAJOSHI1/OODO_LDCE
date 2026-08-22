@@ -55,48 +55,33 @@
         </div>
 
         <div class="grid grid-3">
-            <!-- Left Column: Trip Stops & City-Strict Available Activities (1 col) -->
+            <!-- Left Column: Trip Destinations & Stops (1 col) -->
             <div>
                 <div class="card" style="margin-bottom: 20px;">
                     <div class="card-header">
-                        <div class="card-title">📍 Trip Stops</div>
+                        <div class="card-title">📍 Trip Destinations & Stops</div>
                         <button type="button" class="btn btn-secondary btn-sm" onclick="openModal('addCityModal')">+ Add City</button>
                     </div>
+                    <div class="card-subtitle" style="margin-bottom: 10px;">Drag ☰ handle to reorder city stops</div>
 
                     <div id="builderCityList" style="display: flex; flex-direction: column; gap: 8px;">
                         <!-- Dynamically rendered via renderItineraryBuilderStops() in itinerary.js -->
                     </div>
                 </div>
-
-                <!-- Add Activity Side Panel (City-Strict Filtered for Active Stop) -->
-                <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <div class="card-title">➕ Available Activities</div>
-                        <button type="button" class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData()">+ Custom</button>
-                    </div>
-                    <div class="search-box" style="margin-bottom: 12px;">
-                        <span class="search-icon">🔍</span>
-                        <input type="text" class="form-control" placeholder="Search catalog activities..." onkeyup="filterAvailableActivitiesSidePanel(this.value)">
-                    </div>
-
-                    <div id="builderAvailableActivities" style="display: flex; flex-direction: column; gap: 10px; max-height: 340px; overflow-y: auto;">
-                        <!-- Dynamically rendered for activeStop.cityId in itinerary.js -->
-                    </div>
-                </div>
             </div>
 
-            <!-- Right Column: Timeline & Scheduled Activities (Spans 2 cols) -->
+            <!-- Right Column: Date-Aware Multi-Day Timeline & Sub-Activities (Spans 2 cols) -->
             <div style="grid-column: span 2;">
                 <div class="card">
                     <div class="card-header">
                         <div>
-                            <div class="card-title">📅 Day-by-Day Schedule & Itinerary Timeline</div>
-                            <div class="card-subtitle">Drag or reorder stops to plan your multi-city journey</div>
+                            <div class="card-title">📅 Date-Aware Day-by-Day Schedule & Timeline</div>
+                            <div class="card-subtitle">Drag ☰ sub-activities to reorder daily schedule. Time slots auto-adjust!</div>
                         </div>
                         <button type="button" class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData()">+ Add Activity</button>
                     </div>
 
-                    <!-- Dynamic Timeline -->
+                    <!-- Dynamic Date-Aware Timeline -->
                     <div class="timeline" id="builderTimeline" style="margin-top: 16px;">
                         <!-- Dynamically rendered via renderItineraryBuilderStops() in itinerary.js -->
                     </div>
@@ -151,7 +136,7 @@
     </div>
 </div>
 
-<!-- 2. Add Activity Modal (City-Strict Filtered) -->
+<!-- 2. Add Activity Modal (Date-Aware & City-Strict) -->
 <div class="modal-overlay" id="addActivityModal">
     <div class="modal" style="width: 540px;">
         <div class="modal-header">
@@ -174,6 +159,13 @@
                 <div class="form-group">
                     <label class="form-label" for="modalActivityName">Activity Title *</label>
                     <input type="text" id="modalActivityName" class="form-control" placeholder="e.g. Qutub Minar Complex" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalActivityDate">Schedule Date *</label>
+                    <select id="modalActivityDate" class="form-control">
+                        <!-- Populated dynamically with dates in city stop date range -->
+                    </select>
                 </div>
 
                 <div class="grid grid-2">
@@ -283,23 +275,5 @@
 <script src="static/js/data.js"></script>
 <script src="static/js/modals.js"></script>
 <script src="static/js/itinerary.js"></script>
-
-<script>
-function filterAvailableActivitiesSidePanel(query) {
-    const q = query.trim().toLowerCase();
-    const container = document.getElementById('builderAvailableActivities');
-    if (!container) return;
-
-    const cards = container.children;
-    for (let card of cards) {
-        const text = card.textContent.toLowerCase();
-        if (!q || text.includes(q)) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
-        }
-    }
-}
-</script>
 </body>
 </html>
