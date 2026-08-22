@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+
+{% block title %}Itinerary Builder | GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">🛠️ Itinerary Builder</h1>
+        <p class="page-subtitle">Golden Triangle Explorer (Oct 12 – Oct 20, 2026)</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'itinerary_view' %}" class="btn btn-secondary">
+            👁️ Preview Itinerary
+        </a>
+        <a href="{% url 'my_trips' %}" class="btn btn-primary">
+            💾 Save & Exit
+        </a>
+    </div>
+</div>
+
+<div class="grid grid-3">
+
+    <!-- Left Column: Day/Stop Selector & Add City (1 col) -->
+    <div>
+        <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header">
+                <div class="card-title">📍 Trip Stops</div>
+                <button class="btn btn-secondary btn-sm" onclick="alert('Add new city stop dialog')">+ Add City</button>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="padding: 10px 12px; background: var(--primary-light); border-radius: 6px; border-left: 3px solid var(--primary); display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <strong style="color: var(--primary);">Stop 1: Delhi</strong>
+                        <div style="font-size: 11px; color: var(--muted);">Oct 12 - Oct 14 (3 days)</div>
+                    </div>
+                    <span class="badge badge-primary">Active</span>
+                </div>
+
+                <div style="padding: 10px 12px; background: white; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                    <div>
+                        <strong>Stop 2: Agra</strong>
+                        <div style="font-size: 11px; color: var(--muted);">Oct 15 - Oct 16 (2 days)</div>
+                    </div>
+                </div>
+
+                <div style="padding: 10px 12px; background: white; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center; cursor: pointer;">
+                    <div>
+                        <strong>Stop 3: Jaipur</strong>
+                        <div style="font-size: 11px; color: var(--muted);">Oct 17 - Oct 20 (4 days)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Activity Quick Search -->
+        <div class="card">
+            <div class="card-title" style="margin-bottom: 12px;">➕ Available Activities in Delhi</div>
+            <div class="search-box" style="margin-bottom: 12px;">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="form-control" placeholder="Search activities...">
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px; max-height: 320px; overflow-y: auto;">
+                <div style="padding: 10px; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600;">Red Fort Tour</div>
+                        <div style="font-size: 12px; color: var(--muted);">₹500 | 2.5 hrs | Sightseeing</div>
+                    </div>
+                    <button class="btn btn-primary btn-sm">+ Add</button>
+                </div>
+
+                <div style="padding: 10px; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600;">Chandni Chowk Street Food</div>
+                        <div style="font-size: 12px; color: var(--muted);">₹800 | 3 hrs | Food & Dining</div>
+                    </div>
+                    <button class="btn btn-primary btn-sm">+ Add</button>
+                </div>
+
+                <div style="padding: 10px; border: 1px solid var(--border); border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-weight: 600;">Qutub Minar Visit</div>
+                        <div style="font-size: 12px; color: var(--muted);">₹600 | 2 hrs | Heritage</div>
+                    </div>
+                    <button class="btn btn-primary btn-sm">+ Add</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Timeline & Scheduled Activities (Spans 2 cols) -->
+    <div style="grid-column: span 2;">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">📅 Day-by-Day Schedule — Stop 1: Delhi</div>
+                    <div class="card-subtitle">Drag or reorder activities to plan your days</div>
+                </div>
+                <span class="badge badge-primary">3 Activities Scheduled</span>
+            </div>
+
+            <!-- Timeline -->
+            <div class="timeline" style="margin-top: 16px;">
+
+                <!-- Timeline Item 1 -->
+                <div class="timeline-item">
+                    <div class="timeline-time">Day 1 — 09:00 AM</div>
+                    <div class="timeline-title">Arrive & Check-in at Hotel Imperial</div>
+                    <div class="timeline-meta">Connaught Place, New Delhi • Stay & Logistics</div>
+                    <div style="margin-top: 8px; display: flex; gap: 8px;">
+                        <span class="badge badge-primary">₹3,500 / night</span>
+                        <button class="btn btn-secondary btn-sm" style="padding: 2px 8px; font-size: 11px;">Edit Time</button>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="timeline-item">
+                    <div class="timeline-time">Day 1 — 02:00 PM</div>
+                    <div class="timeline-title">Qutub Minar Complex Tour</div>
+                    <div class="timeline-meta">Mehrauli • Duration: 2 hrs • Ticket Included</div>
+                    <div style="margin-top: 8px; display: flex; gap: 8px;">
+                        <span class="badge badge-success">₹600</span>
+                        <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;">Remove</button>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 3 -->
+                <div class="timeline-item">
+                    <div class="timeline-time">Day 1 — 07:00 PM</div>
+                    <div class="timeline-title">Old Delhi Street Food Walk</div>
+                    <div class="timeline-meta">Chandni Chowk • Duration: 3 hrs • Dinner & Snacks</div>
+                    <div style="margin-top: 8px; display: flex; gap: 8px;">
+                        <span class="badge badge-success">₹800</span>
+                        <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;">Remove</button>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 4 (Day 2) -->
+                <div class="timeline-item">
+                    <div class="timeline-time">Day 2 — 10:00 AM</div>
+                    <div class="timeline-title">Red Fort & Jama Masjid Tour</div>
+                    <div class="timeline-meta">Netaji Subhash Marg • Duration: 3.5 hrs</div>
+                    <div style="margin-top: 8px; display: flex; gap: 8px;">
+                        <span class="badge badge-success">₹500</span>
+                        <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;">Remove</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

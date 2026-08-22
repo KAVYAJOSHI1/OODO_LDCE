@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Profile & Settings | GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">👤 Profile & Account Settings</h1>
+        <p class="page-subtitle">Manage your account credentials, travel preferences, and member stats.</p>
+    </div>
+</div>
+
+<div class="grid grid-3">
+
+    <!-- Left Column: User Card (1 col) -->
+    <div>
+        <div class="card" style="text-align: center; padding: 24px;">
+            <div style="width: 80px; height: 80px; background: var(--primary); color: white; font-size: 32px; font-weight: bold; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                KJ
+            </div>
+            <h2 style="font-size: 20px; font-weight: 700; color: var(--dark);">Kavya Joshi</h2>
+            <div style="color: var(--muted); font-size: 13px; margin-top: 2px;">kavya@example.com</div>
+            <span class="badge badge-primary" style="margin-top: 10px;">Pro GlobeTrotter</span>
+
+            <div style="border-top: 1px solid var(--border); margin-top: 20px; padding-top: 16px; display: flex; justify-content: space-around;">
+                <div>
+                    <div style="font-size: 18px; font-weight: 700; color: var(--dark);">8</div>
+                    <div style="font-size: 11px; color: var(--muted);">Trips</div>
+                </div>
+                <div>
+                    <div style="font-size: 18px; font-weight: 700; color: var(--dark);">24</div>
+                    <div style="font-size: 11px; color: var(--muted);">Cities</div>
+                </div>
+                <div>
+                    <div style="font-size: 18px; font-weight: 700; color: var(--dark);">₹42K</div>
+                    <div style="font-size: 11px; color: var(--muted);">Spent</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Profile Edit Form (2 cols) -->
+    <div style="grid-column: span 2;">
+        <div class="card">
+            <div class="card-title" style="margin-bottom: 20px;">Edit Account Information</div>
+
+            <form method="POST" action="{% url 'profile' %}">
+                {% csrf_token %}
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" class="form-control" value="Kavya" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="last_name">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" class="form-control" value="Joshi" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control" value="kavya@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="home_city">Home City / Base Location</label>
+                    <input type="text" id="home_city" name="home_city" class="form-control" value="Ahmedabad, Gujarat">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bio">Short Travel Bio</label>
+                    <textarea id="bio" name="bio" class="form-control" rows="3" placeholder="Passionate explorer, heritage lover & Odoo hackathon hacker!">Passionate traveler exploring Indian heritage, backwaters, and vibrant food streets!</textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+                    <button type="submit" class="btn btn-primary">
+                        Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

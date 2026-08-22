@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+
+{% block title %}Explore Cities | GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">🏙️ Explore Destinations & Cities</h1>
+        <p class="page-subtitle">Discover top Indian and global travel destinations with cost indices and attraction insights.</p>
+    </div>
+</div>
+
+<!-- Search & Filter bar -->
+<div class="card" style="margin-bottom: 24px;">
+    <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+        <div class="search-box" style="flex: 1; min-width: 260px;">
+            <span class="search-icon">🔍</span>
+            <input type="text" class="form-control" placeholder="Search by city name or state (e.g. Udaipur, Kerala, Goa)...">
+        </div>
+        <select class="form-control" style="width: auto;">
+            <option value="all">All Regions</option>
+            <option value="north">North India</option>
+            <option value="south">South India</option>
+            <option value="west">West India</option>
+            <option value="east">East India</option>
+        </select>
+        <select class="form-control" style="width: auto;">
+            <option value="budget_all">Any Cost Level</option>
+            <option value="low">Budget-Friendly (₹)</option>
+            <option value="medium">Moderate (₹₹)</option>
+            <option value="high">Luxury (₹₹₹)</option>
+        </select>
+    </div>
+</div>
+
+<!-- City Grid -->
+<div class="grid grid-3">
+
+    <!-- City 1 -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <span class="badge badge-primary">North India</span>
+                <h3 style="font-size: 18px; font-weight: 700; color: var(--dark); margin-top: 6px;">Jaipur, Rajasthan</h3>
+            </div>
+            <span class="badge badge-warning">Cost Index: 6.5/10</span>
+        </div>
+        <p style="color: var(--muted); font-size: 13px; margin: 10px 0;">
+            The Pink City famous for majestic palaces, Hawa Mahal, Amer Fort, and vibrant local bazaars.
+        </p>
+        <div style="font-size: 12px; color: var(--text); background: var(--background); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;">
+            💰 Avg. Daily Cost: <strong>₹2,800</strong> | 🏛️ Top Spot: Amer Fort
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; color: var(--muted);">Popularity: 🔥🔥🔥🔥</span>
+            <button class="btn btn-primary btn-sm" onclick="alert('Added Jaipur to active trip!')">+ Add to Trip</button>
+        </div>
+    </div>
+
+    <!-- City 2 -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <span class="badge badge-primary">South India</span>
+                <h3 style="font-size: 18px; font-weight: 700; color: var(--dark); margin-top: 6px;">Kochi, Kerala</h3>
+            </div>
+            <span class="badge badge-success">Cost Index: 5.2/10</span>
+        </div>
+        <p style="color: var(--muted); font-size: 13px; margin: 10px 0;">
+            Gateway to the backwaters, colonial Fort Kochi, Chinese fishing nets, and spice markets.
+        </p>
+        <div style="font-size: 12px; color: var(--text); background: var(--background); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;">
+            💰 Avg. Daily Cost: <strong>₹2,400</strong> | ⛵ Top Spot: Alleppey Boat
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; color: var(--muted);">Popularity: 🔥🔥🔥</span>
+            <button class="btn btn-primary btn-sm" onclick="alert('Added Kochi to active trip!')">+ Add to Trip</button>
+        </div>
+    </div>
+
+    <!-- City 3 -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <span class="badge badge-primary">West India</span>
+                <h3 style="font-size: 18px; font-weight: 700; color: var(--dark); margin-top: 6px;">North Goa</h3>
+            </div>
+            <span class="badge badge-warning">Cost Index: 7.8/10</span>
+        </div>
+        <p style="color: var(--muted); font-size: 13px; margin: 10px 0;">
+            Sun-kissed beaches, Portuguese churches, nightlife, and thrilling water sports adventures.
+        </p>
+        <div style="font-size: 12px; color: var(--text); background: var(--background); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;">
+            💰 Avg. Daily Cost: <strong>₹3,500</strong> | 🏖️ Top Spot: Baga Beach
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; color: var(--muted);">Popularity: 🔥🔥🔥🔥🔥</span>
+            <button class="btn btn-primary btn-sm" onclick="alert('Added Goa to active trip!')">+ Add to Trip</button>
+        </div>
+    </div>
+
+    <!-- City 4 -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+            <div>
+                <span class="badge badge-primary">North India</span>
+                <h3 style="font-size: 18px; font-weight: 700; color: var(--dark); margin-top: 6px;">Udaipur, Rajasthan</h3>
+            </div>
+            <span class="badge badge-warning">Cost Index: 7.0/10</span>
+        </div>
+        <p style="color: var(--muted); font-size: 13px; margin: 10px 0;">
+            City of Lakes featuring Lake Pichola, City Palace, romantic boat rides, and heritage dining.
+        </p>
+        <div style="font-size: 12px; color: var(--text); background: var(--background); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;">
+            💰 Avg. Daily Cost: <strong>₹3,200</strong> | 🏰 Top Spot: City Palace
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; color: var(--muted);">Popularity: 🔥🔥🔥🔥</span>
+            <button class="btn btn-primary btn-sm" onclick="alert('Added Udaipur to active trip!')">+ Add to Trip</button>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

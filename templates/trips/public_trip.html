@@ -1,0 +1,89 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golden Triangle Explorer | Shared Trip | GlobeTrotter</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+<!-- Public Top Navigation -->
+<nav class="navbar">
+    <a href="/" class="navbar-brand">
+        <span class="brand-icon">G</span>
+        GlobeTrotter
+    </a>
+    <div style="display: flex; gap: 12px; align-items: center;">
+        <span style="font-size: 13px; color: #d6d6d6;">Shared by <strong>Kavya Joshi</strong></span>
+        <a href="{% url 'login' %}" class="btn btn-secondary btn-sm">Sign In</a>
+        <a href="{% url 'signup' %}" class="btn btn-primary btn-sm">Join GlobeTrotter</a>
+    </div>
+</nav>
+
+<div style="max-width: 1000px; margin: 30px auto; padding: 0 20px;">
+
+    <!-- Public Banner Card -->
+    <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, var(--primary), #9a718d); color: white;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+                <span class="badge" style="background: rgba(255,255,255,0.2); color: white;">Public Shared Itinerary</span>
+                <h1 style="font-size: 28px; font-weight: 700; margin-top: 8px;">Golden Triangle Explorer</h1>
+                <p style="opacity: 0.9; margin-top: 4px;">📍 Delhi ➔ Agra ➔ Jaipur • 8 Days • Est. ₹24,500</p>
+            </div>
+            <button class="btn btn-secondary btn-lg" onclick="alert('Trip copied to your account! Sign in to customize.')" style="color: var(--primary); font-weight: 600;">
+                📋 Copy Trip to My Account
+            </button>
+        </div>
+    </div>
+
+    <!-- Public Itinerary Timeline -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <div class="card-title">🗺️ Complete Trip Itinerary</div>
+                <div class="card-subtitle">Detailed day-by-day plan curated by Kavya</div>
+            </div>
+            <span class="badge badge-success">Verified Itinerary</span>
+        </div>
+
+        <div class="timeline" style="margin-top: 20px;">
+
+            <!-- Day 1 -->
+            <div class="timeline-item">
+                <div class="timeline-time">DAY 1 — Delhi Arrival & Heritage</div>
+                <div class="timeline-title">Check-in at Hotel Imperial & Qutub Minar Visit</div>
+                <div class="timeline-meta">Connaught Place & Mehrauli • Est. Cost: ₹4,900</div>
+            </div>
+
+            <!-- Day 2 -->
+            <div class="timeline-item">
+                <div class="timeline-time">DAY 2 — Old Delhi Food Crawl</div>
+                <div class="timeline-title">Humayun's Tomb & Chandni Chowk Food Tour</div>
+                <div class="timeline-meta">Old Delhi • Est. Cost: ₹2,100</div>
+            </div>
+
+            <!-- Day 3 -->
+            <div class="timeline-item">
+                <div class="timeline-time">DAY 3 — Train to Agra</div>
+                <div class="timeline-title">Gatimaan Express & Sunset Taj Mahal View</div>
+                <div class="timeline-meta">Agra • Est. Cost: ₹5,200</div>
+            </div>
+
+            <!-- Day 4 -->
+            <div class="timeline-item">
+                <div class="timeline-time">DAY 4 — Jaipur Pink City</div>
+                <div class="timeline-title">Amer Fort Safari & Hawa Mahal Photo Walk</div>
+                <div class="timeline-meta">Jaipur • Est. Cost: ₹3,800</div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
