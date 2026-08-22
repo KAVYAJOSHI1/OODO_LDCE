@@ -6,72 +6,72 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">🎯 Activity & Experience Catalog</h1>
-        <p class="page-subtitle">Browse activities, entry tickets, guided tours, and local experiences across destination hubs.</p>
+        <p class="page-subtitle">Browse city-specific activities, entry tickets, guided tours, and local experiences across destination hubs.</p>
     </div>
-    <button type="button" class="btn btn-primary" onclick="openModal('addActivityModal')">
+    <button type="button" class="btn btn-primary" onclick="openAddActivityModalWithData('goa')">
         + Custom Activity
     </button>
 </div>
 
-<!-- Category Filters -->
-<div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-    <button class="btn btn-primary btn-sm">All Categories</button>
-    <button class="btn btn-secondary btn-sm">🏛️ Heritage & Monuments</button>
-    <button class="btn btn-secondary btn-sm">🍲 Food & Culinary</button>
-    <button class="btn btn-secondary btn-sm">⛵ Cruises & Water</button>
-    <button class="btn btn-secondary btn-sm">🧗 Adventure & Nature</button>
+<!-- City & Search Controls -->
+<div class="card" style="margin-bottom: 20px; padding: 16px;">
+    <div class="grid grid-3" style="align-items: center;">
+        <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="activityCityFilter">📍 Filter by City Destination *</label>
+            <select id="activityCityFilter" class="form-control" onchange="filterActivityCatalogTable()">
+                <option value="goa">Goa (Goa)</option>
+                <option value="mumbai">Mumbai (Maharashtra)</option>
+                <option value="delhi">New Delhi (Delhi)</option>
+                <option value="jaipur">Jaipur (Rajasthan)</option>
+                <option value="agra">Agra (Uttar Pradesh)</option>
+                <option value="ahmedabad">Ahmedabad (Gujarat)</option>
+                <option value="udaipur">Udaipur (Rajasthan)</option>
+                <option value="bengaluru">Bengaluru (Karnataka)</option>
+                <option value="paris">Paris (France)</option>
+                <option value="dubai">Dubai (UAE)</option>
+                <option value="tokyo">Tokyo (Japan)</option>
+                <option value="singapore">Singapore (Singapore)</option>
+            </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="activityCategoryFilter">Category Filter</label>
+            <select id="activityCategoryFilter" class="form-control" onchange="filterActivityCatalogTable()">
+                <option value="">All Categories</option>
+                <option value="Heritage & Monuments">Heritage & Monuments</option>
+                <option value="Food Walk">Food & Culinary</option>
+                <option value="Adventure">Adventure & Nature</option>
+                <option value="Sightseeing">Sightseeing</option>
+                <option value="Shopping">Shopping</option>
+            </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="activitySearchInput">Search Activity</label>
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="activitySearchInput" class="form-control" placeholder="Search by activity name..." onkeyup="filterActivityCatalogTable()">
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Activity Table -->
+<!-- Dynamic Activity Table -->
 <div class="card">
     <div class="table-container">
         <table class="table">
             <thead>
                 <tr>
-                    <th>Activity Name</th>
-                    <th>Destination</th>
+                    <th>Activity Name & Description</th>
+                    <th>Destination City</th>
                     <th>Category</th>
                     <th>Duration</th>
                     <th>Est. Cost</th>
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td><strong>Taj Mahal Sunrise Guided Tour</strong></td>
-                    <td>Agra, UP</td>
-                    <td><span class="badge badge-primary">Heritage</span></td>
-                    <td>3.0 Hours</td>
-                    <td>₹1,200</td>
-                    <td><button class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData('Taj Mahal Sunrise Guided Tour', 1200, 'Heritage & Monuments')">+ Add to Trip</button></td>
-                </tr>
-
-                <tr>
-                    <td><strong>Chandni Chowk Midnight Food Walk</strong></td>
-                    <td>New Delhi</td>
-                    <td><span class="badge badge-warning">Food & Culinary</span></td>
-                    <td>2.5 Hours</td>
-                    <td>₹800</td>
-                    <td><button class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData('Chandni Chowk Midnight Food Walk', 800, 'Food Walk')">+ Add to Trip</button></td>
-                </tr>
-
-                <tr>
-                    <td><strong>Amer Fort Elephant & Jeep Safari</strong></td>
-                    <td>Jaipur, RJ</td>
-                    <td><span class="badge badge-primary">Heritage</span></td>
-                    <td>4.0 Hours</td>
-                    <td>₹1,500</td>
-                    <td><button class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData('Amer Fort Elephant & Jeep Safari', 1500, 'Heritage & Monuments')">+ Add to Trip</button></td>
-                </tr>
-
-                <tr>
-                    <td><strong>Mandovi River Sunset Cruise</strong></td>
-                    <td>North Goa</td>
-                    <td><span class="badge badge-success">Cruises</span></td>
-                    <td>2.0 Hours</td>
-                    <td>₹650</td>
-                    <td><button class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData('Mandovi River Sunset Cruise', 650, 'Sightseeing')">+ Add to Trip</button></td>
-                </tr>
+            <tbody id="activityCatalogTableBody">
+                <!-- Dynamically Populated from GLOBETROTTER_CITIES in data.js -->
             </tbody>
         </table>
     </div>

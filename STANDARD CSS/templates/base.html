@@ -102,30 +102,19 @@
                     </div>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 8px; max-height: 140px; overflow-y: auto; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 6px; padding: 8px;">
-                    <div class="city-search-item" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="document.getElementById('modalCityName').value='Udaipur'; document.getElementById('modalCityState').value='Rajasthan';">
-                        <div><strong>Udaipur</strong> <span style="font-size: 11px; color: var(--muted);">(Rajasthan)</span></div>
-                        <span class="badge badge-warning">Cost: 7.0/10</span>
-                    </div>
-                    <div class="city-search-item" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; border-bottom: 1px solid var(--border); cursor: pointer;" onclick="document.getElementById('modalCityName').value='Varanasi'; document.getElementById('modalCityState').value='Uttar Pradesh';">
-                        <div><strong>Varanasi</strong> <span style="font-size: 11px; color: var(--muted);">(Uttar Pradesh)</span></div>
-                        <span class="badge badge-success">Cost: 4.8/10</span>
-                    </div>
-                    <div class="city-search-item" style="display: flex; justify-content: space-between; align-items: center; padding: 6px 8px; cursor: pointer;" onclick="document.getElementById('modalCityName').value='Goa'; document.getElementById('modalCityState').value='Goa';">
-                        <div><strong>Goa</strong> <span style="font-size: 11px; color: var(--muted);">(West India)</span></div>
-                        <span class="badge badge-warning">Cost: 7.8/10</span>
-                    </div>
-                    <div id="citySearchEmpty" style="display: none; padding: 12px; text-align: center; color: var(--muted); font-size: 12px;">No matching cities found in catalog.</div>
+                <div id="citySearchResultsContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 160px; overflow-y: auto; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 6px; padding: 8px;">
+                    <!-- Dynamically populated from GLOBETROTTER_CITIES in data.js -->
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" for="modalCityName">City Name *</label>
-                    <input type="text" id="modalCityName" class="form-control" placeholder="e.g. Udaipur" required>
+                    <label class="form-label" for="modalCityName">Selected City Name *</label>
+                    <input type="text" id="modalCityName" class="form-control" placeholder="e.g. Goa" required>
+                    <input type="hidden" id="modalCityId" value="goa">
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="modalCityState">State / Country</label>
-                    <input type="text" id="modalCityState" class="form-control" placeholder="e.g. Rajasthan, India" value="India">
+                    <input type="text" id="modalCityState" class="form-control" placeholder="e.g. Goa, India" value="Goa, India">
                 </div>
             </div>
 
@@ -137,18 +126,30 @@
     </div>
 </div>
 
-<!-- 2. Add Activity Modal -->
+<!-- 2. Add Activity Modal (City-Strict Filtered) -->
 <div class="modal-overlay" id="addActivityModal">
     <div class="modal" style="width: 540px;">
         <div class="modal-header">
-            <h3 class="modal-title">🎯 Add New Activity</h3>
+            <h3 class="modal-title" id="addActivityModalTitle">🎯 Add Activity to Stop</h3>
             <button class="modal-close" data-dismiss="modal">&times;</button>
         </div>
         <form onsubmit="return handleAddActivitySubmit(event)">
             <div class="modal-body">
+                <!-- City Context Notification -->
+                <div id="activityModalCityBadge" style="margin-bottom: 14px; padding: 8px 12px; background: var(--primary-light); border-left: 3px solid var(--primary); border-radius: 4px; font-size: 12px; color: var(--primary-dark); font-weight: 600;">
+                    📍 Showing activities for: Goa
+                </div>
+
                 <div class="form-group">
-                    <label class="form-label" for="modalActivityName">Activity Name *</label>
-                    <input type="text" id="modalActivityName" class="form-control" placeholder="e.g. Taj Mahal Guided Tour" required>
+                    <label class="form-label" for="modalActivitySelect">Select City Activity *</label>
+                    <select id="modalActivitySelect" class="form-control" onchange="onActivitySelectChange(this.value)">
+                        <!-- Populated dynamically based on cityId -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalActivityName">Activity Title *</label>
+                    <input type="text" id="modalActivityName" class="form-control" placeholder="e.g. Baga Beach" required>
                 </div>
 
                 <div class="grid grid-2">
@@ -157,13 +158,14 @@
                         <select id="modalActivityCategory" class="form-control">
                             <option value="Heritage & Monuments">Heritage & Monuments</option>
                             <option value="Food Walk">Food & Culinary</option>
-                            <option value="Adventure">Adventure & Nature</option>
+                            <option value="Adventure">Adventure</option>
                             <option value="Sightseeing">Sightseeing</option>
+                            <option value="Shopping">Shopping</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="modalActivityCost">Est. Cost (₹) *</label>
-                        <input type="number" id="modalActivityCost" class="form-control" placeholder="500" min="0" required>
+                        <input type="number" id="modalActivityCost" class="form-control" placeholder="0" min="0" required>
                     </div>
                 </div>
 
@@ -174,13 +176,13 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="modalActivityDuration">Duration</label>
-                        <input type="text" id="modalActivityDuration" class="form-control" placeholder="2 Hours" value="2 Hours">
+                        <input type="text" id="modalActivityDuration" class="form-control" placeholder="2.0 Hours" value="2.0 Hours">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-label" for="modalActivityDesc">Short Description</label>
-                    <textarea id="modalActivityDesc" class="form-control" rows="2" placeholder="Guided tour details..."></textarea>
+                    <textarea id="modalActivityDesc" class="form-control" rows="2" placeholder="Tour details..."></textarea>
                 </div>
             </div>
 
@@ -203,7 +205,7 @@
             <div class="modal-body">
                 <div class="form-group">
                     <label class="form-label" for="modalExpenseName">Expense Description *</label>
-                    <input type="text" id="modalExpenseName" class="form-control" placeholder="e.g. Train Ticket, Hotel Dinner" required>
+                    <input type="text" id="modalExpenseName" class="form-control" placeholder="e.g. Train Ticket, Hotel Stay" required>
                 </div>
 
                 <div class="grid grid-2">
@@ -252,9 +254,10 @@
     </div>
 </div>
 
-<!-- Recommended Script Order -->
+<!-- Recommended Script Load Order -->
 <script src="{% static 'js/validation.js' %}"></script>
 <script src="{% static 'js/toast.js' %}"></script>
+<script src="{% static 'js/data.js' %}"></script>
 <script src="{% static 'js/modals.js' %}"></script>
 <script src="{% static 'js/itinerary.js' %}"></script>
 

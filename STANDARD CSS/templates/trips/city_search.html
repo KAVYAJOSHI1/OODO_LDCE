@@ -6,119 +6,137 @@
 <div class="page-header">
     <div>
         <h1 class="page-title">🏙️ Explore Destinations & Cities</h1>
-        <p class="page-subtitle">Discover top Indian and global travel destinations with cost indices and attraction insights.</p>
+        <p class="page-subtitle">Discover top Indian and global travel destinations with cost indices, activity counts, and state insights.</p>
     </div>
 </div>
 
-<!-- Search & Filter bar -->
+<!-- Search & Filter Bar -->
 <div class="card" style="margin-bottom: 24px;">
     <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
         <div class="search-box" style="flex: 1; min-width: 260px;">
             <span class="search-icon">🔍</span>
-            <input type="text" class="form-control" placeholder="Search by city name or state (e.g. Udaipur, Kerala, Goa)...">
+            <input type="text" id="citySearchInputMain" class="form-control" placeholder="Search by city name, state or country..." onkeyup="filterCitySearchGrid()">
         </div>
-        <select class="form-control" style="width: auto;">
-            <option value="all">All Regions</option>
-            <option value="north">North India</option>
-            <option value="south">South India</option>
-            <option value="west">West India</option>
-            <option value="east">East India</option>
-        </select>
-        <select class="form-control" style="width: auto;">
-            <option value="budget_all">Any Cost Level</option>
-            <option value="low">Budget-Friendly (₹)</option>
-            <option value="medium">Moderate (₹₹)</option>
-            <option value="high">Luxury (₹₹₹)</option>
+        <select id="cityCostFilter" class="form-control" style="width: auto;" onchange="filterCitySearchGrid()">
+            <option value="">Any Cost Level</option>
+            <option value="Low">Budget-Friendly (Low)</option>
+            <option value="Medium">Moderate (Medium)</option>
+            <option value="High">Luxury (High)</option>
         </select>
     </div>
 </div>
 
-<!-- City Grid -->
-<div class="grid grid-3">
-
-    <!-- City 1 -->
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <span class="badge badge-primary">North India</span>
-                <h3 style="font-size: 18px; font-weight: 700; color: var(--dark); margin-top: 6px;">Jaipur, Rajasthan</h3>
-            </div>
-            <span class="badge badge-warning">Cost Index: 6.5/10</span>
-        </div>
-        <p style="color: var(--muted); font-size: 13px; margin: 10px 0;">
-            The Pink City famous for majestic palaces, Hawa Mahal, Amer Fort, and vibrant local bazaars.
-        </p>
-        <div style="font-size: 12px; color: var(--text); background: var(--background); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;">
-            💰 Avg. Daily Cost: <strong>₹2,800</strong> | 🏛️ Top Spot: Amer Fort
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 12px; color: var(--muted);">Popularity: 🔥🔥🔥🔥</span>
-            <button class="btn btn-primary btn-sm" onclick="addCity({name:'Jaipur', state:'Rajasthan', costIndex:'6.5/10'})">+ Add to Trip</button>
-        </div>
-    </div>
-
-    <!-- City 2 -->
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <span class="badge badge-primary">South India</span>
-                <h3 style="font-size: 18px; font-weight: 700; color: var(--dark); margin-top: 6px;">Kochi, Kerala</h3>
-            </div>
-            <span class="badge badge-success">Cost Index: 5.2/10</span>
-        </div>
-        <p style="color: var(--muted); font-size: 13px; margin: 10px 0;">
-            Gateway to the backwaters, colonial Fort Kochi, Chinese fishing nets, and spice markets.
-        </p>
-        <div style="font-size: 12px; color: var(--text); background: var(--background); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;">
-            💰 Avg. Daily Cost: <strong>₹2,400</strong> | ⛵ Top Spot: Alleppey Boat
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 12px; color: var(--muted);">Popularity: 🔥🔥🔥</span>
-            <button class="btn btn-primary btn-sm" onclick="addCity({name:'Kochi', state:'Kerala', costIndex:'5.2/10'})">+ Add to Trip</button>
-        </div>
-    </div>
-
-    <!-- City 3 -->
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <span class="badge badge-primary">West India</span>
-                <h3 style="font-size: 18px; font-weight: 700; color: var(--dark); margin-top: 6px;">North Goa</h3>
-            </div>
-            <span class="badge badge-warning">Cost Index: 7.8/10</span>
-        </div>
-        <p style="color: var(--muted); font-size: 13px; margin: 10px 0;">
-            Sun-kissed beaches, Portuguese churches, nightlife, and thrilling water sports adventures.
-        </p>
-        <div style="font-size: 12px; color: var(--text); background: var(--background); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;">
-            💰 Avg. Daily Cost: <strong>₹3,500</strong> | 🏖️ Top Spot: Baga Beach
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 12px; color: var(--muted);">Popularity: 🔥🔥🔥🔥🔥</span>
-            <button class="btn btn-primary btn-sm" onclick="addCity({name:'North Goa', state:'Goa', costIndex:'7.8/10'})">+ Add to Trip</button>
-        </div>
-    </div>
-
-    <!-- City 4 -->
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-                <span class="badge badge-primary">North India</span>
-                <h3 style="font-size: 18px; font-weight: 700; color: var(--dark); margin-top: 6px;">Udaipur, Rajasthan</h3>
-            </div>
-            <span class="badge badge-warning">Cost Index: 7.0/10</span>
-        </div>
-        <p style="color: var(--muted); font-size: 13px; margin: 10px 0;">
-            City of Lakes featuring Lake Pichola, City Palace, romantic boat rides, and heritage dining.
-        </p>
-        <div style="font-size: 12px; color: var(--text); background: var(--background); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;">
-            💰 Avg. Daily Cost: <strong>₹3,200</strong> | 🏰 Top Spot: City Palace
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 12px; color: var(--muted);">Popularity: 🔥🔥🔥🔥</span>
-            <button class="btn btn-primary btn-sm" onclick="addCity({name:'Udaipur', state:'Rajasthan', costIndex:'7.0/10'})">+ Add to Trip</button>
-        </div>
-    </div>
-
+<!-- Dynamic City Grid -->
+<div class="grid grid-3" id="cityGridContainer">
+    <!-- Dynamically rendered via JS below -->
 </div>
+
+<div id="citySearchEmpty" style="display: none; text-align: center; padding: 40px; color: var(--muted);" class="card">
+    🔍 No destination cities found matching your search query.
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    renderCityGrid();
+});
+
+function renderCityGrid() {
+    const container = document.getElementById('cityGridContainer');
+    if (!container || typeof GLOBETROTTER_CITIES === 'undefined') return;
+
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+
+    GLOBETROTTER_CITIES.forEach(city => {
+        const card = document.createElement('div');
+        card.className = 'card city-card-item';
+        card.dataset.name = city.name.toLowerCase();
+        card.dataset.state = city.state.toLowerCase();
+        card.dataset.country = city.country.toLowerCase();
+        card.dataset.cost = city.costIndex.toLowerCase();
+
+        const header = document.createElement('div');
+        header.style.cssText = "display: flex; justify-content: space-between; align-items: flex-start;";
+
+        const titleBox = document.createElement('div');
+        const badgeRegion = document.createElement('span');
+        badgeRegion.className = 'badge badge-primary';
+        badgeRegion.textContent = city.region || 'Destination';
+
+        const h3 = document.createElement('h3');
+        h3.style.cssText = "font-size: 18px; font-weight: 700; color: var(--dark); margin-top: 6px;";
+        h3.textContent = `${city.name}, ${city.state}`;
+
+        titleBox.appendChild(badgeRegion);
+        titleBox.appendChild(h3);
+
+        const badgeCost = document.createElement('span');
+        badgeCost.className = city.costIndex === 'High' ? 'badge badge-warning' : (city.costIndex === 'Low' ? 'badge badge-success' : 'badge badge-primary');
+        badgeCost.textContent = `Cost: ${city.costIndex}`;
+
+        header.appendChild(titleBox);
+        header.appendChild(badgeCost);
+
+        const desc = document.createElement('p');
+        desc.style.cssText = "color: var(--muted); font-size: 13px; margin: 10px 0;";
+        desc.textContent = `Explore ${city.name} featuring ${city.activitiesCount} curated activities, attractions, and cultural points.`;
+
+        const metaBox = document.createElement('div');
+        metaBox.style.cssText = "font-size: 12px; color: var(--text); background: var(--background); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;";
+        metaBox.textContent = `📍 Country: ${city.country} | 🎯 Activities: ${city.activitiesCount} Total`;
+
+        const footer = document.createElement('div');
+        footer.style.cssText = "display: flex; justify-content: space-between; align-items: center;";
+
+        const pop = document.createElement('span');
+        pop.style.cssText = "font-size: 12px; color: var(--muted);";
+        pop.textContent = `Popularity: ${city.popularity}`;
+
+        const addBtn = document.createElement('button');
+        addBtn.className = 'btn btn-primary btn-sm';
+        addBtn.textContent = '+ Add to Trip';
+        addBtn.addEventListener('click', () => {
+            openAddCityModalWithData(city.id);
+        });
+
+        footer.appendChild(pop);
+        footer.appendChild(addBtn);
+
+        card.appendChild(header);
+        card.appendChild(desc);
+        card.appendChild(metaBox);
+        card.appendChild(footer);
+
+        container.appendChild(card);
+    });
+}
+
+function filterCitySearchGrid() {
+    const q = document.getElementById('citySearchInputMain')?.value.trim().toLowerCase() || '';
+    const cost = document.getElementById('cityCostFilter')?.value.trim().toLowerCase() || '';
+
+    const cards = document.querySelectorAll('.city-card-item');
+    let matchCount = 0;
+
+    cards.forEach(card => {
+        const matchesQ = !q || card.dataset.name.includes(q) || card.dataset.state.includes(q) || card.dataset.country.includes(q);
+        const matchesCost = !cost || card.dataset.cost === cost;
+
+        if (matchesQ && matchesCost) {
+            card.style.display = 'block';
+            matchCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    const emptyMsg = document.getElementById('citySearchEmpty');
+    if (emptyMsg) {
+        emptyMsg.style.display = matchCount === 0 ? 'block' : 'none';
+    }
+}
+</script>
 {% endblock %}
