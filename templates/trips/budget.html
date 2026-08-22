@@ -80,8 +80,8 @@
             <div class="card-title">Budget Allocation Progress</div>
             <div class="card-subtitle">{{ budget.percentage_used|floatformat:0 }}% of total budget utilized</div>
         </div>
-        <span class="badge {% if budget.is_over_budget %}badge-danger{% else %}badge-success{% endif %}">
-            {% if budget.is_over_budget %}Over Budget{% else %}Within Limit{% endif %}
+        <span class="badge {% if budget.set_budget <= 0 %}badge-warning{% elif budget.is_over_budget %}badge-danger{% else %}badge-success{% endif %}">
+            {% if budget.set_budget <= 0 %}No Budget Set{% elif budget.is_over_budget %}Over Budget{% else %}Within Limit{% endif %}
         </span>
     </div>
 
@@ -123,7 +123,11 @@
     <div class="card">
         <div class="card-title" style="margin-bottom: 16px;">{% icon "lightbulb" size=16 %}Budget Tips</div>
 
-        {% if budget.is_over_budget %}
+        {% if budget.set_budget <= 0 %}
+        <div class="alert alert-warning">
+            <strong>No Budget Set!</strong> This trip has no target budget yet — <a href="{% url 'trip_edit' trip.id %}">edit trip details</a> to add one and track your spending against it.
+        </div>
+        {% elif budget.is_over_budget %}
         <div class="alert alert-danger">
             <strong>Over Budget!</strong> You're ₹{{ budget.over_by }} over your target of ₹{{ budget.set_budget }}.
         </div>

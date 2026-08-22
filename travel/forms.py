@@ -111,7 +111,7 @@ class TripForm(forms.Form):
     end_date = forms.DateField(required=False, widget=forms.DateInput(attrs={**CONTROL, "type": "date"}))
     budget = forms.DecimalField(
         max_digits=12, decimal_places=2, min_value=0, required=False,
-        widget=forms.NumberInput(attrs={**CONTROL, "min": 0, "step": "any"}),
+        widget=forms.NumberInput(attrs={**CONTROL, "min": 0.01, "step": "any"}),
     )
     travelers = forms.IntegerField(
         min_value=1, required=False,
@@ -130,8 +130,12 @@ class TripForm(forms.Form):
         start, end = cleaned.get("start_date"), cleaned.get("end_date")
         if start and end and end < start:
             self.add_error("end_date", "End date cannot be before the start date.")
-        if cleaned.get("budget") in (None, ""):
-            cleaned["budget"] = 0
+
+        budget = cleaned.get("budget")
+        if budget in (None, ""):
+            self.add_error("budget", "Please enter your estimated budget.")
+        elif budget <= 0:
+            self.add_error("budget", "Please enter a proper estimated budget greater than zero.")
         return cleaned
 
     def service_kwargs(self) -> dict:
