@@ -14,29 +14,41 @@ GlobeTrotter follows a clean, professional, Odoo-inspired UI design language:
 
 ---
 
-## 🚀 Key Features
+## 🌿 Git Branching & Integration Architecture
 
-1. **User Authentication**: Secure Login & Signup with custom user profiles.
-2. **Interactive Dashboard**: High-level metrics tracking total trips, destinations visited, total budget spent, and upcoming travel plans.
-3. **Trip Planning & Management**: Create new trips with start/end dates, target budgets, travel styles, and destination hubs.
-4. **Day-by-Day Itinerary Builder**: Multi-stop trip builder allowing day-wise activity assignment and schedule timing.
-5. **City & Activity Discovery**: Searchable catalog of Indian and global cities with cost indices, activity categories (Heritage, Culinary, Adventure, Cruises), and quick-add actions.
-6. **Budget Estimator & Expense Log**: Real-time budget progress bar, over-budget warnings, category breakdowns (Stay, Transport, Activities, Meals), and custom expense logging.
-7. **Visual Travel Calendar**: Month/Week timeline view mapping travel dates and scheduled stop badges.
-8. **Public Trip Sharing**: Generate public share tokens enabling visitors to view curated itineraries and copy trips directly into their accounts.
-
----
-
-## 👨‍💻 Team Task Allocation & Branch Architecture
+GlobeTrotter uses a **two-tier promotion Git workflow** with a dedicated `staging` integration battlefield between individual feature branches and the stable `main` branch.
 
 ```text
-main
-│
-├── feature/neel-django-core       (Neel Bhai — Django Models, Auth, URLs & DB Core)
-├── feature/kavya-ui-system        (Kavya — Odoo UI System & All 13 HTML Templates)
-├── feature/margish-travel-logic   (Margish Bhai — City/Activity Data & Budget Logic)
-└── feature/prince-integration     (Prince Bhai — Incremental Integration & E2E Testing)
+                         ┌────────────────────────┐
+                         │         MAIN           │
+                         │   FINAL / STABLE       │
+                         └──────────▲─────────────┘
+                                    │
+                              FINAL QA PASS
+                                    │
+                         ┌──────────┴─────────────┐
+                         │       STAGING          │
+                         │ INTEGRATION + TESTING  │
+                         └──────────▲─────────────┘
+                                    │
+              ┌─────────────────────┼─────────────────────┐
+              │                     │                     │
+       ┌──────┴──────┐       ┌──────┴──────┐       ┌──────┴──────┐
+       │    NEEL     │       │   MARGISH   │       │    PRINCE    │
+       │   Backend   │       │ Travel Logic│       │ Integration  │
+       └─────────────┘       └─────────────┘       └─────────────┘
+              │                     │                     │
+              └─────────────── KAVYA UI ─────────────────┘
 ```
+
+### Branch Responsibilities
+
+- **`main` (Production / Final Submission)**: Stable, final submission branch. Contains ONLY tested, submission-ready code. **NO direct feature development or direct commits.**
+- **`staging` (Integration Battlefield & QA)**: Integration & testing branch. All feature branches are merged into `staging` first for full end-to-end user flow testing.
+- **`feature/kavya-ui-system` (Kavya — Member 2: UI System)**: **✅ COMPLETED & INTEGRATION-READY** — Master Odoo design system, 13 core page templates, interactive modals (`#addCityModal`, `#addActivityModal`, `#addExpenseModal`, `#deleteConfirmationModal`), toast notification engine, inline validation, and safe DOM API handlers.
+- **`feature/neel-django-core` (Neel — Member 1: Backend)**: Django project/app setup, models, database migrations, authentication, Trip CRUD views.
+- **`feature/margish-travel-logic` (Margish — Member 3: Travel Data)**: City/Activity catalog data seeding, search algorithms, budget calculation formulas.
+- **`feature/prince-integration` (Prince — Member 4: Integration)**: Integration wiring, dynamic calendar rendering, public share token routing, E2E testing, final QA.
 
 ---
 
@@ -44,8 +56,8 @@ main
 
 - **Backend**: Python 3, Django Web Framework
 - **Database**: SQLite3
-- **Frontend**: HTML5, Vanilla CSS3 (Custom Odoo Design System), Vanilla JS
-- **Templates**: Django Template Language (`base.html` inheritance)
+- **Frontend**: HTML5, Vanilla CSS3 (Custom Odoo Design System), Vanilla JS (Safe DOM APIs)
+- **Templates**: Django Template Language (`base.html` master layout inheritance)
 
 ---
 
@@ -53,17 +65,22 @@ main
 
 ```text
 .
+├── DOCUMENT/                      # Hackathon Architecture & Integration Plan (.md & .docx)
 ├── STANDARD CSS/                  # Odoo-inspired design reference & standalone HTML previews
 │   ├── style.css                  # Core CSS design system token definitions
 │   ├── base.html                  # Base standalone template
-│   ├── login.html / signup.html   # Auth preview templates
-│   ├── dashboard.html             # Main dashboard preview
+│   ├── static/js/                 # Standalone JS modules
 │   └── ...                        # Standalone preview HTML files
-├── static/                        # Project static assets
-│   └── css/
-│       └── style.css
+├── static/                        # Production Django static assets
+│   ├── css/
+│   │   └── style.css
+│   └── js/
+│       ├── validation.js          # Inline form error handling
+│       ├── toast.js               # Dynamic toast alerts
+│       ├── modals.js              # Modal lifecycle & keyboard trap
+│       └── itinerary.js           # Safe DOM handlers for Cities, Activities & Expenses
 ├── templates/                     # Production Django templates
-│   ├── base.html                  # Django master template
+│   ├── base.html                  # Django master template with global modals
 │   ├── auth/                      # Login & Signup templates
 │   └── trips/                     # Trip CRUD, Itinerary, Search & Budget templates
 └── README.md
@@ -71,21 +88,32 @@ main
 
 ---
 
-## 🏃 Getting Started
+## 🏃 Workflow Command Examples
 
-### 1. Standalone UI Preview (No Django required)
-Open any HTML file inside the `STANDARD CSS/` folder directly in your browser:
+### 1. Merging Feature into Staging
 ```bash
-# Open dashboard in browser
-google-chrome "STANDARD CSS/dashboard.html"
+git checkout staging
+git pull origin staging
+git merge feature/kavya-ui-system
+git push origin staging
 ```
 
-### 2. Running with Django
+### 2. Promoting Staging to Main (Post-QA Pass)
 ```bash
-# Apply database migrations
-python manage.py migrate
-
-# Run local development server
-python manage.py runserver
+git checkout main
+git pull origin main
+git merge staging
+git push origin main
 ```
-Visit `http://127.0.0.1:8000/` in your browser.
+
+---
+
+## 🚨 Hackathon Git Rules
+
+1. `main` must always remain stable and runnable.
+2. **No direct feature development or commits on `main`.**
+3. `staging` is the integration environment where all testing occurs.
+4. Test every feature locally before merging to `staging`.
+5. At **14:00 (Feature Freeze)**, no new features are permitted.
+6. Before final submission, `staging` must pass the full end-to-end demo flow.
+7. Only then merge `staging` into `main`.
