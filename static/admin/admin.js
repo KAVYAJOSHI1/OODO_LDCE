@@ -104,9 +104,9 @@ async function initAdminDashboard() {
         if (document.getElementById('statTotalCities')) document.getElementById('statTotalCities').textContent = statsRes.stats.total_cities;
         if (document.getElementById('statTotalActivities')) document.getElementById('statTotalActivities').textContent = statsRes.stats.total_activities;
         if (document.getElementById('statPublicTrips')) document.getElementById('statPublicTrips').textContent = statsRes.stats.total_public_trips;
-        if (document.getElementById('statAvgBudget')) document.getElementById('statAvgBudget').textContent = '$' + statsRes.stats.avg_trip_budget;
-        if (document.getElementById('statTotalBudget')) document.getElementById('statTotalBudget').textContent = '$' + statsRes.stats.total_planned_budget;
-        if (document.getElementById('statTotalExpenses')) document.getElementById('statTotalExpenses').textContent = '$' + statsRes.stats.total_expenses;
+        if (document.getElementById('statAvgBudget')) document.getElementById('statAvgBudget').textContent = '₹' + statsRes.stats.avg_trip_budget;
+        if (document.getElementById('statTotalBudget')) document.getElementById('statTotalBudget').textContent = '₹' + statsRes.stats.total_planned_budget;
+        if (document.getElementById('statTotalExpenses')) document.getElementById('statTotalExpenses').textContent = '₹' + statsRes.stats.total_expenses;
         if (document.getElementById('statBudgetUtil')) document.getElementById('statBudgetUtil').textContent = statsRes.stats.budget_utilization;
     }
 
@@ -187,7 +187,7 @@ function renderBudgetBreakdownChart(data) {
             <div class="bar-chart-row">
                 <div class="bar-chart-label-group">
                     <span style="text-transform:capitalize;">${item.category}</span>
-                    <span>$${item.total_amount.toFixed(2)} (${pct}%)</span>
+                    <span>₹${item.total_amount.toFixed(2)} (${pct}%)</span>
                 </div>
                 <div class="bar-chart-bar-outer">
                     <div class="bar-chart-bar-inner" style="width: ${pct}%; background-color: var(--admin-info);"></div>
@@ -377,7 +377,7 @@ function renderActivitiesTable(activities) {
                 <div style="font-size:12px;color:var(--admin-muted);">City: ${escapeHtml(a.city_name)}</div>
             </td>
             <td><span class="admin-badge admin-badge-primary">${escapeHtml(a.category)}</span></td>
-            <td>$${a.cost}</td>
+            <td>₹${a.cost}</td>
             <td>${a.duration_hours} hrs</td>
             <td>★ ${a.rating}</td>
             <td>${a.popularity}/100</td>
@@ -573,7 +573,7 @@ function renderTripsTable(trips) {
                 </td>
                 <td>${escapeHtml(dests)}</td>
                 <td>${t.travelers} travelers</td>
-                <td>$${t.total_cost} / $${t.budget}</td>
+                <td>₹${t.total_cost} / ₹${t.budget}</td>
                 <td><span class="admin-badge ${statusBadge}">${t.status}</span></td>
                 <td>
                     <button class="admin-btn admin-btn-sm ${t.is_public ? 'admin-btn-primary' : 'admin-btn-secondary'}" onclick="toggleTripPublic(${t.id})">
@@ -601,7 +601,7 @@ async function inspectTripDetail(tripId) {
             <div><strong>Travelers:</strong> ${t.travelers} person(s)</div>
             <div><strong>Dates:</strong> ${t.start_date || 'N/A'} → ${t.end_date || 'N/A'} (${t.duration_days} days)</div>
             <div><strong>Status:</strong> <span class="admin-badge admin-badge-info">${t.status}</span></div>
-            <div><strong>Budget:</strong> $${t.budget} | <strong>Total Cost:</strong> $${t.total_cost}</div>
+            <div><strong>Budget:</strong> ₹${t.budget} | <strong>Total Cost:</strong> ₹${t.total_cost}</div>
             <div><strong>Share Token:</strong> ${t.share_token || 'None'}</div>
         </div>
 
@@ -616,17 +616,17 @@ async function inspectTripDetail(tripId) {
                 <div style="border:1px solid var(--admin-border);border-radius:8px;padding:14px;margin-bottom:12px;">
                     <div style="display:flex;justify-content:space-between;font-weight:700;margin-bottom:6px;">
                         <span>Stop #${stop.order}: ${escapeHtml(stop.city_name)}, ${escapeHtml(stop.country)}</span>
-                        <span>$${stop.stop_cost}</span>
+                        <span>₹${stop.stop_cost}</span>
                     </div>
                     <div style="font-size:12px;color:var(--admin-muted);margin-bottom:8px;">
-                        Stay: ${escapeHtml(stop.accommodation_name)} ($${stop.accommodation_cost}/night) | Transport: ${escapeHtml(stop.transport_mode)} ($${stop.transport_cost})
+                        Stay: ${escapeHtml(stop.accommodation_name)} (₹${stop.accommodation_cost}/night) | Transport: ${escapeHtml(stop.transport_mode)} (₹${stop.transport_cost})
                     </div>
             `;
 
             if (stop.activities && stop.activities.length > 0) {
                 html += '<ul style="margin:0;padding-left:20px;font-size:13px;">';
                 stop.activities.forEach(act => {
-                    html += `<li>${escapeHtml(act.name)} - $${act.cost}</li>`;
+                    html += `<li>${escapeHtml(act.name)} - ₹${act.cost}</li>`;
                 });
                 html += '</ul>';
             } else {
@@ -639,7 +639,7 @@ async function inspectTripDetail(tripId) {
     if (t.expenses && t.expenses.length > 0) {
         html += '<h4 style="margin:16px 0 10px 0;">Logged Expenses</h4><ul style="padding-left:20px;font-size:13px;">';
         t.expenses.forEach(exp => {
-            html += `<li>[${escapeHtml(exp.category)}] ${escapeHtml(exp.description)}: <strong>$${exp.amount}</strong></li>`;
+            html += `<li>[${escapeHtml(exp.category)}] ${escapeHtml(exp.description)}: <strong>₹${exp.amount}</strong></li>`;
         });
         html += '</ul>';
     }
