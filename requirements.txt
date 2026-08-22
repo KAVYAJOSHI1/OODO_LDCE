@@ -1,0 +1,6 @@
+# GlobeTrotter - Odoo Hackathon
+# Install with:  pip install -r requirements.txt
+Django>=6.1,<7.0
+python-dotenv>=1.0        # loads the .env file
+psycopg[binary]>=3.2      # PostgreSQL driver (psycopg 3)
+Pillow>=12.0             # required for Trip.cover_image / User.avatar ImageFields
