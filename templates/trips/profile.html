@@ -64,6 +64,16 @@
                     <input type="email" id="email" name="email" class="form-control" value="{{ request.user.email }}" required>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-label" for="home_city">Home City / Base Location</label>
+                    <input type="text" id="home_city" name="home_city" class="form-control" value="{{ user_profile.home_city }}" placeholder="e.g. Ahmedabad, Gujarat">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="bio">Short Travel Bio</label>
+                    <textarea id="bio" name="bio" class="form-control" rows="3" placeholder="Passionate explorer, heritage lover & Odoo hackathon hacker!">{{ user_profile.bio }}</textarea>
+                </div>
+
                 <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
                     <button type="submit" class="btn btn-primary">
                         Save Changes

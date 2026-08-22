@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_http_methods
 
+from core.models import Profile
 from travel.forms import LoginForm, ProfileForm, SignupForm, TripForm, normalize_trip_data
 from travel.models import City, Trip
 from travel.serializers import itinerary_day_to_dict
@@ -224,10 +225,15 @@ def calendar(request):
 @login_required
 @require_http_methods(["GET", "POST"])
 def profile(request):
+    user_profile, _ = Profile.objects.get_or_create(user=request.user)
+
     if request.method == "POST":
         form = ProfileForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
+            user_profile.home_city = request.POST.get("home_city", "").strip()
+            user_profile.bio = request.POST.get("bio", "").strip()
+            user_profile.save()
             messages.success(request, "Profile updated.")
             return redirect("profile")
         _form_errors_to_messages(request, form)
@@ -239,7 +245,7 @@ def profile(request):
     total_spent = sum((trip.get_total_cost() for trip in trips), Decimal("0.00"))
 
     stats = {"trips": trips.count(), "cities": len(cities), "spent": total_spent}
-    return render(request, "trips/profile.html", {"form": form, "stats": stats})
+    return render(request, "trips/profile.html", {"form": form, "stats": stats, "user_profile": user_profile})
 
 
 def public_trip(request):
