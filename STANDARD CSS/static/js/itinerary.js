@@ -94,6 +94,7 @@ function initApp() {
     renderCityCatalogSearch();
     renderActivitySearchCatalog();
     renderItineraryBuilderStops();
+    renderItineraryViewPage();
     renderExpenseTable();
     recalculateBudget();
     updateTripReadiness();
@@ -218,6 +219,7 @@ function handleAddCitySubmit(event) {
     window.GLOBETROTTER_STATE.activeTargetStopId = newStop.id;
 
     renderItineraryBuilderStops();
+    renderItineraryViewPage();
     recalculateBudget();
     updateTripReadiness();
     closeModal('addCityModal');
@@ -330,7 +332,6 @@ function filterActivityCatalogTable() {
 }
 
 function openAddActivityModalWithData(cityId, activityId, targetStopId) {
-    // If targetStopId provided, activate it
     if (targetStopId) {
         window.GLOBETROTTER_STATE.activeTargetStopId = targetStopId;
     }
@@ -341,17 +342,14 @@ function openAddActivityModalWithData(cityId, activityId, targetStopId) {
         window.GLOBETROTTER_STATE.activeTargetStopId = activeStop.id;
     }
 
-    // Determine target cityId from active stop or parameter
     const effectiveCityId = cityId || (activeStop ? activeStop.cityId : 'delhi');
     const city = getCityById(effectiveCityId) || GLOBETROTTER_CITIES[0];
 
-    // Update Modal Header City Badge Notice
     const badgeElem = document.getElementById('activityModalCityBadge');
     if (badgeElem) {
         badgeElem.textContent = `📍 Target Stop: ${activeStop ? activeStop.cityName : city.name} (${city.state})`;
     }
 
-    // Populate City-Strict Activity Dropdown
     const selectElem = document.getElementById('modalActivitySelect');
     if (selectElem) {
         while (selectElem.firstChild) {
@@ -447,7 +445,6 @@ function handleAddActivitySubmit(event) {
         return false;
     }
 
-    // Check overlap conflict warning
     const timeVal = timeInput.value || "09:00 AM";
     const existingConflict = targetStop.activities.find(a => a.time === timeVal);
     if (existingConflict) {
@@ -466,6 +463,7 @@ function handleAddActivitySubmit(event) {
 
     targetStop.activities.push(newActivity);
     renderItineraryBuilderStops();
+    renderItineraryViewPage();
     recalculateBudget();
     updateTripReadiness();
     syncCalendarView();
@@ -475,7 +473,6 @@ function handleAddActivitySubmit(event) {
     return false;
 }
 
-// Quick Add Activity from Side Panel
 function quickAddActivityToActiveStop(activityId) {
     let targetStop = window.GLOBETROTTER_STATE.stops.find(s => s.id === window.GLOBETROTTER_STATE.activeTargetStopId);
     if (!targetStop && window.GLOBETROTTER_STATE.stops.length > 0) {
@@ -488,7 +485,6 @@ function quickAddActivityToActiveStop(activityId) {
         return;
     }
 
-    // Find activity in catalog
     const cityActivities = getActivitiesByCityId(targetStop.cityId);
     const act = cityActivities.find(a => a.id === activityId) || cityActivities[0];
 
@@ -509,6 +505,7 @@ function quickAddActivityToActiveStop(activityId) {
 
     targetStop.activities.push(newAct);
     renderItineraryBuilderStops();
+    renderItineraryViewPage();
     recalculateBudget();
     updateTripReadiness();
     syncCalendarView();
@@ -517,8 +514,127 @@ function quickAddActivityToActiveStop(activityId) {
 }
 
 // -------------------------------------------------------------
-// 3. ITINERARY BUILDER & HTML5 DRAG & DROP
+// 3. ITINERARY BUILDER & PREVIEW PAGE MAPPING
 // -------------------------------------------------------------
+
+function renderItineraryViewPage() {
+    const titleElem = document.getElementById('previewTripTitle');
+    const routeSubtitleElem = document.getElementById('previewTripSubtitle');
+    const overviewStatsElem = document.getElementById('previewOverviewStats');
+    const container = document.getElementById('previewDaysContainer');
+
+    if (!container && !titleElem) return;
+
+    const state = window.GLOBETROTTER_STATE;
+    const cityNames = state.stops.map(s => s.cityName).join(" ➔ ");
+    let totalActs = 0;
+    let totalActCost = 0;
+
+    state.stops.forEach(s => {
+        totalActs += s.activities.length;
+        s.activities.forEach(a => {
+            totalActCost += a.cost;
+        });
+    });
+
+    let totalExpenseCost = 0;
+    state.expenses.forEach(e => {
+        totalExpenseCost += e.amount;
+    });
+
+    const grandTotalSpent = totalActCost + totalExpenseCost;
+    const avgPerDay = Math.round(grandTotalSpent / 8);
+
+    if (titleElem) titleElem.textContent = state.trip.title;
+    if (routeSubtitleElem) {
+        routeSubtitleElem.textContent = `📍 ${cityNames} • ${state.trip.startDate} to ${state.trip.endDate} (8 Days)`;
+    }
+
+    if (overviewStatsElem) {
+        overviewStatsElem.textContent = `${state.stops.length} Cities • ${totalActs} Activities • ₹${grandTotalSpent.toLocaleString()} Total Budget (Avg. ₹${avgPerDay.toLocaleString()} / day)`;
+    }
+
+    if (container) {
+        while (container.firstChild) {
+            container.removeChild(container.firstChild);
+        }
+
+        state.stops.forEach((stop, index) => {
+            let stopActTotal = 0;
+            stop.activities.forEach(a => stopActTotal += a.cost);
+
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.marginBottom = '20px';
+
+            const header = document.createElement('div');
+            header.className = 'card-header';
+
+            const left = document.createElement('div');
+
+            const badge = document.createElement('span');
+            badge.className = index === 0 ? 'badge badge-primary' : (index === 1 ? 'badge badge-warning' : 'badge badge-success');
+            badge.textContent = `STOP ${index + 1}`;
+
+            const title = document.createElement('span');
+            title.style.cssText = "font-size: 16px; font-weight: 700; color: var(--dark); margin-left: 10px;";
+            title.textContent = `${stop.cityName} (${stop.stateName})`;
+
+            const sub = document.createElement('div');
+            sub.style.cssText = "font-size: 12px; color: var(--muted); margin-top: 2px;";
+            sub.textContent = `Dates: ${stop.startDate} to ${stop.endDate} (${stop.activities.length} activities scheduled)`;
+
+            left.appendChild(badge);
+            left.appendChild(title);
+            left.appendChild(sub);
+
+            const rightCost = document.createElement('span');
+            rightCost.style.cssText = "font-weight: 600; color: var(--primary); font-size: 15px;";
+            rightCost.textContent = `Est. ₹${stopActTotal.toLocaleString()}`;
+
+            header.appendChild(left);
+            header.appendChild(rightCost);
+            card.appendChild(header);
+
+            const timeline = document.createElement('div');
+            timeline.className = 'timeline';
+            timeline.style.marginTop = '12px';
+
+            if (stop.activities.length === 0) {
+                const emptyItem = document.createElement('div');
+                emptyItem.style.cssText = "padding: 12px; color: var(--muted); font-size: 12px; font-style: italic;";
+                emptyItem.textContent = `No scheduled activities for ${stop.cityName}.`;
+                timeline.appendChild(emptyItem);
+            } else {
+                stop.activities.forEach(act => {
+                    const item = document.createElement('div');
+                    item.className = 'timeline-item';
+
+                    const tTime = document.createElement('div');
+                    tTime.className = 'timeline-time';
+                    tTime.textContent = act.time;
+
+                    const tTitle = document.createElement('div');
+                    tTitle.className = 'timeline-title';
+                    tTitle.textContent = act.name;
+
+                    const tMeta = document.createElement('div');
+                    tMeta.className = 'timeline-meta';
+                    tMeta.textContent = `${act.category} • Duration: ${act.duration} • Est: ${act.cost === 0 ? 'Free' : '₹' + act.cost.toLocaleString()}`;
+
+                    item.appendChild(tTime);
+                    item.appendChild(tTitle);
+                    item.appendChild(tMeta);
+
+                    timeline.appendChild(item);
+                });
+            }
+
+            card.appendChild(timeline);
+            container.appendChild(card);
+        });
+    }
+}
 
 function renderItineraryBuilderStops() {
     const listElem = document.getElementById('builderCityList');
@@ -779,6 +895,7 @@ function handleDrop(e) {
         stops.splice(targetIndex, 0, moved);
 
         renderItineraryBuilderStops();
+        renderItineraryViewPage();
         syncCalendarView();
         showToast('✓ Stop order updated', 'success');
     }
@@ -792,6 +909,7 @@ function deleteCityStop(stopId) {
     }
 
     renderItineraryBuilderStops();
+    renderItineraryViewPage();
     recalculateBudget();
     updateTripReadiness();
     syncCalendarView();
@@ -803,6 +921,7 @@ function deleteActivityFromStop(stopId, actId) {
     if (stop) {
         stop.activities = stop.activities.filter(a => a.id !== actId);
         renderItineraryBuilderStops();
+        renderItineraryViewPage();
         recalculateBudget();
         updateTripReadiness();
         syncCalendarView();

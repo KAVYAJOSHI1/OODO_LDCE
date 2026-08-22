@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Triangle Explorer — Itinerary | GlobeTrotter</title>
+    <title>Preview Itinerary | GlobeTrotter</title>
+    <link rel="stylesheet" href="static/css/style.css">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <nav class="navbar">
@@ -14,9 +14,10 @@
         <span class="brand-icon">G</span>
         GlobeTrotter
     </a>
+
     <div class="navbar-menu">
         <a href="dashboard.html" class="nav-link">Dashboard</a>
-        <a href="my_trips.html" class="nav-link active">My Trips</a>
+        <a href="my_trips.html" class="nav-link">My Trips</a>
         <a href="profile.html" class="nav-link">Profile</a>
     </div>
 </nav>
@@ -25,12 +26,12 @@
     <aside class="sidebar">
         <div class="sidebar-title">Travel</div>
         <a href="dashboard.html" class="sidebar-link">🏠 Dashboard</a>
-        <a href="my_trips.html" class="sidebar-link active">✈️ My Trips</a>
+        <a href="my_trips.html" class="sidebar-link">✈️ My Trips</a>
         <a href="create_trip.html" class="sidebar-link">➕ Plan Trip</a>
         <a href="city_search.html" class="sidebar-link">🏙️ Cities</a>
         <a href="activity_search.html" class="sidebar-link">🎯 Activities</a>
         <a href="calendar.html" class="sidebar-link">📅 Calendar</a>
-        <a href="budget.html" class="sidebar-link">📊 Budget</a>
+
         <div class="sidebar-title" style="margin-top:20px;">Account</div>
         <a href="profile.html" class="sidebar-link">👤 Profile</a>
         <a href="login.html" class="sidebar-link">🚪 Logout</a>
@@ -40,59 +41,227 @@
         <div class="page-header">
             <div>
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
-                    <h1 class="page-title">Golden Triangle Explorer</h1>
+                    <h1 class="page-title" id="previewTripTitle">Golden Triangle Explorer</h1>
                     <span class="badge badge-primary">Upcoming</span>
                 </div>
-                <p class="page-subtitle">📍 Delhi ➔ Agra ➔ Jaipur • Oct 12 – Oct 20, 2026 (8 Days)</p>
+                <p class="page-subtitle" id="previewTripSubtitle">📍 Delhi ➔ Agra ➔ Jaipur • Oct 20 – Oct 28, 2026 (8 Days)</p>
             </div>
             <div style="display: flex; gap: 10px;">
-                <a href="public_trip.html" class="btn btn-secondary">🔗 Share Trip</a>
-                <a href="itinerary_builder.html" class="btn btn-primary">✏️ Edit Itinerary</a>
+                <a href="public_trip.html" class="btn btn-secondary">
+                    🔗 Share Trip
+                </a>
+                <a href="itinerary_builder.html" class="btn btn-primary">
+                    ✏️ Edit Itinerary
+                </a>
             </div>
         </div>
 
+        <!-- Header Summary Card -->
         <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, var(--primary), #9a718d); color: white;">
             <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
                 <div>
                     <div style="font-size: 13px; opacity: 0.9;">TRIP OVERVIEW</div>
-                    <div style="font-size: 22px; font-weight: 700; margin-top: 4px;">3 Cities • 12 Activities • ₹24,500 Total Budget</div>
+                    <div style="font-size: 20px; font-weight: 700; margin-top: 4px;" id="previewOverviewStats">
+                        3 Cities • 6 Activities • ₹31,950 Total Spent
+                    </div>
+                    <div style="font-size: 13px; opacity: 0.9; margin-top: 4px;">Curated multi-city journey</div>
                 </div>
                 <div style="display: flex; gap: 12px;">
                     <div style="text-align: center; background: rgba(255,255,255,0.15); padding: 10px 16px; border-radius: 8px;">
                         <div style="font-size: 11px; text-transform: uppercase;">Duration</div>
                         <div style="font-size: 18px; font-weight: 700;">8 Days</div>
                     </div>
+                    <div style="text-align: center; background: rgba(255,255,255,0.15); padding: 10px 16px; border-radius: 8px;">
+                        <div style="font-size: 11px; text-transform: uppercase;">Status</div>
+                        <div style="font-size: 18px; font-weight: 700;">Confirmed</div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 24px;">
-            <div class="card">
-                <div class="card-header">
-                    <div>
-                        <span class="badge badge-primary">DAY 1</span>
-                        <span style="font-size: 16px; font-weight: 700; color: var(--dark); margin-left: 8px;">Delhi Arrival & Old Delhi Heritage Walk</span>
-                    </div>
-                    <span style="font-weight: 600; color: var(--primary);">Est. ₹4,900</span>
-                </div>
-
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="timeline-time">10:00 AM</div>
-                        <div class="timeline-title">Check-in at Hotel Imperial</div>
-                        <div class="timeline-meta">Janpath, Connaught Place</div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-time">02:00 PM</div>
-                        <div class="timeline-title">Qutub Minar & Garden Tour</div>
-                        <div class="timeline-meta">Mehrauli • Entrance: ₹600</div>
-                    </div>
-                </div>
-            </div>
+        <!-- Day-by-Day / Stop-by-Stop Dynamic Timeline View -->
+        <div id="previewDaysContainer" style="display: flex; flex-direction: column; gap: 20px;">
+            <!-- Dynamically rendered via renderItineraryViewPage() in itinerary.js -->
         </div>
     </main>
 </div>
 
+<!-- ==========================================
+     REUSABLE MODALS
+     ========================================== -->
+
+<!-- 1. Add City Modal -->
+<div class="modal-overlay" id="addCityModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">📍 Add City Stop</h3>
+            <button class="modal-close" data-dismiss="modal">&times;</button>
+        </div>
+        <form onsubmit="return handleAddCitySubmit(event)">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="citySearchInput">Search City Catalog</label>
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="citySearchInput" class="form-control" placeholder="Search by city name..." onkeyup="filterCityResults(this.value)">
+                    </div>
+                </div>
+
+                <div id="citySearchResultsContainer" style="display: flex; flex-direction: column; gap: 8px; max-height: 160px; overflow-y: auto; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 6px; padding: 8px;">
+                    <!-- Dynamically populated from GLOBETROTTER_CITIES in data.js -->
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalCityName">Selected City Name *</label>
+                    <input type="text" id="modalCityName" class="form-control" placeholder="e.g. Goa" required>
+                    <input type="hidden" id="modalCityId" value="goa">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalCityState">State / Country</label>
+                    <input type="text" id="modalCityState" class="form-control" placeholder="e.g. Goa, India" value="Goa, India">
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add City</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 2. Add Activity Modal (City-Strict Filtered) -->
+<div class="modal-overlay" id="addActivityModal">
+    <div class="modal" style="width: 540px;">
+        <div class="modal-header">
+            <h3 class="modal-title" id="addActivityModalTitle">🎯 Add Activity to Stop</h3>
+            <button class="modal-close" data-dismiss="modal">&times;</button>
+        </div>
+        <form onsubmit="return handleAddActivitySubmit(event)">
+            <div class="modal-body">
+                <div id="activityModalCityBadge" style="margin-bottom: 14px; padding: 8px 12px; background: var(--primary-light); border-left: 3px solid var(--primary); border-radius: 4px; font-size: 12px; color: var(--primary-dark); font-weight: 600;">
+                    📍 Target Stop: New Delhi (Delhi)
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalActivitySelect">Select City Activity *</label>
+                    <select id="modalActivitySelect" class="form-control" onchange="onActivitySelectChange(this.value)">
+                        <!-- Populated dynamically based on cityId -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalActivityName">Activity Title *</label>
+                    <input type="text" id="modalActivityName" class="form-control" placeholder="e.g. Qutub Minar Complex" required>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="modalActivityCategory">Category</label>
+                        <select id="modalActivityCategory" class="form-control">
+                            <option value="Heritage & Monuments">Heritage & Monuments</option>
+                            <option value="Food Walk">Food & Culinary</option>
+                            <option value="Adventure">Adventure</option>
+                            <option value="Sightseeing">Sightseeing</option>
+                            <option value="Shopping">Shopping</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="modalActivityCost">Est. Cost (₹) *</label>
+                        <input type="number" id="modalActivityCost" class="form-control" placeholder="0" min="0" required>
+                    </div>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="modalActivityTime">Start Time</label>
+                        <input type="text" id="modalActivityTime" class="form-control" value="09:00 AM">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="modalActivityDuration">Duration</label>
+                        <input type="text" id="modalActivityDuration" class="form-control" placeholder="2.0 Hours" value="2.0 Hours">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="modalActivityDesc">Short Description</label>
+                    <textarea id="modalActivityDesc" class="form-control" rows="2" placeholder="Tour details..."></textarea>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Activity</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 3. Add Expense Modal -->
+<div class="modal-overlay" id="addExpenseModal">
+    <div class="modal">
+        <div class="modal-header">
+            <h3 class="modal-title">💰 Add Custom Expense</h3>
+            <button class="modal-close" data-dismiss="modal">&times;</button>
+        </div>
+        <form onsubmit="return handleAddExpenseSubmit(event)">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="modalExpenseName">Expense Description *</label>
+                    <input type="text" id="modalExpenseName" class="form-control" placeholder="e.g. Train Ticket, Hotel Stay" required>
+                </div>
+
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="modalExpenseCategory">Category *</label>
+                        <select id="modalExpenseCategory" class="form-control" required>
+                            <option value="Transport">Transport</option>
+                            <option value="Stay">Stay & Accommodation</option>
+                            <option value="Activities">Activities</option>
+                            <option value="Meals">Meals</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="modalExpenseAmount">Amount (₹) *</label>
+                        <input type="number" id="modalExpenseAmount" class="form-control" placeholder="1500" min="0" step="10" required>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Expense</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 4. Delete Confirmation Modal -->
+<div class="modal-overlay" id="deleteConfirmationModal">
+    <div class="modal" style="max-width: 440px;">
+        <div class="modal-header">
+            <h3 class="modal-title" id="deleteModalTitle">Delete Item?</h3>
+            <button class="modal-close" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p id="deleteModalMessage" style="color: var(--text); font-size: 14px; margin: 0;">
+                Are you sure you want to delete this item? This action cannot be undone.
+            </p>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-danger" onclick="handleConfirmDelete()">Delete</button>
+        </div>
+    </div>
+</div>
+
+<script src="static/js/validation.js"></script>
+<script src="static/js/toast.js"></script>
+<script src="static/js/data.js"></script>
+<script src="static/js/modals.js"></script>
+<script src="static/js/itinerary.js"></script>
 </body>
 </html>
