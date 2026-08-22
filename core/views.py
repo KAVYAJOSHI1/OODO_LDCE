@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -232,8 +234,12 @@ def profile(request):
     else:
         form = ProfileForm(instance=request.user)
 
-    trips = Trip.objects.filter(user=request.user)
-    return render(request, "trips/profile.html", {"form": form, "stats": {"trips": trips.count()}})
+    trips = Trip.objects.filter(user=request.user).prefetch_related("stops__city")
+    cities = {stop.city_id for trip in trips for stop in trip.stops.all()}
+    total_spent = sum((trip.get_total_cost() for trip in trips), Decimal("0.00"))
+
+    stats = {"trips": trips.count(), "cities": len(cities), "spent": total_spent}
+    return render(request, "trips/profile.html", {"form": form, "stats": stats})
 
 
 def public_trip(request):
