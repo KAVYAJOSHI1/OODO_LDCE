@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Plan New Trip | GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">➕ Plan a New Trip</h1>
+        <p class="page-subtitle">Set up your trip details and start building your custom itinerary.</p>
+    </div>
+    <a href="{% url 'my_trips' %}" class="btn btn-secondary">
+        ← Back to Trips
+    </a>
+</div>
+
+<div style="max-width: 800px; margin: 0 auto;">
+    <div class="card">
+        <form method="POST" action="{% url 'create_trip' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label" for="title">Trip Title</label>
+                <input type="text" id="title" name="title" class="form-control" placeholder="e.g. Goa Beach & Heritage Getaway" required>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label" for="primary_city">Primary Destination City</label>
+                    <select id="primary_city" name="primary_city" class="form-control" required>
+                        <option value="">Select a city...</option>
+                        <option value="Goa">Goa, India</option>
+                        <option value="Delhi">Delhi, India</option>
+                        <option value="Jaipur">Jaipur, Rajasthan</option>
+                        <option value="Mumbai">Mumbai, Maharashtra</option>
+                        <option value="Kochi">Kochi, Kerala</option>
+                        <option value="Manali">Manali, Himachal Pradesh</option>
+                        <option value="Udaipur">Udaipur, Rajasthan</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="budget">Total Estimated Budget (₹)</label>
+                    <input type="number" id="budget" name="budget" class="form-control" placeholder="25000" min="0" step="500" required>
+                </div>
+            </div>
+
+            <div class="grid grid-2">
+                <div class="form-group">
+                    <label class="form-label" for="start_date">Start Date</label>
+                    <input type="date" id="start_date" name="start_date" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="end_date">End Date</label>
+                    <input type="date" id="end_date" name="end_date" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="travel_type">Travel Style / Preference</label>
+                <select id="travel_type" name="travel_type" class="form-control">
+                    <option value="leisure">🏖️ Leisure & Relaxation</option>
+                    <option value="adventure">⛰️ Adventure & Nature</option>
+                    <option value="heritage">🏛️ Culture & Heritage</option>
+                    <option value="foodie">🍲 Culinary & Foodie</option>
+                    <option value="budget">🎒 Backpacking / Budget</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="notes">Notes / Overview</label>
+                <textarea id="notes" name="notes" class="form-control" rows="4" placeholder="Mention any specific preferences, companion details, or special requests..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Create & Add Activities ➔
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

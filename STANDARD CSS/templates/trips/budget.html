@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Budget Estimator | GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">💰 Budget Estimator & Expense Tracker</h1>
+        <p class="page-subtitle">Golden Triangle Explorer (Target Budget: ₹25,000)</p>
+    </div>
+    <button type="button" class="btn btn-primary" onclick="openModal('addExpenseModal')">
+        + Add Custom Expense
+    </button>
+</div>
+
+<!-- Budget Overview Stats Grid -->
+<div class="grid grid-4" style="margin-bottom: 24px;">
+    <div class="card stat-card">
+        <div class="stat-icon">💵</div>
+        <div>
+            <div class="stat-label">Total Allocated</div>
+            <div class="stat-value" style="color: var(--primary);">₹25,000</div>
+        </div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="stat-icon">📊</div>
+        <div>
+            <div class="stat-label">Current Total</div>
+            <div class="stat-value" style="color: var(--dark);">₹24,500</div>
+        </div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="stat-icon">✅</div>
+        <div>
+            <div class="stat-label">Remaining</div>
+            <div class="stat-value" style="color: var(--success);">₹500</div>
+        </div>
+    </div>
+
+    <div class="card stat-card">
+        <div class="stat-icon">📅</div>
+        <div>
+            <div class="stat-label">Average / Day</div>
+            <div class="stat-value">₹3,062</div>
+        </div>
+    </div>
+</div>
+
+<!-- Progress Bar Widget -->
+<div class="card" style="margin-bottom: 24px;">
+    <div class="card-header">
+        <div>
+            <div class="card-title">Budget Allocation Progress</div>
+            <div class="card-subtitle">98% of total budget utilized</div>
+        </div>
+        <span class="badge badge-success">Within Limit</span>
+    </div>
+
+    <div class="progress" style="height: 12px; margin-bottom: 12px;">
+        <div class="progress-bar" style="width: 98%;"></div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--muted);">
+        <span>Logged Expenses: ₹24,500</span>
+        <span>Max Target: ₹25,000</span>
+    </div>
+</div>
+
+<!-- Expense Breakdown by Category -->
+<div class="grid grid-2" style="margin-bottom: 24px;">
+    <div class="card">
+        <div class="card-title" style="margin-bottom: 16px;">📂 Breakdown by Category</div>
+
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
+                    <span>🏨 Accommodation & Stay</span>
+                    <span>₹12,000 (49%)</span>
+                </div>
+                <div class="progress"><div class="progress-bar" style="width: 49%; background: var(--primary);"></div></div>
+            </div>
+
+            <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
+                    <span>🚆 Transport & Trains</span>
+                    <span>₹5,500 (22%)</span>
+                </div>
+                <div class="progress"><div class="progress-bar" style="width: 22%; background: #0d6efd;"></div></div>
+            </div>
+
+            <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
+                    <span>🎯 Activities & Entry Tickets</span>
+                    <span>₹4,200 (17%)</span>
+                </div>
+                <div class="progress"><div class="progress-bar" style="width: 17%; background: var(--success);"></div></div>
+            </div>
+
+            <div>
+                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
+                    <span>🍲 Meals & Food</span>
+                    <span>₹2,800 (12%)</span>
+                </div>
+                <div class="progress"><div class="progress-bar" style="width: 12%; background: var(--warning);"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Alerts / Budget Advice -->
+    <div class="card">
+        <div class="card-title" style="margin-bottom: 16px;">💡 Smart Odoo Budget Tips</div>
+
+        <div class="alert alert-success">
+            <strong>On Track!</strong> Your current planned activities fit comfortably within your total ₹25,000 threshold.
+        </div>
+
+        <div class="alert alert-warning">
+            <strong>Train Booking Advisory:</strong> Gatimaan Express executive seats fill fast in October. Lock in transport early.
+        </div>
+
+        <div style="font-size: 13px; color: var(--muted); line-height: 1.6;">
+            • Booking Taj Mahal sunrise tickets online saves ₹100 per visitor.<br>
+            • Hotel Imperial package includes complimentary breakfast, saving ~₹600/day.
+        </div>
+    </div>
+</div>
+
+<!-- Logged Expenses Table -->
+<div class="card">
+    <div class="card-header">
+        <div class="card-title">📝 Expense Log Details</div>
+        <button class="btn btn-secondary btn-sm" onclick="showToast('Exported expenses to CSV!', 'info');">Export CSV</button>
+    </div>
+
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Item Description</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="expenseTableBody">
+                <tr>
+                    <td>Hotel Imperial Stay (3 Nights)</td>
+                    <td><span class="badge badge-primary">Accommodation</span></td>
+                    <td>Oct 12, 2026</td>
+                    <td>₹10,500</td>
+                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', 'Hotel Imperial Stay', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
+                </tr>
+
+                <tr>
+                    <td>Gatimaan Express Train (Delhi - Agra)</td>
+                    <td><span class="badge badge-primary">Transport</span></td>
+                    <td>Oct 14, 2026</td>
+                    <td>₹3,000</td>
+                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', 'Gatimaan Express Train', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
+                </tr>
+
+                <tr>
+                    <td>Qutub Minar Entry + Guide Fee</td>
+                    <td><span class="badge badge-success">Activities</span></td>
+                    <td>Oct 12, 2026</td>
+                    <td>₹1,200</td>
+                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', 'Qutub Minar Entry', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
+                </tr>
+
+                <tr>
+                    <td>Chandni Chowk Food Tour</td>
+                    <td><span class="badge badge-warning">Meals</span></td>
+                    <td>Oct 12, 2026</td>
+                    <td>₹1,600</td>
+                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', 'Chandni Chowk Food Tour', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

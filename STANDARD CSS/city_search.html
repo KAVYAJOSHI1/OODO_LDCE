@@ -1,83 +1,74 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}GlobeTrotter{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../../static/css/style.css">
-    {% block extra_head %}{% endblock %}
+    <title>Explore Cities | GlobeTrotter</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <nav class="navbar">
-    <a href="{% url 'dashboard' %}" class="navbar-brand">
+    <a href="dashboard.html" class="navbar-brand">
         <span class="brand-icon">G</span>
         GlobeTrotter
     </a>
 
     <div class="navbar-menu">
-        <a href="{% url 'dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-            Dashboard
-        </a>
-        <a href="{% url 'my_trips' %}" class="nav-link {% if request.resolver_match.url_name == 'my_trips' %}active{% endif %}">
-            My Trips
-        </a>
-        <a href="{% url 'profile' %}" class="nav-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
-            Profile
-        </a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="my_trips.html" class="nav-link">My Trips</a>
+        <a href="profile.html" class="nav-link">Profile</a>
     </div>
 </nav>
 
 <div class="app-layout">
     <aside class="sidebar">
         <div class="sidebar-title">Travel</div>
-
-        <a href="{% url 'dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
-            🏠 Dashboard
-        </a>
-        <a href="{% url 'my_trips' %}" class="sidebar-link {% if request.resolver_match.url_name == 'my_trips' %}active{% endif %}">
-            ✈️ My Trips
-        </a>
-        <a href="{% url 'create_trip' %}" class="sidebar-link {% if request.resolver_match.url_name == 'create_trip' %}active{% endif %}">
-            ➕ Plan Trip
-        </a>
-        <a href="{% url 'city_search' %}" class="sidebar-link {% if request.resolver_match.url_name == 'city_search' %}active{% endif %}">
-            🏙️ Cities
-        </a>
-        <a href="{% url 'activity_search' %}" class="sidebar-link {% if request.resolver_match.url_name == 'activity_search' %}active{% endif %}">
-            🎯 Activities
-        </a>
-        <a href="{% url 'calendar' %}" class="sidebar-link {% if request.resolver_match.url_name == 'calendar' %}active{% endif %}">
-            📅 Calendar
-        </a>
+        <a href="dashboard.html" class="sidebar-link">🏠 Dashboard</a>
+        <a href="my_trips.html" class="sidebar-link">✈️ My Trips</a>
+        <a href="create_trip.html" class="sidebar-link">➕ Plan Trip</a>
+        <a href="city_search.html" class="sidebar-link active">🏙️ Cities</a>
+        <a href="activity_search.html" class="sidebar-link">🎯 Activities</a>
+        <a href="calendar.html" class="sidebar-link">📅 Calendar</a>
 
         <div class="sidebar-title" style="margin-top:20px;">Account</div>
-
-        <a href="{% url 'profile' %}" class="sidebar-link {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
-            👤 Profile
-        </a>
-        <a href="{% url 'logout' %}" class="sidebar-link">
-            🚪 Logout
-        </a>
+        <a href="profile.html" class="sidebar-link">👤 Profile</a>
+        <a href="login.html" class="sidebar-link">🚪 Logout</a>
     </aside>
 
     <main class="main-content">
-        {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">🏙️ Explore Destinations & Cities</h1>
+                <p class="page-subtitle">Discover top Indian and global travel destinations with cost indices, activity counts, and state insights.</p>
+            </div>
+        </div>
 
-        {% block content %}
-        {% endblock %}
+        <!-- Search & Filter Bar -->
+        <div class="card" style="margin-bottom: 24px;">
+            <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                <div class="search-box" style="flex: 1; min-width: 260px;">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="citySearchInputMain" class="form-control" placeholder="Search by city name, state or country..." onkeyup="filterCitySearchGrid()">
+                </div>
+                <select id="cityCostFilter" class="form-control" style="width: auto;" onchange="filterCitySearchGrid()">
+                    <option value="">Any Cost Level</option>
+                    <option value="Low">Budget-Friendly (Low)</option>
+                    <option value="Medium">Moderate (Medium)</option>
+                    <option value="High">Luxury (High)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Dynamic City Grid -->
+        <div class="grid grid-3" id="cityGridContainer">
+            <!-- Dynamically rendered via JS below -->
+        </div>
+
+        <div id="citySearchEmpty" style="display: none; text-align: center; padding: 40px; color: var(--muted);" class="card">
+            🔍 No destination cities found matching your search query.
+        </div>
     </main>
 </div>
 
@@ -135,9 +126,8 @@
         </div>
         <form onsubmit="return handleAddActivitySubmit(event)">
             <div class="modal-body">
-                <!-- City Context Notification -->
                 <div id="activityModalCityBadge" style="margin-bottom: 14px; padding: 8px 12px; background: var(--primary-light); border-left: 3px solid var(--primary); border-radius: 4px; font-size: 12px; color: var(--primary-dark); font-weight: 600;">
-                    📍 Showing activities for: Goa
+                    📍 Target Stop: New Delhi (Delhi)
                 </div>
 
                 <div class="form-group">
@@ -149,7 +139,7 @@
 
                 <div class="form-group">
                     <label class="form-label" for="modalActivityName">Activity Title *</label>
-                    <input type="text" id="modalActivityName" class="form-control" placeholder="e.g. Baga Beach" required>
+                    <input type="text" id="modalActivityName" class="form-control" placeholder="e.g. Qutub Minar Complex" required>
                 </div>
 
                 <div class="grid grid-2">
@@ -172,7 +162,7 @@
                 <div class="grid grid-2">
                     <div class="form-group">
                         <label class="form-label" for="modalActivityTime">Start Time</label>
-                        <input type="time" id="modalActivityTime" class="form-control" value="09:00">
+                        <input type="text" id="modalActivityTime" class="form-control" value="09:00 AM">
                     </div>
                     <div class="form-group">
                         <label class="form-label" for="modalActivityDuration">Duration</label>
@@ -254,13 +244,113 @@
     </div>
 </div>
 
-<!-- Recommended Script Load Order -->
-<script src="{% static 'js/validation.js' %}"></script>
-<script src="{% static 'js/toast.js' %}"></script>
-<script src="{% static 'js/data.js' %}"></script>
-<script src="{% static 'js/modals.js' %}"></script>
-<script src="{% static 'js/itinerary.js' %}"></script>
+<script src="static/js/validation.js"></script>
+<script src="static/js/toast.js"></script>
+<script src="static/js/data.js"></script>
+<script src="static/js/modals.js"></script>
+<script src="static/js/itinerary.js"></script>
 
-{% block extra_js %}{% endblock %}
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    renderCityGrid();
+});
+
+function renderCityGrid() {
+    const container = document.getElementById('cityGridContainer');
+    if (!container || typeof GLOBETROTTER_CITIES === 'undefined') return;
+
+    while (container.firstChild) {
+        container.removeChild(container.firstChild);
+    }
+
+    GLOBETROTTER_CITIES.forEach(city => {
+        const card = document.createElement('div');
+        card.className = 'card city-card-item';
+        card.dataset.name = city.name.toLowerCase();
+        card.dataset.state = city.state.toLowerCase();
+        card.dataset.country = city.country.toLowerCase();
+        card.dataset.cost = city.costIndex.toLowerCase();
+
+        const header = document.createElement('div');
+        header.style.cssText = "display: flex; justify-content: space-between; align-items: flex-start;";
+
+        const titleBox = document.createElement('div');
+        const badgeRegion = document.createElement('span');
+        badgeRegion.className = 'badge badge-primary';
+        badgeRegion.textContent = city.region || 'Destination';
+
+        const h3 = document.createElement('h3');
+        h3.style.cssText = "font-size: 18px; font-weight: 700; color: var(--dark); margin-top: 6px;";
+        h3.textContent = `${city.name}, ${city.state}`;
+
+        titleBox.appendChild(badgeRegion);
+        titleBox.appendChild(h3);
+
+        const badgeCost = document.createElement('span');
+        badgeCost.className = city.costIndex === 'High' ? 'badge badge-warning' : (city.costIndex === 'Low' ? 'badge badge-success' : 'badge badge-primary');
+        badgeCost.textContent = `Cost: ${city.costIndex}`;
+
+        header.appendChild(titleBox);
+        header.appendChild(badgeCost);
+
+        const desc = document.createElement('p');
+        desc.style.cssText = "color: var(--muted); font-size: 13px; margin: 10px 0;";
+        desc.textContent = `Explore ${city.name} featuring ${city.activitiesCount} curated activities, attractions, and cultural points.`;
+
+        const metaBox = document.createElement('div');
+        metaBox.style.cssText = "font-size: 12px; color: var(--text); background: var(--background); padding: 8px 12px; border-radius: 6px; margin-bottom: 14px;";
+        metaBox.textContent = `📍 Country: ${city.country} | 🎯 Activities: ${city.activitiesCount} Total`;
+
+        const footer = document.createElement('div');
+        footer.style.cssText = "display: flex; justify-content: space-between; align-items: center;";
+
+        const pop = document.createElement('span');
+        pop.style.cssText = "font-size: 12px; color: var(--muted);";
+        pop.textContent = `Popularity: ${city.popularity}`;
+
+        const addBtn = document.createElement('button');
+        addBtn.className = 'btn btn-primary btn-sm';
+        addBtn.textContent = '+ Add to Trip';
+        addBtn.addEventListener('click', () => {
+            openAddCityModalWithData(city.id);
+        });
+
+        footer.appendChild(pop);
+        footer.appendChild(addBtn);
+
+        card.appendChild(header);
+        card.appendChild(desc);
+        card.appendChild(metaBox);
+        card.appendChild(footer);
+
+        container.appendChild(card);
+    });
+}
+
+function filterCitySearchGrid() {
+    const q = document.getElementById('citySearchInputMain')?.value.trim().toLowerCase() || '';
+    const cost = document.getElementById('cityCostFilter')?.value.trim().toLowerCase() || '';
+
+    const cards = document.querySelectorAll('.city-card-item');
+    let matchCount = 0;
+
+    cards.forEach(card => {
+        const matchesQ = !q || card.dataset.name.includes(q) || card.dataset.state.includes(q) || card.dataset.country.includes(q);
+        const matchesCost = !cost || card.dataset.cost === cost;
+
+        if (matchesQ && matchesCost) {
+            card.style.display = 'block';
+            matchCount++;
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    const emptyMsg = document.getElementById('citySearchEmpty');
+    if (emptyMsg) {
+        emptyMsg.style.display = matchCount === 0 ? 'block' : 'none';
+    }
+}
+</script>
 </body>
 </html>

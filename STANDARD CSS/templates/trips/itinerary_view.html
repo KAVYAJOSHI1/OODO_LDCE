@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+
+{% block title %}Golden Triangle Explorer — Itinerary | GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+            <h1 class="page-title">Golden Triangle Explorer</h1>
+            <span class="badge badge-primary">Upcoming</span>
+        </div>
+        <p class="page-subtitle">📍 Delhi ➔ Agra ➔ Jaipur • Oct 12 – Oct 20, 2026 (8 Days)</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'public_trip' %}" class="btn btn-secondary">
+            🔗 Share Trip
+        </a>
+        <a href="{% url 'itinerary_builder' %}" class="btn btn-primary">
+            ✏️ Edit Itinerary
+        </a>
+    </div>
+</div>
+
+<!-- Header Summary Card -->
+<div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, var(--primary), #9a718d); color: white;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+        <div>
+            <div style="font-size: 13px; opacity: 0.9;">TRIP OVERVIEW</div>
+            <div style="font-size: 22px; font-weight: 700; margin-top: 4px;">3 Cities • 12 Activities • ₹24,500 Total Budget</div>
+            <div style="font-size: 13px; opacity: 0.9; margin-top: 4px;">Avg. ₹3,062 / day per traveler</div>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <div style="text-align: center; background: rgba(255,255,255,0.15); padding: 10px 16px; border-radius: 8px;">
+                <div style="font-size: 11px; text-transform: uppercase;">Duration</div>
+                <div style="font-size: 18px; font-weight: 700;">8 Days</div>
+            </div>
+            <div style="text-align: center; background: rgba(255,255,255,0.15); padding: 10px 16px; border-radius: 8px;">
+                <div style="font-size: 11px; text-transform: uppercase;">Est. Expenses</div>
+                <div style="font-size: 18px; font-weight: 700;">₹24.5K</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Day-by-Day Timeline View -->
+<div style="display: flex; flex-direction: column; gap: 24px;">
+
+    <!-- DAY 1 -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <span class="badge badge-primary">DAY 1</span>
+                <span style="font-size: 16px; font-weight: 700; color: var(--dark); margin-left: 8px;">Delhi Arrival & Old Delhi Heritage Walk</span>
+                <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">Monday, Oct 12, 2026</div>
+            </div>
+            <span style="font-weight: 600; color: var(--primary);">Est. ₹4,900</span>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-time">10:00 AM</div>
+                <div class="timeline-title">Check-in at Hotel Imperial</div>
+                <div class="timeline-meta">Janpath, Connaught Place • Accommodation</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-time">02:00 PM</div>
+                <div class="timeline-title">Qutub Minar & Garden Tour</div>
+                <div class="timeline-meta">Mehrauli • UNESCO World Heritage Site • Entrance: ₹600</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-time">07:00 PM</div>
+                <div class="timeline-title">Chandni Chowk Food Crawl & Rickshaw Ride</div>
+                <div class="timeline-meta">Old Delhi • Paranthe Wali Gali, Karim's • Expense: ₹800</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <span class="badge badge-primary">DAY 2</span>
+                <span style="font-size: 16px; font-weight: 700; color: var(--dark); margin-left: 8px;">Mughal Marvels & India Gate Walk</span>
+                <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">Tuesday, Oct 13, 2026</div>
+            </div>
+            <span style="font-weight: 600; color: var(--primary);">Est. ₹2,100</span>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-time">09:30 AM</div>
+                <div class="timeline-title">Humayun's Tomb Garden Complex</div>
+                <div class="timeline-meta">Mathura Road • Duration: 2 hrs • Ticket: ₹500</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-time">03:30 PM</div>
+                <div class="timeline-title">Lotus Temple & Iskcon Temple Visit</div>
+                <div class="timeline-meta">Kalkaji • Free Entry • Duration: 2.5 hrs</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DAY 3: Agra -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <span class="badge badge-success">DAY 3</span>
+                <span style="font-size: 16px; font-weight: 700; color: var(--dark); margin-left: 8px;">Express Train to Agra & Sunset Taj Mahal</span>
+                <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">Wednesday, Oct 14, 2026</div>
+            </div>
+            <span style="font-weight: 600; color: var(--success);">Est. ₹5,200</span>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-time">06:00 AM</div>
+                <div class="timeline-title">Gatimaan Express (Delhi to Agra)</div>
+                <div class="timeline-meta">Hazrat Nizamuddin to Agra Cantt • Executive Class • Ticket: ₹1,500</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-time">04:30 PM</div>
+                <div class="timeline-title">Taj Mahal Sunset View from Mehtab Bagh</div>
+                <div class="timeline-meta">Agra • Duration: 2 hrs • Ticket: ₹300</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

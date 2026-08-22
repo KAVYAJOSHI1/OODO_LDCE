@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Itinerary Builder | GlobeTrotter{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h1 class="page-title">🛠️ Itinerary Builder</h1>
+        <p class="page-subtitle">Golden Triangle Explorer — Delhi ➔ Agra ➔ Jaipur (Oct 20 – Oct 28, 2026)</p>
+    </div>
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'itinerary_view' %}" class="btn btn-secondary">
+            👁️ Preview Itinerary
+        </a>
+        <a href="{% url 'my_trips' %}" class="btn btn-primary" onclick="showToast('Itinerary saved successfully!', 'success');">
+            💾 Save & Exit
+        </a>
+    </div>
+</div>
+
+<div class="grid grid-3">
+
+    <!-- Left Column: Trip Stops & City-Strict Available Activities (1 col) -->
+    <div>
+        <div class="card" style="margin-bottom: 20px;">
+            <div class="card-header">
+                <div class="card-title">📍 Trip Stops</div>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="openModal('addCityModal')">+ Add City</button>
+            </div>
+
+            <div id="builderCityList" style="display: flex; flex-direction: column; gap: 8px;">
+                <!-- Dynamically rendered via renderItineraryBuilderStops() in itinerary.js -->
+            </div>
+        </div>
+
+        <!-- Add Activity Side Panel (City-Strict Filtered for Active Stop) -->
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div class="card-title">➕ Available Activities</div>
+                <button type="button" class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData()">+ Custom</button>
+            </div>
+            <div class="search-box" style="margin-bottom: 12px;">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="form-control" placeholder="Search catalog activities..." onkeyup="filterAvailableActivitiesSidePanel(this.value)">
+            </div>
+
+            <div id="builderAvailableActivities" style="display: flex; flex-direction: column; gap: 10px; max-height: 340px; overflow-y: auto;">
+                <!-- Dynamically rendered for activeStop.cityId in itinerary.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Timeline & Scheduled Activities (Spans 2 cols) -->
+    <div style="grid-column: span 2;">
+        <div class="card">
+            <div class="card-header">
+                <div>
+                    <div class="card-title">📅 Day-by-Day Schedule & Itinerary Timeline</div>
+                    <div class="card-subtitle">Drag or reorder stops to plan your multi-city journey</div>
+                </div>
+                <button type="button" class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData()">+ Add Activity</button>
+            </div>
+
+            <!-- Dynamic Timeline -->
+            <div class="timeline" id="builderTimeline" style="margin-top: 16px;">
+                <!-- Dynamically rendered via renderItineraryBuilderStops() in itinerary.js -->
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function filterAvailableActivitiesSidePanel(query) {
+    const q = query.trim().toLowerCase();
+    const container = document.getElementById('builderAvailableActivities');
+    if (!container) return;
+
+    const cards = container.children;
+    for (let card of cards) {
+        const text = card.textContent.toLowerCase();
+        if (!q || text.includes(q)) {
+            card.style.display = 'flex';
+        } else {
+            card.style.display = 'none';
+        }
+    }
+}
+</script>
+{% endblock %}
