@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GlobeTrotter Custom Admin{% endblock %}</title>
+
+    <!-- Standard CSS & Custom Admin CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/admin.css' %}">
+</head>
+<body class="admin-body">
+    <div class="admin-wrapper">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <div class="admin-sidebar-header">
+                <div class="admin-sidebar-brand">
+                    <span>GlobeTrotter</span>
+                    <span class="admin-brand-badge">Admin</span>
+                </div>
+            </div>
+
+            <nav class="admin-nav">
+                <a href="{% url 'admin_dashboard_page' %}" class="admin-nav-item {% if active_tab == 'dashboard' %}active{% endif %}">
+                    <span class="admin-nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="{% url 'admin_cities_page' %}" class="admin-nav-item {% if active_tab == 'cities' %}active{% endif %}">
+                    <span class="admin-nav-icon">🏙️</span>
+                    <span>Cities & Activities</span>
+                </a>
+                <a href="{% url 'admin_trips_page' %}" class="admin-nav-item {% if active_tab == 'trips' %}active{% endif %}">
+                    <span class="admin-nav-icon">✈️</span>
+                    <span>Trips Inspection</span>
+                </a>
+                <a href="{% url 'admin_users_page' %}" class="admin-nav-item {% if active_tab == 'users' %}active{% endif %}">
+                    <span class="admin-nav-icon">👥</span>
+                    <span>User Management</span>
+                </a>
+
+                <hr style="border: 0; border-top: 1px solid #2d3748; margin: 16px 0;">
+
+                <a href="{% url 'dashboard' %}" class="admin-nav-item">
+                    <span class="admin-nav-icon">🌐</span>
+                    <span>Go to User Planner</span>
+                </a>
+            </nav>
+
+            <div class="admin-sidebar-footer">
+                Odoo Hackathon • Custom Admin Panel v1.0
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="admin-main">
+            <!-- Header Bar -->
+            <header class="admin-header">
+                <div class="admin-header-title">
+                    {% block page_title %}Admin Console{% endblock %}
+                </div>
+
+                <div class="admin-header-actions">
+                    <button type="button" class="admin-btn admin-btn-sm admin-btn-secondary" onclick="triggerSystemReseed()" title="Reseed demo travel data">
+                        <span>🔄</span> Reseed Demo Data
+                    </button>
+
+                    <div class="admin-user-pill">
+                        <span>🛡️</span>
+                        <span>{{ request.user.username }}</span>
+                    </div>
+
+                    <a href="{% url 'logout' %}" class="admin-btn admin-btn-sm admin-btn-danger">Logout</a>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="admin-content">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+
+    <!-- Global Admin Toast Container -->
+    <div id="adminToastContainer" class="toast-container"></div>
+
+    <!-- JS Client -->
+    <script src="{% static 'admin/admin.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -28,4 +28,10 @@ urlpatterns = [
     path('profile/', views.profile, name='profile'),
     path('public/', views.public_trip, name='public_trip'),
     path('public/copy/', views.copy_trip, name='copy_trip'),
+
+    # Custom Admin Frontend Pages
+    path('admin-panel/', views.admin_dashboard_page, name='admin_dashboard_page'),
+    path('admin-panel/cities/', views.admin_cities_page, name='admin_cities_page'),
+    path('admin-panel/trips/', views.admin_trips_page, name='admin_trips_page'),
+    path('admin-panel/users/', views.admin_users_page, name='admin_users_page'),
 ]

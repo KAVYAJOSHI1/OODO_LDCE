@@ -297,3 +297,31 @@ def copy_trip(request):
 
     messages.success(request, f'"{source.name}" copied to your trips!')
     return redirect(f"/trips/builder/?trip={new_trip.id}")
+
+
+# --- Custom Admin Panel Views ---
+def _staff_check(user):
+    return user.is_authenticated and user.is_staff
+
+
+from django.contrib.auth.decorators import user_passes_test
+
+@user_passes_test(_staff_check, login_url='login')
+def admin_dashboard_page(request):
+    return render(request, "admin_custom/dashboard.html", {"active_tab": "dashboard"})
+
+
+@user_passes_test(_staff_check, login_url='login')
+def admin_cities_page(request):
+    return render(request, "admin_custom/cities.html", {"active_tab": "cities"})
+
+
+@user_passes_test(_staff_check, login_url='login')
+def admin_trips_page(request):
+    return render(request, "admin_custom/trips.html", {"active_tab": "trips"})
+
+
+@user_passes_test(_staff_check, login_url='login')
+def admin_users_page(request):
+    return render(request, "admin_custom/users.html", {"active_tab": "users"})
+

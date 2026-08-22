@@ -1,0 +1,61 @@
+{% extends "admin_custom/base_admin.html" %}
+
+{% block title %}User Management — Custom Admin{% endblock %}
+{% block page_title %}User Accounts & Role Permissions{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+    <div class="admin-card-header">
+        <div class="admin-card-title">
+            <span>👥</span> Registered User Accounts
+        </div>
+        <a href="{% url 'admin_api:export-users' %}" class="admin-btn admin-btn-secondary">
+            <span>📥</span> Export Users CSV
+        </a>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="table-controls">
+        <div class="table-filter-group">
+            <input type="text" id="userSearchInput" class="admin-input" placeholder="Search username or email..." onkeyup="if(event.key==='Enter') loadUsers(1)">
+            <select id="userStaffFilter" class="admin-select" onchange="loadUsers(1)">
+                <option value="">All Roles</option>
+                <option value="true">Staff Admin Only</option>
+                <option value="false">Regular Users Only</option>
+            </select>
+            <button type="button" class="admin-btn admin-btn-secondary" onclick="loadUsers(1)">Search</button>
+        </div>
+    </div>
+
+    <!-- Users Table -->
+    <div style="overflow-x: auto;">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Trips</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="usersTableBody">
+                <tr><td colspan="7" class="admin-loading">⟳ Loading user accounts...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Users Pagination -->
+    <div id="usersPagination" class="pagination-container"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        initAdminUsersPage();
+    });
+</script>
+{% endblock %}

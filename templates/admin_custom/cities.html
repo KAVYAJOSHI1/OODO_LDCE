@@ -1,0 +1,297 @@
+{% extends "admin_custom/base_admin.html" %}
+
+{% block title %}Cities & Activities Studio — Custom Admin{% endblock %}
+{% block page_title %}Cities & Activities Studio{% endblock %}
+
+{% block content %}
+<!-- Section 1: Cities Studio -->
+<div class="admin-card">
+    <div class="admin-card-header">
+        <div class="admin-card-title">
+            <span>🏙️</span> City Catalog Management
+        </div>
+        <div style="display:flex; gap:10px;">
+            <a href="{% url 'admin_api:export-cities' %}" class="admin-btn admin-btn-secondary">
+                <span>📥</span> Export Cities CSV
+            </a>
+            <button type="button" class="admin-btn admin-btn-primary" onclick="openAddCityModal()">
+                <span>+</span> Add City
+            </button>
+        </div>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="table-controls">
+        <div class="table-filter-group">
+            <input type="text" id="citySearchInput" class="admin-input" placeholder="Search city or country..." onkeyup="if(event.key==='Enter') loadCities(1)">
+            <select id="countryFilter" class="admin-select" onchange="loadCities(1)">
+                <option value="">All Countries</option>
+                <option value="India">India</option>
+                <option value="Japan">Japan</option>
+                <option value="France">France</option>
+                <option value="Spain">Spain</option>
+            </select>
+            <select id="costIndexFilter" class="admin-select" onchange="loadCities(1)">
+                <option value="">All Cost Indices</option>
+                <option value="1">1 (Budget)</option>
+                <option value="2">2 (Moderate)</option>
+                <option value="3">3 (Average)</option>
+                <option value="4">4 (Premium)</option>
+                <option value="5">5 (Luxury)</option>
+            </select>
+            <button type="button" class="admin-btn admin-btn-secondary" onclick="loadCities(1)">Filter</button>
+        </div>
+    </div>
+
+    <!-- Cities Table -->
+    <div style="overflow-x: auto;">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>City</th>
+                    <th>Country</th>
+                    <th>Cost Index</th>
+                    <th>Popularity</th>
+                    <th>Activities</th>
+                    <th>Trip Stops</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="citiesTableBody">
+                <tr><td colspan="7" class="admin-loading">⟳ Loading cities...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Cities Pagination -->
+    <div id="citiesPagination" class="pagination-container"></div>
+</div>
+
+<!-- Section 2: Activities Studio -->
+<div class="admin-card" style="margin-top: 32px;">
+    <div class="admin-card-header">
+        <div class="admin-card-title">
+            <span>🎟️</span> Activity Catalog Management
+            <span id="selectedCityNotice" class="admin-badge admin-badge-warning" style="display:none; margin-left:12px;"></span>
+        </div>
+        <div style="display:flex; gap:10px;">
+            <a href="{% url 'admin_api:export-activities' %}" class="admin-btn admin-btn-secondary admin-btn-sm">
+                <span>📥</span> Export CSV
+            </a>
+            <button type="button" class="admin-btn admin-btn-secondary admin-btn-sm" onclick="clearCityActivityFilter()">Show All Cities</button>
+            <button type="button" class="admin-btn admin-btn-primary" onclick="openAddActivityModal()">
+                <span>+</span> Add Activity
+            </button>
+        </div>
+    </div>
+
+    <!-- Activity Filters Bar -->
+    <div class="table-controls">
+        <div class="table-filter-group">
+            <select id="activityCityFilter" class="admin-select" onchange="loadActivities(1)">
+                <option value="">All Cities</option>
+            </select>
+            <select id="activityCategoryFilter" class="admin-select" onchange="loadActivities(1)">
+                <option value="">All Categories</option>
+                <option value="sightseeing">Sightseeing</option>
+                <option value="adventure">Adventure</option>
+                <option value="cultural">Cultural</option>
+                <option value="food">Food & Dining</option>
+                <option value="shopping">Shopping</option>
+                <option value="relaxation">Relaxation</option>
+            </select>
+            <input type="text" id="activitySearchInput" class="admin-input" placeholder="Search activity..." onkeyup="if(event.key==='Enter') loadActivities(1)">
+            <button type="button" class="admin-btn admin-btn-secondary" onclick="loadActivities(1)">Filter</button>
+        </div>
+    </div>
+
+    <!-- Activities Table -->
+    <div style="overflow-x: auto;">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Activity & City</th>
+                    <th>Category</th>
+                    <th>Cost</th>
+                    <th>Duration</th>
+                    <th>Rating</th>
+                    <th>Popularity</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="activitiesTableBody">
+                <tr><td colspan="7" class="admin-loading">⟳ Loading activities...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Activities Pagination -->
+    <div id="activitiesPagination" class="pagination-container"></div>
+</div>
+
+<!-- Modal 1: Add/Edit City -->
+<div id="cityModal" class="admin-modal-backdrop">
+    <div class="admin-modal">
+        <div class="admin-modal-header">
+            <h3 class="admin-modal-title" id="cityModalTitle">Add New City</h3>
+            <button class="admin-modal-close" onclick="closeAdminModal('cityModal')">&times;</button>
+        </div>
+        <form onsubmit="saveCityForm(event)">
+            <div class="admin-modal-body">
+                <input type="hidden" id="cityFormId">
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>City Name *</label>
+                        <input type="text" id="cityFormName" class="admin-input" required placeholder="e.g. Goa">
+                    </div>
+                    <div class="form-group">
+                        <label>Country *</label>
+                        <input type="text" id="cityFormCountry" class="admin-input" required placeholder="e.g. India">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>Cost Index (1 to 5)</label>
+                        <select id="cityFormCostIndex" class="admin-select">
+                            <option value="1">1 (Budget)</option>
+                            <option value="2">2 (Moderate)</option>
+                            <option value="3" selected>3 (Average)</option>
+                            <option value="4">4 (Premium)</option>
+                            <option value="5">5 (Luxury)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Popularity (0 - 100)</label>
+                        <input type="number" id="cityFormPopularity" class="admin-input" min="0" max="100" value="50">
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px;">
+                    <div class="form-group">
+                        <label>Avg Hotel ($/night)</label>
+                        <input type="number" step="0.01" id="cityFormHotelCost" class="admin-input" value="50.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Avg Meal ($)</label>
+                        <input type="number" step="0.01" id="cityFormMealCost" class="admin-input" value="15.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Avg Transport ($)</label>
+                        <input type="number" step="0.01" id="cityFormTransportCost" class="admin-input" value="10.00">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="url" id="cityFormImage" class="admin-input" placeholder="https://example.com/city.jpg">
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="cityFormDescription" class="admin-input" rows="3" placeholder="Brief summary of the city..."></textarea>
+                </div>
+            </div>
+            <div class="admin-modal-footer">
+                <button type="button" class="admin-btn admin-btn-secondary" onclick="closeAdminModal('cityModal')">Cancel</button>
+                <button type="submit" class="admin-btn admin-btn-primary">Save City</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal 2: Add/Edit Activity -->
+<div id="activityModal" class="admin-modal-backdrop">
+    <div class="admin-modal">
+        <div class="admin-modal-header">
+            <h3 class="admin-modal-title" id="activityModalTitle">Add New Activity</h3>
+            <button class="admin-modal-close" onclick="closeAdminModal('activityModal')">&times;</button>
+        </div>
+        <form onsubmit="saveActivityForm(event)">
+            <div class="admin-modal-body">
+                <input type="hidden" id="activityFormId">
+                <div class="form-group">
+                    <label>Activity Name *</label>
+                    <input type="text" id="activityFormName" class="admin-input" required placeholder="e.g. Scuba Diving at Grande Island">
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>City *</label>
+                        <select id="activityFormCity" class="admin-select" required>
+                            <option value="">Select City...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Category / Activity Type</label>
+                        <select id="activityFormCategory" class="admin-select">
+                            <option value="">Select Category...</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>Cost ($ per person)</label>
+                        <input type="number" step="0.01" id="activityFormCost" class="admin-input" value="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>Duration (Hours)</label>
+                        <input type="number" step="0.5" id="activityFormDuration" class="admin-input" value="2.0">
+                    </div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-group">
+                        <label>Rating (0.0 - 5.0)</label>
+                        <input type="number" step="0.1" min="0" max="5" id="activityFormRating" class="admin-input" value="4.0">
+                    </div>
+                    <div class="form-group">
+                        <label>Popularity (0 - 100)</label>
+                        <input type="number" min="0" max="100" id="activityFormPopularity" class="admin-input" value="50">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="url" id="activityFormImage" class="admin-input" placeholder="https://example.com/activity.jpg">
+                </div>
+
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="activityFormDescription" class="admin-input" rows="3" placeholder="Overview of the activity..."></textarea>
+                </div>
+            </div>
+            <div class="admin-modal-footer">
+                <button type="button" class="admin-btn admin-btn-secondary" onclick="closeAdminModal('activityModal')">Cancel</button>
+                <button type="submit" class="admin-btn admin-btn-primary">Save Activity</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal 3: Delete Activity Confirmation -->
+<div id="deleteConfirmModal" class="admin-modal-backdrop">
+    <div class="admin-modal" style="width: 440px;">
+        <div class="admin-modal-header">
+            <h3 class="admin-modal-title">Confirm Deletion</h3>
+            <button class="admin-modal-close" onclick="closeAdminModal('deleteConfirmModal')">&times;</button>
+        </div>
+        <div class="admin-modal-body">
+            <p id="deleteConfirmText" style="margin:0; font-size:14px; color:var(--admin-text);">Are you sure you want to delete this activity?</p>
+        </div>
+        <div class="admin-modal-footer">
+            <button type="button" class="admin-btn admin-btn-secondary" onclick="closeAdminModal('deleteConfirmModal')">Cancel</button>
+            <button type="button" class="admin-btn admin-btn-danger" onclick="executeDeleteActivity()">Delete Activity</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        initAdminCitiesPage();
+    });
+</script>
+{% endblock %}

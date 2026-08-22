@@ -1,0 +1,146 @@
+{% extends "admin_custom/base_admin.html" %}
+
+{% block title %}Admin Dashboard — GlobeTrotter{% endblock %}
+{% block page_title %}System Overview & Analytics{% endblock %}
+
+{% block content %}
+<!-- KPI Stats Grid -->
+<div class="admin-stats-grid">
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon-wrapper">👥</div>
+        <div class="admin-stat-info">
+            <span class="admin-stat-value" id="statTotalUsers">...</span>
+            <span class="admin-stat-label">Total Registered Users</span>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon-wrapper">✈️</div>
+        <div class="admin-stat-info">
+            <span class="admin-stat-value" id="statActiveTrips">...</span>
+            <span class="admin-stat-label">Active Planned Trips</span>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon-wrapper">🏙️</div>
+        <div class="admin-stat-info">
+            <span class="admin-stat-value" id="statTotalCities">...</span>
+            <span class="admin-stat-label">Cities in Catalog</span>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon-wrapper">🎟️</div>
+        <div class="admin-stat-info">
+            <span class="admin-stat-value" id="statTotalActivities">...</span>
+            <span class="admin-stat-label">Activities Available</span>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon-wrapper">🔓</div>
+        <div class="admin-stat-info">
+            <span class="admin-stat-value" id="statPublicTrips">...</span>
+            <span class="admin-stat-label">Public Shared Trips</span>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon-wrapper">💰</div>
+        <div class="admin-stat-info">
+            <span class="admin-stat-value" id="statAvgBudget">$...</span>
+            <span class="admin-stat-label">Avg Trip Budget</span>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon-wrapper">💵</div>
+        <div class="admin-stat-info">
+            <span class="admin-stat-value" id="statTotalBudget">$...</span>
+            <span class="admin-stat-label">Total Planned Budget</span>
+        </div>
+    </div>
+
+    <div class="admin-stat-card">
+        <div class="admin-stat-icon-wrapper">📈</div>
+        <div class="admin-stat-info">
+            <span class="admin-stat-value" id="statTotalExpenses">$...</span>
+            <span class="admin-stat-label">Total Expenses (<span id="statBudgetUtil">...</span>% util)</span>
+        </div>
+    </div>
+</div>
+
+<!-- Aggregated Analytics Grid -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+    <!-- Trip Status Distribution Chart -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <span>📊</span> Trip Status Distribution
+            </div>
+        </div>
+        <div class="bar-chart-container" id="statusChartContainer">
+            <div class="admin-loading">⟳ Loading analytics...</div>
+        </div>
+    </div>
+
+    <!-- Popular Destinations Chart -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <span>🌟</span> Top Destinations by Stop Count
+            </div>
+        </div>
+        <div class="bar-chart-container" id="popularCitiesContainer">
+            <div class="admin-loading">⟳ Loading analytics...</div>
+        </div>
+    </div>
+
+    <!-- Budget Breakdown Chart -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <div class="admin-card-title">
+                <span>💳</span> Expense Category Breakdown
+            </div>
+        </div>
+        <div class="bar-chart-container" id="budgetBreakdownContainer">
+            <div class="admin-loading">⟳ Loading analytics...</div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Shortcuts -->
+<div class="admin-card" style="margin-top: 24px;">
+    <div class="admin-card-header">
+        <div class="admin-card-title">
+            <span>⚡</span> Quick Management Shortcuts & Data Exports
+        </div>
+    </div>
+    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+        <a href="{% url 'admin_cities_page' %}" class="admin-btn admin-btn-primary">
+            <span>🏙️</span> Manage Cities & Activities Studio
+        </a>
+        <a href="{% url 'admin_trips_page' %}" class="admin-btn admin-btn-secondary">
+            <span>✈️</span> Inspect User Trips
+        </a>
+        <a href="{% url 'admin_users_page' %}" class="admin-btn admin-btn-secondary">
+            <span>👥</span> Manage User Permissions
+        </a>
+        <a href="{% url 'admin_api:export-cities' %}" class="admin-btn admin-btn-secondary">
+            <span>📥</span> Export Cities CSV
+        </a>
+        <a href="{% url 'admin_api:export-trips' %}" class="admin-btn admin-btn-secondary">
+            <span>📥</span> Export Trips CSV
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        initAdminDashboard();
+    });
+</script>
+{% endblock %}

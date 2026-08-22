@@ -1,0 +1,86 @@
+{% extends "admin_custom/base_admin.html" %}
+
+{% block title %}Trips Inspection — Custom Admin{% endblock %}
+{% block page_title %}Trip Inspection & Public Visibility Manager{% endblock %}
+
+{% block content %}
+<div class="admin-card">
+    <div class="admin-card-header">
+        <div class="admin-card-title">
+            <span>✈️</span> User Trips Directory
+        </div>
+        <a href="{% url 'admin_api:export-trips' %}" class="admin-btn admin-btn-secondary">
+            <span>📥</span> Export Trips CSV
+        </a>
+    </div>
+
+    <!-- Filters Bar -->
+    <div class="table-controls">
+        <div class="table-filter-group">
+            <input type="text" id="tripSearchInput" class="admin-input" placeholder="Search trip or user..." onkeyup="if(event.key==='Enter') loadTrips(1)">
+            <select id="tripPublicFilter" class="admin-select" onchange="loadTrips(1)">
+                <option value="">All Visibility</option>
+                <option value="true">Public Only</option>
+                <option value="false">Private Only</option>
+            </select>
+            <select id="tripStatusFilter" class="admin-select" onchange="loadTrips(1)">
+                <option value="">All Statuses</option>
+                <option value="planning">Planning</option>
+                <option value="upcoming">Upcoming</option>
+                <option value="ongoing">Ongoing</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+            <button type="button" class="admin-btn admin-btn-secondary" onclick="loadTrips(1)">Filter</button>
+        </div>
+    </div>
+
+    <!-- Trips Table -->
+    <div style="overflow-x: auto;">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Trip Name</th>
+                    <th>Owner</th>
+                    <th>Destinations</th>
+                    <th>Travelers</th>
+                    <th>Total Cost / Budget</th>
+                    <th>Status</th>
+                    <th>Public Toggle</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tripsTableBody">
+                <tr><td colspan="8" class="admin-loading">⟳ Loading trips...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Trips Pagination -->
+    <div id="tripsPagination" class="pagination-container"></div>
+</div>
+
+<!-- Modal: Inspect Trip Detail -->
+<div id="tripInspectModal" class="admin-modal-backdrop">
+    <div class="admin-modal" style="width: 720px;">
+        <div class="admin-modal-header">
+            <h3 class="admin-modal-title" id="tripInspectTitle">Trip Details</h3>
+            <button class="admin-modal-close" onclick="closeAdminModal('tripInspectModal')">&times;</button>
+        </div>
+        <div class="admin-modal-body" id="tripInspectContent">
+            <div class="admin-loading">⟳ Loading trip itinerary breakdown...</div>
+        </div>
+        <div class="admin-modal-footer">
+            <button type="button" class="admin-btn admin-btn-secondary" onclick="closeAdminModal('tripInspectModal')">Close</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        initAdminTripsPage();
+    });
+</script>
+{% endblock %}
