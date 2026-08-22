@@ -6,9 +6,12 @@
 // Sidebar Toggle & State Persistence
 function toggleAdminSidebar() {
     const wrapper = document.querySelector('.admin-wrapper');
-    if (!wrapper) return;
-    wrapper.classList.toggle('sidebar-collapsed');
-    const isCollapsed = wrapper.classList.contains('sidebar-collapsed');
+    const body = document.body;
+
+    if (wrapper) wrapper.classList.toggle('sidebar-collapsed');
+    if (body) body.classList.toggle('sidebar-collapsed');
+
+    const isCollapsed = body.classList.contains('sidebar-collapsed') || (wrapper && wrapper.classList.contains('sidebar-collapsed'));
     localStorage.setItem('admin_sidebar_collapsed', isCollapsed ? 'true' : 'false');
 }
 
@@ -16,7 +19,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('admin_sidebar_collapsed') === 'true') {
         const wrapper = document.querySelector('.admin-wrapper');
         if (wrapper) wrapper.classList.add('sidebar-collapsed');
+        document.body.classList.add('sidebar-collapsed');
     }
+
+    document.querySelectorAll('#sidebarToggleBtn, .admin-sidebar-toggle-btn, .admin-sidebar-close-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleAdminSidebar();
+        });
+    });
 });
 
 // CSRF Token Helper

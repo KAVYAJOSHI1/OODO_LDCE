@@ -8,16 +8,21 @@
 
     <!-- Standard CSS & Custom Admin CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'admin/admin.css' %}">
+    <link rel="stylesheet" href="{% static 'admin/admin.css' %}?v=1.2">
 </head>
 <body class="admin-body">
     <div class="admin-wrapper">
         <!-- Sidebar Navigation -->
         <aside class="admin-sidebar">
             <div class="admin-sidebar-header">
-                <div class="admin-sidebar-brand">
-                    <span>GlobeTrotter</span>
-                    <span class="admin-brand-badge">Admin</span>
+                <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                    <div class="admin-sidebar-brand">
+                        <span>GlobeTrotter</span>
+                        <span class="admin-brand-badge">Admin</span>
+                    </div>
+                    <button type="button" class="admin-sidebar-close-btn" onclick="toggleAdminSidebar()" title="Collapse Sidebar">
+                        ✕
+                    </button>
                 </div>
             </div>
 
@@ -90,7 +95,7 @@
     <div id="adminToastContainer" class="toast-container"></div>
 
     <!-- JS Client -->
-    <script src="{% static 'admin/admin.js' %}"></script>
+    <script src="{% static 'admin/admin.js' %}?v=1.2"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
