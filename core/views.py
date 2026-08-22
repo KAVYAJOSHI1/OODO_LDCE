@@ -4,7 +4,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect, render
 
-from travel.models import Trip
+from travel.models import City, Trip
+from travel.services import BudgetService, ItineraryService
+from travel.serializers import itinerary_day_to_dict
+
+
+def _users_trip_or_first(request, trip_id):
+    if trip_id:
+        return get_object_or_404(Trip, id=trip_id, user=request.user)
+    return Trip.objects.filter(user=request.user).first()
 
 
 def signup_view(request):
@@ -89,6 +97,15 @@ def create_trip(request):
             end_date=request.POST.get('end_date') or None,
             budget=request.POST.get('budget') or 0,
         )
+        primary_city_name = request.POST.get('primary_city', '').strip()
+        city = City.objects.filter(name__iexact=primary_city_name).first()
+        if city:
+            ItineraryService.add_stop_to_trip(
+                trip, city.id,
+                arrival_date=trip.start_date,
+                departure_date=trip.end_date,
+            )
+
         messages.success(request, f'Trip "{trip.name}" created! Now add cities and activities.')
         return redirect(f"/trips/builder/?trip={trip.id}")
 
@@ -97,17 +114,15 @@ def create_trip(request):
 
 @login_required
 def itinerary_builder(request):
-    trip_id = request.GET.get('trip')
-    trip = get_object_or_404(Trip, id=trip_id, user=request.user) if trip_id else \
-        Trip.objects.filter(user=request.user).first()
+    trip = _users_trip_or_first(request, request.GET.get('trip'))
     return render(request, 'trips/itinerary_builder.html', {'trip': trip})
 
 
 @login_required
 def itinerary_view(request):
-    trip_id = request.GET.get('trip')
-    trip = get_object_or_404(Trip, id=trip_id, user=request.user) if trip_id else \
-        Trip.objects.filter(user=request.user).first()
+    trip = _users_trip_or_first(request, request.GET.get('trip'))
+    if trip:
+        trip.ensure_share_token()
     return render(request, 'trips/itinerary_view.html', {'trip': trip})
 
 
@@ -123,18 +138,22 @@ def activity_search(request):
 
 @login_required
 def budget(request):
-    trip_id = request.GET.get('trip')
-    trip = get_object_or_404(Trip, id=trip_id, user=request.user) if trip_id else \
-        Trip.objects.filter(user=request.user).first()
-    return render(request, 'trips/budget.html', {'trip': trip})
+    trip = _users_trip_or_first(request, request.GET.get('trip'))
+    context = {'trip': trip}
+    if trip:
+        context['budget'] = BudgetService.calculate_trip_budget(trip.id)
+        context['warning'] = BudgetService.get_budget_warning(trip.id)
+    return render(request, 'trips/budget.html', context)
 
 
 @login_required
 def calendar(request):
-    trip_id = request.GET.get('trip')
-    trip = get_object_or_404(Trip, id=trip_id, user=request.user) if trip_id else \
-        Trip.objects.filter(user=request.user).first()
-    return render(request, 'trips/calendar.html', {'trip': trip})
+    trip = _users_trip_or_first(request, request.GET.get('trip'))
+    context = {'trip': trip}
+    if trip:
+        raw_days = ItineraryService.get_itinerary_by_day(trip.id)
+        context['days'] = [itinerary_day_to_dict(d) for d in raw_days if d['activities']]
+    return render(request, 'trips/calendar.html', context)
 
 
 @login_required
@@ -154,4 +173,49 @@ def profile(request):
 def public_trip(request):
     token = request.GET.get('token')
     trip = get_object_or_404(Trip, share_token=token) if token else None
-    return render(request, 'trips/public_trip.html', {'trip': trip})
+    stops = trip.stops.select_related('city').prefetch_related('trip_activities') if trip else []
+    return render(request, 'trips/public_trip.html', {'trip': trip, 'stops': stops, 'token': token})
+
+
+@login_required
+def copy_trip(request):
+    if request.method != 'POST':
+        return redirect('public_trip')
+
+    token = request.POST.get('token')
+    source = get_object_or_404(Trip, share_token=token)
+
+    new_trip = Trip.objects.create(
+        user=request.user,
+        name=f'{source.name} (Copy)',
+        description=source.description,
+        start_date=source.start_date,
+        end_date=source.end_date,
+        budget=source.budget,
+        currency=source.currency,
+        travelers=source.travelers,
+    )
+
+    for stop in source.stops.select_related('city').prefetch_related('trip_activities'):
+        new_stop = ItineraryService.add_stop_to_trip(
+            new_trip, stop.city_id,
+            arrival_date=stop.arrival_date,
+            departure_date=stop.departure_date,
+            accommodation_name=stop.accommodation_name,
+            accommodation_cost=stop.accommodation_cost_per_night,
+            transport_mode=stop.transport_mode,
+            transport_cost=stop.transport_cost,
+            notes=stop.notes,
+        )
+        for ta in stop.trip_activities.all():
+            ItineraryService.add_activity_to_stop(
+                new_stop.id,
+                activity_id=ta.activity_id,
+                scheduled_date=ta.scheduled_date,
+                scheduled_time=ta.scheduled_time,
+                day_order=ta.day_order,
+                notes=ta.notes,
+            )
+
+    messages.success(request, f'"{source.name}" copied to your trips!')
+    return redirect(f"/trips/builder/?trip={new_trip.id}")

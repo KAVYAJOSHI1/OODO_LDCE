@@ -38,7 +38,10 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    if (window.GLOBETROTTER_CATALOG_READY) {
+        try { await window.GLOBETROTTER_CATALOG_READY; } catch (e) { /* handled elsewhere */ }
+    }
     renderCityGrid();
 });
 

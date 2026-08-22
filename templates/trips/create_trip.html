@@ -15,7 +15,7 @@
 
 <div style="max-width: 800px; margin: 0 auto;">
     <div class="card">
-        <form method="POST" action="{% url 'itinerary_builder' %}" onsubmit="return handleCreateTripSubmit(event)">
+        <form method="POST" action="{% url 'create_trip' %}">
             {% csrf_token %}
 
             <div class="form-group">

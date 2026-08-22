@@ -2,24 +2,35 @@
 
 {% block title %}Budget Estimator | GlobeTrotter{% endblock %}
 
+{% block extra_head %}
+{% if trip %}<script>window.GLOBETROTTER_TRIP_ID = {{ trip.id }};</script>{% endif %}
+{% endblock %}
+
 {% block content %}
 <div class="page-header">
     <div>
         <h1 class="page-title">💰 Budget Estimator & Expense Tracker</h1>
-        <p class="page-subtitle">Golden Triangle Explorer (Target Budget: ₹25,000)</p>
+        {% if trip %}
+        <p class="page-subtitle">{{ trip.name }} (Target Budget: {{ trip.currency }} {{ trip.budget }})</p>
+        {% else %}
+        <p class="page-subtitle">No trip selected — <a href="{% url 'create_trip' %}">create a trip</a> to see its budget.</p>
+        {% endif %}
     </div>
+    {% if trip %}
     <button type="button" class="btn btn-primary" onclick="openModal('addExpenseModal')">
         + Add Custom Expense
     </button>
+    {% endif %}
 </div>
 
+{% if trip and budget %}
 <!-- Budget Overview Stats Grid -->
 <div class="grid grid-4" style="margin-bottom: 24px;">
     <div class="card stat-card">
         <div class="stat-icon">💵</div>
         <div>
             <div class="stat-label">Total Allocated</div>
-            <div class="stat-value" style="color: var(--primary);">₹25,000</div>
+            <div class="stat-value" style="color: var(--primary);">{{ trip.currency }} {{ budget.set_budget }}</div>
         </div>
     </div>
 
@@ -27,7 +38,7 @@
         <div class="stat-icon">📊</div>
         <div>
             <div class="stat-label">Current Total</div>
-            <div class="stat-value" style="color: var(--dark);">₹24,500</div>
+            <div class="stat-value" style="color: var(--dark);">{{ trip.currency }} {{ budget.total_cost }}</div>
         </div>
     </div>
 
@@ -35,7 +46,7 @@
         <div class="stat-icon">✅</div>
         <div>
             <div class="stat-label">Remaining</div>
-            <div class="stat-value" style="color: var(--success);">₹500</div>
+            <div class="stat-value" style="color: {% if budget.is_over_budget %}var(--danger){% else %}var(--success){% endif %};">{{ trip.currency }} {{ budget.remaining }}</div>
         </div>
     </div>
 
@@ -43,7 +54,7 @@
         <div class="stat-icon">📅</div>
         <div>
             <div class="stat-label">Average / Day</div>
-            <div class="stat-value">₹3,062</div>
+            <div class="stat-value">{{ trip.currency }} {{ budget.daily_average }}</div>
         </div>
     </div>
 </div>
@@ -53,19 +64,25 @@
     <div class="card-header">
         <div>
             <div class="card-title">Budget Allocation Progress</div>
-            <div class="card-subtitle">98% of total budget utilized</div>
+            <div class="card-subtitle">{{ budget.percentage_used|floatformat:0 }}% of total budget utilized</div>
         </div>
-        <span class="badge badge-success">Within Limit</span>
+        <span class="badge {% if budget.is_over_budget %}badge-danger{% else %}badge-success{% endif %}">
+            {% if budget.is_over_budget %}Over Budget{% else %}Within Limit{% endif %}
+        </span>
     </div>
 
     <div class="progress" style="height: 12px; margin-bottom: 12px;">
-        <div class="progress-bar" style="width: 98%;"></div>
+        <div class="progress-bar" style="width: {{ budget.percentage_used|floatformat:0 }}%;"></div>
     </div>
 
     <div style="display: flex; justify-content: space-between; font-size: 13px; color: var(--muted);">
-        <span>Logged Expenses: ₹24,500</span>
-        <span>Max Target: ₹25,000</span>
+        <span>Logged + Estimated: {{ trip.currency }} {{ budget.total_cost }}</span>
+        <span>Max Target: {{ trip.currency }} {{ budget.set_budget }}</span>
     </div>
+
+    {% if warning.has_warning %}
+    <div class="alert alert-{{ warning.severity|default:'warning' }}" style="margin-top: 12px;">{{ warning.message }}</div>
+    {% endif %}
 </div>
 
 <!-- Expense Breakdown by Category -->
@@ -74,55 +91,37 @@
         <div class="card-title" style="margin-bottom: 16px;">📂 Breakdown by Category</div>
 
         <div style="display: flex; flex-direction: column; gap: 14px;">
+            {% for cat in budget.categories %}
             <div>
                 <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
-                    <span>🏨 Accommodation & Stay</span>
-                    <span>₹12,000 (49%)</span>
+                    <span>{{ cat.label }}</span>
+                    <span>{{ trip.currency }} {{ cat.amount }} ({{ cat.percentage|floatformat:0 }}%)</span>
                 </div>
-                <div class="progress"><div class="progress-bar" style="width: 49%; background: var(--primary);"></div></div>
+                <div class="progress"><div class="progress-bar" style="width: {{ cat.percentage|floatformat:0 }}%;"></div></div>
             </div>
-
-            <div>
-                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
-                    <span>🚆 Transport & Trains</span>
-                    <span>₹5,500 (22%)</span>
-                </div>
-                <div class="progress"><div class="progress-bar" style="width: 22%; background: #0d6efd;"></div></div>
-            </div>
-
-            <div>
-                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
-                    <span>🎯 Activities & Entry Tickets</span>
-                    <span>₹4,200 (17%)</span>
-                </div>
-                <div class="progress"><div class="progress-bar" style="width: 17%; background: var(--success);"></div></div>
-            </div>
-
-            <div>
-                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 4px;">
-                    <span>🍲 Meals & Food</span>
-                    <span>₹2,800 (12%)</span>
-                </div>
-                <div class="progress"><div class="progress-bar" style="width: 12%; background: var(--warning);"></div></div>
-            </div>
+            {% empty %}
+            <p style="color: var(--muted); font-size: 13px;">No spending logged yet.</p>
+            {% endfor %}
         </div>
     </div>
 
     <!-- Quick Alerts / Budget Advice -->
     <div class="card">
-        <div class="card-title" style="margin-bottom: 16px;">💡 Smart Odoo Budget Tips</div>
+        <div class="card-title" style="margin-bottom: 16px;">💡 Budget Tips</div>
 
+        {% if budget.is_over_budget %}
+        <div class="alert alert-danger">
+            <strong>Over Budget!</strong> You're {{ trip.currency }} {{ budget.over_by }} over your target of {{ trip.currency }} {{ budget.set_budget }}.
+        </div>
+        {% else %}
         <div class="alert alert-success">
-            <strong>On Track!</strong> Your current planned activities fit comfortably within your total ₹25,000 threshold.
+            <strong>On Track!</strong> Your current plan fits within your {{ trip.currency }} {{ budget.set_budget }} target.
         </div>
-
-        <div class="alert alert-warning">
-            <strong>Train Booking Advisory:</strong> Gatimaan Express executive seats fill fast in October. Lock in transport early.
-        </div>
+        {% endif %}
 
         <div style="font-size: 13px; color: var(--muted); line-height: 1.6;">
-            • Booking Taj Mahal sunrise tickets online saves ₹100 per visitor.<br>
-            • Hotel Imperial package includes complimentary breakfast, saving ~₹600/day.
+            • Meals are estimated automatically from each city's average cost — log real receipts to replace the estimate.<br>
+            • Add accommodation and transport costs per stop in the Itinerary Builder for a more accurate total.
         </div>
     </div>
 </div>
@@ -130,8 +129,7 @@
 <!-- Logged Expenses Table -->
 <div class="card">
     <div class="card-header">
-        <div class="card-title">📝 Expense Log Details</div>
-        <button class="btn btn-secondary btn-sm" onclick="showToast('Exported expenses to CSV!', 'info');">Export CSV</button>
+        <div class="card-title">📝 Logged Expenses</div>
     </div>
 
     <div class="table-container">
@@ -146,39 +144,83 @@
                 </tr>
             </thead>
             <tbody id="expenseTableBody">
+                {% for exp in budget.expense_details %}
                 <tr>
-                    <td>Hotel Imperial Stay (3 Nights)</td>
-                    <td><span class="badge badge-primary">Accommodation</span></td>
-                    <td>Oct 12, 2026</td>
-                    <td>₹10,500</td>
-                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', 'Hotel Imperial Stay', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
+                    <td>{{ exp.description }}</td>
+                    <td><span class="badge badge-primary">{{ exp.category_display }}</span></td>
+                    <td>{{ exp.date|default:"—" }}</td>
+                    <td>{{ trip.currency }} {{ exp.amount }}</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="deleteExpense({{ exp.id }})">Delete</button>
+                    </td>
                 </tr>
-
-                <tr>
-                    <td>Gatimaan Express Train (Delhi - Agra)</td>
-                    <td><span class="badge badge-primary">Transport</span></td>
-                    <td>Oct 14, 2026</td>
-                    <td>₹3,000</td>
-                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', 'Gatimaan Express Train', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
-                </tr>
-
-                <tr>
-                    <td>Qutub Minar Entry + Guide Fee</td>
-                    <td><span class="badge badge-success">Activities</span></td>
-                    <td>Oct 12, 2026</td>
-                    <td>₹1,200</td>
-                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', 'Qutub Minar Entry', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
-                </tr>
-
-                <tr>
-                    <td>Chandni Chowk Food Tour</td>
-                    <td><span class="badge badge-warning">Meals</span></td>
-                    <td>Oct 12, 2026</td>
-                    <td>₹1,600</td>
-                    <td><button class="btn btn-danger btn-sm" style="padding: 2px 8px; font-size: 11px;" onclick="triggerDeleteConfirmation('Expense', 'Chandni Chowk Food Tour', () => { this.closest('tr').remove(); showToast('Expense deleted', 'warning'); })">Delete</button></td>
-                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center text-muted" style="padding: 20px;">No expenses logged yet.</td></tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+async function deleteExpense(expenseId) {
+    if (!confirm('Delete this expense?')) return;
+    try {
+        const params = new URLSearchParams();
+        const res = await fetch(`/api/travel/expenses/${expenseId}/delete/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCookie('csrftoken') },
+            body: params,
+        });
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || 'Request failed');
+        window.location.reload();
+    } catch (e) {
+        showToast(`Could not delete expense: ${e.message}`, 'error');
+    }
+}
+
+async function handleAddExpenseSubmit(event) {
+    if (event) event.preventDefault();
+
+    const nameInput = document.getElementById('modalExpenseName');
+    const amountInput = document.getElementById('modalExpenseAmount');
+    const catInput = document.getElementById('modalExpenseCategory');
+
+    clearFieldError(nameInput);
+    clearFieldError(amountInput);
+
+    let isValid = true;
+    if (!nameInput.value.trim()) {
+        setFieldError(nameInput, 'Expense description is required');
+        isValid = false;
+    }
+    if (!amountInput.value || parseFloat(amountInput.value) < 0) {
+        setFieldError(amountInput, 'Enter a valid positive amount');
+        isValid = false;
+    }
+    if (!isValid) return false;
+
+    try {
+        const categoryMap = { 'Transport': 'transport', 'Stay': 'accommodation', 'Activities': 'activities', 'Meals': 'food', 'Other': 'other' };
+        const params = new URLSearchParams();
+        params.append('description', nameInput.value.trim());
+        params.append('amount', amountInput.value);
+        params.append('category', categoryMap[catInput ? catInput.value : 'Other'] || 'other');
+
+        const res = await fetch(`/api/travel/trips/{{ trip.id }}/expenses/add/`, {
+            method: 'POST',
+            headers: { 'X-CSRFToken': getCookie('csrftoken') },
+            body: params,
+        });
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || 'Request failed');
+        window.location.reload();
+    } catch (e) {
+        showToast(`Could not add expense: ${e.message}`, 'error');
+    }
+    return false;
+}
+</script>
+{% endif %}
 {% endblock %}

@@ -3,39 +3,46 @@
 {% block title %}Shared Itinerary | GlobeTrotter{% endblock %}
 
 {% block content %}
+{% if trip %}
 <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, var(--primary), #9a718d); color: white; padding: 32px;">
     <span class="badge" style="background: rgba(255,255,255,0.2); color: white; margin-bottom: 12px;">🌐 Public Shared Itinerary</span>
-    <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 8px;">Golden Triangle Explorer</h1>
-    <p style="opacity: 0.9; font-size: 15px; margin-bottom: 20px;">Curated 8-day heritage & cultural journey across Delhi, Agra, and Jaipur.</p>
+    <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 8px;">{{ trip.name }}</h1>
+    <p style="opacity: 0.9; font-size: 15px; margin-bottom: 20px;">{{ trip.description|default:"A curated multi-city trip." }}</p>
 
     <div style="display: flex; gap: 20px; font-size: 14px; opacity: 0.95;">
-        <span>📍 3 Cities</span>
-        <span>⏱️ 8 Days</span>
-        <span>💰 Approx. ₹24,500</span>
-        <span>👤 Curated by Kavya</span>
+        <span>📍 {{ stops|length }} {{ stops|length|pluralize:"City,Cities" }}</span>
+        <span>⏱️ {{ trip.get_duration_days }} Days</span>
+        <span>💰 Approx. {{ trip.currency }} {{ trip.get_total_cost }}</span>
+        <span>👤 By {{ trip.user.first_name|default:trip.user.username }}</span>
     </div>
 </div>
 
 <div class="grid grid-3" style="margin-bottom: 24px;">
+    {% for stop in stops %}
     <div class="card">
-        <div class="card-title" style="margin-bottom: 6px;">Stop 1: Delhi</div>
-        <div style="color: var(--muted); font-size: 13px;">3 Days • 4 Activities</div>
+        <div class="card-title" style="margin-bottom: 6px;">Stop {{ forloop.counter }}: {{ stop.city.name }}</div>
+        <div style="color: var(--muted); font-size: 13px;">{{ stop.get_days }} Days • {{ stop.trip_activities.count }} Activities</div>
     </div>
-    <div class="card">
-        <div class="card-title" style="margin-bottom: 6px;">Stop 2: Agra</div>
-        <div style="color: var(--muted); font-size: 13px;">2 Days • 3 Activities</div>
-    </div>
-    <div class="card">
-        <div class="card-title" style="margin-bottom: 6px;">Stop 3: Jaipur</div>
-        <div style="color: var(--muted); font-size: 13px;">3 Days • 5 Activities</div>
-    </div>
+    {% empty %}
+    <div class="card" style="grid-column: span 3; text-align: center; color: var(--muted);">No stops added to this trip yet.</div>
+    {% endfor %}
 </div>
 
 <div class="card" style="text-align: center; padding: 40px 20px;">
     <h3 style="font-size: 20px; font-weight: 700; color: var(--dark); margin-bottom: 8px;">Want to customize this trip?</h3>
-    <p style="color: var(--muted); margin-bottom: 20px;">Save this itinerary directly to your GlobeTrotter account to edit stops, dates, and budget.</p>
-    <button class="btn btn-secondary btn-lg" onclick="showToast('Trip copied to your account!', 'success')" style="color: var(--primary); font-weight: 600;">
-        📋 Copy Trip to My Account
-    </button>
+    <p style="color: var(--muted); margin-bottom: 20px;">Copy this itinerary to your GlobeTrotter account to edit stops, dates, and budget.</p>
+    <form method="POST" action="{% url 'copy_trip' %}">
+        {% csrf_token %}
+        <input type="hidden" name="token" value="{{ token }}">
+        <button type="submit" class="btn btn-secondary btn-lg" style="color: var(--primary); font-weight: 600;">
+            📋 Copy Trip to My Account
+        </button>
+    </form>
 </div>
+{% else %}
+<div class="card" style="text-align: center; padding: 40px 20px;">
+    <h3 style="font-size: 20px; font-weight: 700; color: var(--dark); margin-bottom: 8px;">Trip not found</h3>
+    <p style="color: var(--muted);">This share link is invalid or has expired.</p>
+</div>
+{% endif %}
 {% endblock %}

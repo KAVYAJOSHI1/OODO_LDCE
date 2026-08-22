@@ -20,4 +20,5 @@ urlpatterns = [
 
     path('profile/', views.profile, name='profile'),
     path('public/', views.public_trip, name='public_trip'),
+    path('public/copy/', views.copy_trip, name='copy_trip'),
 ]

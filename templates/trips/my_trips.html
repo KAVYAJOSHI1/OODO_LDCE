@@ -39,77 +39,35 @@
 <!-- Trips Grid -->
 <div class="grid grid-3">
 
-    <!-- Trip 1: Golden Triangle -->
+    {% for trip in trips %}
     <div class="card trip-card">
         <div class="trip-cover">
             <div>
-                <span class="badge badge-primary">Upcoming</span>
-                <div class="trip-title" style="margin-top: 8px;">Golden Triangle Explorer</div>
+                <span class="badge badge-primary">{{ trip.get_status_display }}</span>
+                <div class="trip-title" style="margin-top: 8px;">{{ trip.name }}</div>
             </div>
         </div>
         <div class="trip-body">
-            <div class="trip-meta">📍 Delhi ➔ Agra ➔ Jaipur</div>
-            <div class="trip-meta">📅 Oct 20 – Oct 28, 2026 (8 days)</div>
+            <div class="trip-meta">📍 {% for stop in trip.stops.all %}{{ stop.city.name }}{% if not forloop.last %} ➔ {% endif %}{% empty %}No stops added yet{% endfor %}</div>
+            <div class="trip-meta">📅 {{ trip.start_date|default:"TBD" }} – {{ trip.end_date|default:"TBD" }} ({{ trip.get_duration_days }} days)</div>
             <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
-                Activities: 9 planned | Budget: ₹35,000
+                Budget: {{ trip.currency }} {{ trip.budget }}
             </div>
             <div class="trip-footer">
-                <a href="{% url 'budget' %}" class="badge badge-primary">Budget ₹35K</a>
+                <a href="{% url 'budget' %}?trip={{ trip.id }}" class="badge badge-primary">Budget</a>
                 <div style="display: flex; gap: 6px;">
-                    <a href="{% url 'itinerary_view' %}" class="btn btn-secondary btn-sm" onclick="switchToPresetTrip('golden_triangle')">View</a>
-                    <a href="{% url 'itinerary_builder' %}" class="btn btn-primary btn-sm" onclick="switchToPresetTrip('golden_triangle')">Edit Builder</a>
+                    <a href="{% url 'itinerary_view' %}?trip={{ trip.id }}" class="btn btn-secondary btn-sm">View</a>
+                    <a href="{% url 'itinerary_builder' %}?trip={{ trip.id }}" class="btn btn-primary btn-sm">Edit Builder</a>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Trip 2: Kerala Backwaters -->
-    <div class="card trip-card">
-        <div class="trip-cover" style="background: linear-gradient(135deg, #28a745, #5dd382);">
-            <div>
-                <span class="badge badge-success">In Progress</span>
-                <div class="trip-title" style="margin-top: 8px;">Kerala Backwaters Retreat</div>
-            </div>
-        </div>
-        <div class="trip-body">
-            <div class="trip-meta">📍 Kochi ➔ Alleppey ➔ Munnar</div>
-            <div class="trip-meta">📅 Nov 05 – Nov 12, 2026 (7 days)</div>
-            <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
-                Activities: 3 planned | Budget: ₹28,000
-            </div>
-            <div class="trip-footer">
-                <a href="{% url 'budget' %}" class="badge badge-success">Budget ₹28K</a>
-                <div style="display: flex; gap: 6px;">
-                    <a href="{% url 'itinerary_view' %}" class="btn btn-secondary btn-sm" onclick="switchToPresetTrip('kerala_backwaters')">View</a>
-                    <a href="{% url 'itinerary_builder' %}" class="btn btn-primary btn-sm" onclick="switchToPresetTrip('kerala_backwaters')">Edit Builder</a>
-                </div>
-            </div>
-        </div>
+    {% empty %}
+    <div class="card" style="grid-column: span 3; text-align: center; padding: 32px;">
+        <p style="color: var(--muted); margin-bottom: 16px;">No trips yet. Plan your first adventure!</p>
+        <a href="{% url 'create_trip' %}" class="btn btn-primary">➕ Plan a New Trip</a>
     </div>
-
-    <!-- Trip 3: Rajasthan Heritage Trail -->
-    <div class="card trip-card">
-        <div class="trip-cover" style="background: linear-gradient(135deg, #f59e0b, #f9c265);">
-            <div>
-                <span class="badge badge-warning">Completed</span>
-                <div class="trip-title" style="margin-top: 8px;">Udaipur Lake & Fort Trail</div>
-            </div>
-        </div>
-        <div class="trip-body">
-            <div class="trip-meta">📍 Udaipur ➔ Kumbhalgarh</div>
-            <div class="trip-meta">📅 Dec 01 – Dec 05, 2026 (5 days)</div>
-            <div style="margin-top: 10px; font-size: 12px; color: var(--muted);">
-                Activities: 2 completed | Budget: ₹22,000
-            </div>
-            <div class="trip-footer">
-                <a href="{% url 'budget' %}" class="badge badge-warning">Spent ₹22K</a>
-                <div style="display: flex; gap: 6px;">
-                    <a href="{% url 'itinerary_view' %}" class="btn btn-secondary btn-sm" onclick="switchToPresetTrip('udaipur_trail')">View</a>
-                    <a href="{% url 'itinerary_builder' %}" class="btn btn-primary btn-sm" onclick="switchToPresetTrip('udaipur_trail')">Edit Builder</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    {% endfor %}
 
 </div>
 {% endblock %}
