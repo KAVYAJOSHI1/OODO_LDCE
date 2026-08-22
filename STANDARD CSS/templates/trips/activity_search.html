@@ -1,35 +1,35 @@
 {% extends "base.html" %}
 
-{% block title %}Explore Activities | GlobeTrotter{% endblock %}
+{% block title %}Activity Discovery | GlobeTrotter{% endblock %}
 
 {% block content %}
 <div class="page-header">
     <div>
-        <h1 class="page-title">🎯 Explore Activities & Experiences</h1>
-        <p class="page-subtitle">Filter activities by type, duration, cost, and city to build your itinerary.</p>
+        <h1 class="page-title">🎯 Activity & Experience Catalog</h1>
+        <p class="page-subtitle">Browse activities, entry tickets, guided tours, and local experiences across destination hubs.</p>
     </div>
+    <button type="button" class="btn btn-primary" onclick="openModal('addActivityModal')">
+        + Custom Activity
+    </button>
 </div>
 
 <!-- Category Filters -->
-<div class="card" style="margin-bottom: 24px;">
-    <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;">
-        <span style="font-weight: 600; color: var(--dark); font-size: 13px;">Categories:</span>
-        <button class="btn btn-primary btn-sm">All</button>
-        <button class="btn btn-secondary btn-sm">🏛️ Heritage & Monuments</button>
-        <button class="btn btn-secondary btn-sm">🍲 Culinary & Food Walks</button>
-        <button class="btn btn-secondary btn-sm">⛰️ Adventure & Nature</button>
-        <button class="btn btn-secondary btn-sm">⛵ Boat & Cruise</button>
-    </div>
+<div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+    <button class="btn btn-primary btn-sm">All Categories</button>
+    <button class="btn btn-secondary btn-sm">🏛️ Heritage & Monuments</button>
+    <button class="btn btn-secondary btn-sm">🍲 Food & Culinary</button>
+    <button class="btn btn-secondary btn-sm">⛵ Cruises & Water</button>
+    <button class="btn btn-secondary btn-sm">🧗 Adventure & Nature</button>
 </div>
 
-<!-- Activity List Table / Grid -->
+<!-- Activity Table -->
 <div class="card">
     <div class="table-container">
         <table class="table">
             <thead>
                 <tr>
-                    <th>Activity</th>
-                    <th>City</th>
+                    <th>Activity Name</th>
+                    <th>Destination</th>
                     <th>Category</th>
                     <th>Duration</th>
                     <th>Est. Cost</th>
@@ -38,63 +38,39 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>
-                        <strong>Taj Mahal Sunrise Guided Tour</strong>
-                        <div style="font-size: 11px; color: var(--muted);">Skip-the-line entrance + expert historian guide</div>
-                    </td>
-                    <td><span class="badge badge-primary">Agra</span></td>
-                    <td>Heritage</td>
+                    <td><strong>Taj Mahal Sunrise Guided Tour</strong></td>
+                    <td>Agra, UP</td>
+                    <td><span class="badge badge-primary">Heritage</span></td>
+                    <td>3.0 Hours</td>
+                    <td>₹1,200</td>
+                    <td><button class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData('Taj Mahal Sunrise Guided Tour', 1200, 'Heritage & Monuments')">+ Add to Trip</button></td>
+                </tr>
+
+                <tr>
+                    <td><strong>Chandni Chowk Midnight Food Walk</strong></td>
+                    <td>New Delhi</td>
+                    <td><span class="badge badge-warning">Food & Culinary</span></td>
                     <td>2.5 Hours</td>
-                    <td><strong style="color: var(--primary);">₹1,200</strong></td>
-                    <td><button class="btn btn-primary btn-sm">+ Add to Trip</button></td>
+                    <td>₹800</td>
+                    <td><button class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData('Chandni Chowk Midnight Food Walk', 800, 'Food Walk')">+ Add to Trip</button></td>
                 </tr>
 
                 <tr>
-                    <td>
-                        <strong>Scuba Diving at Grand Island</strong>
-                        <div style="font-size: 11px; color: var(--muted);">PADI instructor + equipment + video included</div>
-                    </td>
-                    <td><span class="badge badge-primary">Goa</span></td>
-                    <td>Adventure</td>
-                    <td>4 Hours</td>
-                    <td><strong style="color: var(--primary);">₹3,500</strong></td>
-                    <td><button class="btn btn-primary btn-sm">+ Add to Trip</button></td>
+                    <td><strong>Amer Fort Elephant & Jeep Safari</strong></td>
+                    <td>Jaipur, RJ</td>
+                    <td><span class="badge badge-primary">Heritage</span></td>
+                    <td>4.0 Hours</td>
+                    <td>₹1,500</td>
+                    <td><button class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData('Amer Fort Elephant & Jeep Safari', 1500, 'Heritage & Monuments')">+ Add to Trip</button></td>
                 </tr>
 
                 <tr>
-                    <td>
-                        <strong>Alleppey Houseboat Day Cruise</strong>
-                        <div style="font-size: 11px; color: var(--muted);">Traditional Kerala lunch + backwater canal cruise</div>
-                    </td>
-                    <td><span class="badge badge-primary">Kochi</span></td>
-                    <td>Boat & Cruise</td>
-                    <td>5 Hours</td>
-                    <td><strong style="color: var(--primary);">₹2,800</strong></td>
-                    <td><button class="btn btn-primary btn-sm">+ Add to Trip</button></td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <strong>Amber Fort Elephant & Jeep Safari</strong>
-                        <div style="font-size: 11px; color: var(--muted);">Hilltop fort exploration & Light & Sound Show</div>
-                    </td>
-                    <td><span class="badge badge-primary">Jaipur</span></td>
-                    <td>Heritage</td>
-                    <td>3 Hours</td>
-                    <td><strong style="color: var(--primary);">₹900</strong></td>
-                    <td><button class="btn btn-primary btn-sm">+ Add to Trip</button></td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <strong>Chandni Chowk Midnight Food Crawl</strong>
-                        <div style="font-size: 11px; color: var(--muted);">Sample 8 iconic Old Delhi delicacies with local guide</div>
-                    </td>
-                    <td><span class="badge badge-primary">Delhi</span></td>
-                    <td>Food & Culinary</td>
-                    <td>3 Hours</td>
-                    <td><strong style="color: var(--primary);">₹800</strong></td>
-                    <td><button class="btn btn-primary btn-sm">+ Add to Trip</button></td>
+                    <td><strong>Mandovi River Sunset Cruise</strong></td>
+                    <td>North Goa</td>
+                    <td><span class="badge badge-success">Cruises</span></td>
+                    <td>2.0 Hours</td>
+                    <td>₹650</td>
+                    <td><button class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData('Mandovi River Sunset Cruise', 650, 'Sightseeing')">+ Add to Trip</button></td>
                 </tr>
             </tbody>
         </table>

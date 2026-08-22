@@ -3,61 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Triangle Explorer | Shared Trip | GlobeTrotter</title>
+    <title>Shared Itinerary | GlobeTrotter</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <nav class="navbar">
     <a href="dashboard.html" class="navbar-brand">
-        <span class="brand-icon">G</span>
-        GlobeTrotter
+        <span class="brand-icon">G</span> GlobeTrotter
     </a>
-    <div style="display: flex; gap: 12px; align-items: center;">
-        <span style="font-size: 13px; color: #d6d6d6;">Shared by <strong>Kavya Joshi</strong></span>
-        <a href="login.html" class="btn btn-secondary btn-sm">Sign In</a>
-        <a href="signup.html" class="btn btn-primary btn-sm">Join GlobeTrotter</a>
+    <div class="navbar-menu">
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="my_trips.html" class="nav-link">My Trips</a>
+        <a href="login.html" class="nav-link">Login</a>
     </div>
 </nav>
 
-<div style="max-width: 1000px; margin: 30px auto; padding: 0 20px;">
-    <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, var(--primary), #9a718d); color: white;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
-            <div>
-                <span class="badge" style="background: rgba(255,255,255,0.2); color: white;">Public Shared Itinerary</span>
-                <h1 style="font-size: 28px; font-weight: 700; margin-top: 8px;">Golden Triangle Explorer</h1>
-                <p style="opacity: 0.9; margin-top: 4px;">📍 Delhi ➔ Agra ➔ Jaipur • 8 Days • Est. ₹24,500</p>
-            </div>
-            <button class="btn btn-secondary btn-lg" onclick="alert('Trip copied to your account!')" style="color: var(--primary); font-weight: 600;">
-                📋 Copy Trip to My Account
-            </button>
+<div class="main-content" style="max-width: 1000px; margin: 30px auto; padding: 0 20px;">
+    <div class="card" style="margin-bottom: 24px; background: linear-gradient(135deg, var(--primary), #9a718d); color: white; padding: 32px;">
+        <span class="badge" style="background: rgba(255,255,255,0.2); color: white; margin-bottom: 12px;">🌐 Public Shared Itinerary</span>
+        <h1 style="font-size: 28px; font-weight: 700; margin-bottom: 8px;">Golden Triangle Explorer</h1>
+        <p style="opacity: 0.9; font-size: 15px; margin-bottom: 20px;">Curated 8-day heritage & cultural journey across Delhi, Agra, and Jaipur.</p>
+
+        <div style="display: flex; gap: 20px; font-size: 14px; opacity: 0.95;">
+            <span>📍 3 Cities</span>
+            <span>⏱️ 8 Days</span>
+            <span>💰 Approx. ₹24,500</span>
+            <span>👤 Curated by Kavya</span>
         </div>
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <div>
-                <div class="card-title">🗺️ Complete Trip Itinerary</div>
-                <div class="card-subtitle">Detailed day-by-day plan curated by Kavya</div>
-            </div>
-            <span class="badge badge-success">Verified Itinerary</span>
+    <div class="grid grid-3" style="margin-bottom: 24px;">
+        <div class="card">
+            <div class="card-title" style="margin-bottom: 6px;">Stop 1: Delhi</div>
+            <div style="color: var(--muted); font-size: 13px;">3 Days • 4 Activities</div>
         </div>
+        <div class="card">
+            <div class="card-title" style="margin-bottom: 6px;">Stop 2: Agra</div>
+            <div style="color: var(--muted); font-size: 13px;">2 Days • 3 Activities</div>
+        </div>
+        <div class="card">
+            <div class="card-title" style="margin-bottom: 6px;">Stop 3: Jaipur</div>
+            <div style="color: var(--muted); font-size: 13px;">3 Days • 5 Activities</div>
+        </div>
+    </div>
 
-        <div class="timeline" style="margin-top: 20px;">
-            <div class="timeline-item">
-                <div class="timeline-time">DAY 1 — Delhi Arrival & Heritage</div>
-                <div class="timeline-title">Check-in at Hotel Imperial & Qutub Minar Visit</div>
-                <div class="timeline-meta">Connaught Place & Mehrauli • Est. Cost: ₹4,900</div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-time">DAY 2 — Old Delhi Food Crawl</div>
-                <div class="timeline-title">Humayun's Tomb & Chandni Chowk Food Tour</div>
-                <div class="timeline-meta">Old Delhi • Est. Cost: ₹2,100</div>
-            </div>
-        </div>
+    <div class="card" style="text-align: center; padding: 40px 20px;">
+        <h3 style="font-size: 20px; font-weight: 700; color: var(--dark); margin-bottom: 8px;">Want to customize this trip?</h3>
+        <p style="color: var(--muted); margin-bottom: 20px;">Save this itinerary directly to your GlobeTrotter account to edit stops, dates, and budget.</p>
+        <button class="btn btn-secondary btn-lg" onclick="showToast('Trip copied to your account!', 'success')" style="color: var(--primary); font-weight: 600;">
+            📋 Copy Trip to My Account
+        </button>
     </div>
 </div>
 
+<script src="static/js/validation.js"></script>
+<script src="static/js/toast.js"></script>
+<script src="static/js/modals.js"></script>
+<script src="static/js/itinerary.js"></script>
 </body>
 </html>

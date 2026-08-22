@@ -3,17 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Explore Activities | GlobeTrotter</title>
+    <title>Activity Discovery | GlobeTrotter</title>
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <nav class="navbar">
-    <a href="dashboard.html" class="navbar-brand">
-        <span class="brand-icon">G</span>
-        GlobeTrotter
-    </a>
+    <a href="dashboard.html" class="navbar-brand"><span class="brand-icon">G</span> GlobeTrotter</a>
     <div class="navbar-menu">
         <a href="dashboard.html" class="nav-link">Dashboard</a>
         <a href="my_trips.html" class="nav-link">My Trips</a>
@@ -39,9 +35,12 @@
     <main class="main-content">
         <div class="page-header">
             <div>
-                <h1 class="page-title">🎯 Explore Activities & Experiences</h1>
-                <p class="page-subtitle">Filter activities by type, duration, cost, and city to build your itinerary.</p>
+                <h1 class="page-title">🎯 Activity & Experience Catalog</h1>
+                <p class="page-subtitle">Browse activities, entry tickets, guided tours, and local experiences across destination hubs.</p>
             </div>
+            <button type="button" class="btn btn-primary" onclick="openModal('addActivityModal')">
+                + Custom Activity
+            </button>
         </div>
 
         <div class="card">
@@ -49,8 +48,8 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th>Activity</th>
-                            <th>City</th>
+                            <th>Activity Name</th>
+                            <th>Destination</th>
                             <th>Category</th>
                             <th>Duration</th>
                             <th>Est. Cost</th>
@@ -59,26 +58,20 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>
-                                <strong>Taj Mahal Sunrise Guided Tour</strong>
-                                <div style="font-size: 11px; color: var(--muted);">Skip-the-line entrance + guide</div>
-                            </td>
-                            <td><span class="badge badge-primary">Agra</span></td>
-                            <td>Heritage</td>
-                            <td>2.5 Hours</td>
-                            <td><strong style="color: var(--primary);">₹1,200</strong></td>
-                            <td><button class="btn btn-primary btn-sm" onclick="alert('Added activity!')">+ Add to Trip</button></td>
+                            <td><strong>Taj Mahal Sunrise Guided Tour</strong></td>
+                            <td>Agra, UP</td>
+                            <td><span class="badge badge-primary">Heritage</span></td>
+                            <td>3.0 Hours</td>
+                            <td>₹1,200</td>
+                            <td><button class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData('Taj Mahal Sunrise Guided Tour', 1200, 'Heritage & Monuments')">+ Add to Trip</button></td>
                         </tr>
                         <tr>
-                            <td>
-                                <strong>Alleppey Houseboat Day Cruise</strong>
-                                <div style="font-size: 11px; color: var(--muted);">Traditional Kerala lunch included</div>
-                            </td>
-                            <td><span class="badge badge-primary">Kochi</span></td>
-                            <td>Boat & Cruise</td>
-                            <td>5 Hours</td>
-                            <td><strong style="color: var(--primary);">₹2,800</strong></td>
-                            <td><button class="btn btn-primary btn-sm" onclick="alert('Added activity!')">+ Add to Trip</button></td>
+                            <td><strong>Chandni Chowk Midnight Food Walk</strong></td>
+                            <td>New Delhi</td>
+                            <td><span class="badge badge-warning">Food & Culinary</span></td>
+                            <td>2.5 Hours</td>
+                            <td>₹800</td>
+                            <td><button class="btn btn-primary btn-sm" onclick="openAddActivityModalWithData('Chandni Chowk Midnight Food Walk', 800, 'Food Walk')">+ Add to Trip</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -87,5 +80,45 @@
     </main>
 </div>
 
+<!-- Modal -->
+<div class="modal-overlay" id="addActivityModal">
+    <div class="modal" style="width: 540px;">
+        <div class="modal-header">
+            <h3 class="modal-title">🎯 Add New Activity</h3>
+            <button class="modal-close" data-dismiss="modal">&times;</button>
+        </div>
+        <form onsubmit="return handleAddActivitySubmit(event)">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label" for="modalActivityName">Activity Name *</label>
+                    <input type="text" id="modalActivityName" class="form-control" placeholder="e.g. Taj Mahal Guided Tour" required>
+                </div>
+                <div class="grid grid-2">
+                    <div class="form-group">
+                        <label class="form-label" for="modalActivityCategory">Category</label>
+                        <select id="modalActivityCategory" class="form-control">
+                            <option value="Heritage & Monuments">Heritage & Monuments</option>
+                            <option value="Food Walk">Food & Culinary</option>
+                            <option value="Sightseeing">Sightseeing</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="modalActivityCost">Est. Cost (₹) *</label>
+                        <input type="number" id="modalActivityCost" class="form-control" placeholder="500" min="0" required>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px;">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Add Activity</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="static/js/validation.js"></script>
+<script src="static/js/toast.js"></script>
+<script src="static/js/modals.js"></script>
+<script src="static/js/itinerary.js"></script>
 </body>
 </html>

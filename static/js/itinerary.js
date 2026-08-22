@@ -25,6 +25,16 @@ function handleConfirmDelete() {
     closeModal('deleteConfirmationModal');
 }
 
+// Prefill and Open City Modal
+function openAddCityModalWithData(cityName, stateName) {
+    const nameInput = document.getElementById('modalCityName');
+    const stateInput = document.getElementById('modalCityState');
+    if (nameInput) nameInput.value = cityName || '';
+    if (stateInput) stateInput.value = stateName || 'India';
+    clearFieldError(nameInput);
+    openModal('addCityModal');
+}
+
 // Add City Handler
 function handleAddCitySubmit(event) {
     if (event) event.preventDefault();
@@ -66,7 +76,20 @@ function addCity(cityData) {
         cityList.appendChild(cityDiv);
     }
 
-    showToast(`City "${cityData.name}" added successfully!`, 'success');
+    showToast('City added successfully!', 'success');
+}
+
+// Prefill and Open Activity Modal
+function openAddActivityModalWithData(activityName, cost, category) {
+    const nameInput = document.getElementById('modalActivityName');
+    const costInput = document.getElementById('modalActivityCost');
+    const catInput = document.getElementById('modalActivityCategory');
+    if (nameInput) nameInput.value = activityName || '';
+    if (costInput) costInput.value = cost || '';
+    if (catInput && category) catInput.value = category;
+    clearFieldError(nameInput);
+    clearFieldError(costInput);
+    openModal('addActivityModal');
 }
 
 // Add Activity Handler
@@ -121,7 +144,7 @@ function addActivity(activityData) {
         timeline.appendChild(item);
     }
 
-    showToast(`Activity "${activityData.name}" added successfully!`, 'success');
+    showToast('Activity added successfully!', 'success');
 }
 
 // Add Expense Handler
@@ -140,7 +163,7 @@ function handleAddExpenseSubmit(event) {
         setFieldError(nameInput, 'Expense description is required');
         isValid = false;
     }
-    if (!amountInput.value || amountInput.value <= 0) {
+    if (!amountInput.value || amountInput.value < 0) {
         setFieldError(amountInput, 'Enter a valid positive amount');
         isValid = false;
     }
@@ -173,7 +196,7 @@ function addExpense(expenseData) {
         tableBody.appendChild(row);
     }
 
-    showToast(`Expense "₹${expenseData.amount}" logged successfully!`, 'success');
+    showToast('Expense added successfully!', 'success');
 }
 
 // City Search Filter (Frontend UI utility)
