@@ -1,6 +1,6 @@
 /**
  * GlobeTrotter - Master State Engine, Interactions & City-Strict Logic
- * Logical Multi-City Route (Delhi -> Agra -> Jaipur) with city-strict activity selection.
+ * Smart Time-Slot Scheduling & Conflict Resolution Engine with Ticket Constraints.
  */
 
 // Global Application State (Logical & Geographically Accurate Route)
@@ -14,7 +14,7 @@ window.GLOBETROTTER_STATE = {
         description: "Curated 8-day heritage journey covering Delhi, Agra, and Jaipur.",
         shareToken: "gt-share-883921"
     },
-    // Logically consecutive destination stops (North India Circuit)
+    // Logically consecutive destination stops with chronological auto-scheduled time slots
     stops: [
         {
             id: "stop-delhi",
@@ -24,8 +24,8 @@ window.GLOBETROTTER_STATE = {
             startDate: "2026-10-20",
             endDate: "2026-10-22",
             activities: [
-                { id: "act-delhi-1", activityId: "delhi-qutub-minar", name: "Qutub Minar Complex", category: "Heritage & Monuments", cost: 600, time: "09:00 AM", duration: "2.0 Hours" },
-                { id: "act-delhi-2", activityId: "delhi-chandni-chowk", name: "Chandni Chowk Food & Rickshaw Walk", category: "Food Walk", cost: 800, time: "06:00 PM", duration: "3.0 Hours" }
+                { id: "act-delhi-1", activityId: "delhi-qutub-minar", name: "Qutub Minar Complex", category: "Heritage & Monuments", cost: 600, time: "09:00 AM", duration: "2.0 Hours", ticketRequired: true },
+                { id: "act-delhi-2", activityId: "delhi-chandni-chowk", name: "Chandni Chowk Food & Rickshaw Walk", category: "Food Walk", cost: 800, time: "11:30 AM", duration: "3.0 Hours", ticketRequired: false }
             ]
         },
         {
@@ -36,8 +36,8 @@ window.GLOBETROTTER_STATE = {
             startDate: "2026-10-22",
             endDate: "2026-10-24",
             activities: [
-                { id: "act-agra-1", activityId: "agra-taj-mahal", name: "Taj Mahal Sunrise Guided Tour", category: "Heritage & Monuments", cost: 1200, time: "06:00 AM", duration: "3.0 Hours" },
-                { id: "act-agra-2", activityId: "agra-fort", name: "Agra Fort UNESCO Site Walk", category: "Heritage & Monuments", cost: 650, time: "02:00 PM", duration: "2.5 Hours" }
+                { id: "act-agra-1", activityId: "agra-taj-mahal", name: "Taj Mahal Sunrise Guided Tour", category: "Heritage & Monuments", cost: 1200, time: "06:00 AM", duration: "3.0 Hours", ticketRequired: true },
+                { id: "act-agra-2", activityId: "agra-fort", name: "Agra Fort UNESCO Site Walk", category: "Heritage & Monuments", cost: 650, time: "09:30 AM", duration: "2.5 Hours", ticketRequired: true }
             ]
         },
         {
@@ -48,8 +48,8 @@ window.GLOBETROTTER_STATE = {
             startDate: "2026-10-24",
             endDate: "2026-10-28",
             activities: [
-                { id: "act-jaipur-1", activityId: "jaipur-amer-fort", name: "Amer Fort Jeep Safari", category: "Heritage & Monuments", cost: 1500, time: "09:00 AM", duration: "3.5 Hours" },
-                { id: "act-jaipur-2", activityId: "jaipur-hawa-mahal", name: "Hawa Mahal & Museum", category: "Heritage & Monuments", cost: 200, time: "03:00 PM", duration: "1.5 Hours" }
+                { id: "act-jaipur-1", activityId: "jaipur-amer-fort", name: "Amer Fort Jeep Safari", category: "Heritage & Monuments", cost: 1500, time: "09:00 AM", duration: "3.5 Hours", ticketRequired: true },
+                { id: "act-jaipur-2", activityId: "jaipur-hawa-mahal", name: "Hawa Mahal & Museum", category: "Heritage & Monuments", cost: 200, time: "01:00 PM", duration: "1.5 Hours", ticketRequired: false }
             ]
         }
     ],
@@ -62,6 +62,89 @@ window.GLOBETROTTER_STATE = {
     ],
     activeTargetStopId: "stop-delhi"
 };
+
+// -------------------------------------------------------------
+// TIME UTILITIES & SMART CONFLICT RESOLUTION
+// -------------------------------------------------------------
+
+function parseTimeToMinutes(timeStr) {
+    if (!timeStr) return 540; // 09:00 AM default
+    const str = timeStr.trim().toUpperCase();
+    
+    // Handle 24-hr input format e.g. "09:00" or 12-hr format "09:00 AM"
+    const isPM = str.includes("PM");
+    const isAM = str.includes("AM");
+    const cleanStr = str.replace(/(AM|PM)/g, "").trim();
+    const parts = cleanStr.split(":");
+    
+    let hours = parseInt(parts[0], 10) || 9;
+    let minutes = parseInt(parts[1], 10) || 0;
+
+    if (isPM && hours < 12) hours += 12;
+    if (isAM && hours === 12) hours = 0;
+
+    return hours * 60 + minutes;
+}
+
+function minutesToFormattedTime(totalMinutes) {
+    let normalized = totalMinutes % (24 * 60);
+    let hours = Math.floor(normalized / 60);
+    let minutes = normalized % 60;
+    const period = hours >= 12 ? "PM" : "AM";
+
+    if (hours === 0) hours = 12;
+    else if (hours > 12) hours -= 12;
+
+    const hStr = hours < 10 ? `0${hours}` : `${hours}`;
+    const mStr = minutes < 10 ? `0${minutes}` : `${minutes}`;
+
+    return `${hStr}:${mStr} ${period}`;
+}
+
+function parseDurationToMinutes(durStr) {
+    if (!durStr) return 120; // 2 hours default
+    const match = durStr.match(/([\d.]+)/);
+    if (!match) return 120;
+    const val = parseFloat(match[1]);
+    if (durStr.toLowerCase().includes("min")) return Math.round(val);
+    return Math.round(val * 60);
+}
+
+function isTicketConstrainedActivity(actName) {
+    if (!actName) return false;
+    const name = actName.toLowerCase();
+    return name.includes("taj mahal") || name.includes("qutub") || name.includes("fort") || name.includes("ticket") || name.includes("safari") || name.includes("museum") || name.includes("palace") || name.includes("skytree") || name.includes("louvre") || name.includes("eiffel") || name.includes("burj");
+}
+
+function resolveStopScheduleConflicts(stop) {
+    if (!stop || !stop.activities || stop.activities.length === 0) return false;
+
+    // 1. Sort activities chronologically by start time
+    stop.activities.sort((a, b) => parseTimeToMinutes(a.time) - parseTimeToMinutes(b.time));
+
+    let shiftOccurred = false;
+    const bufferMinutes = 30; // 30 mins travel/check-in buffer
+
+    for (let i = 0; i < stop.activities.length - 1; i++) {
+        const current = stop.activities[i];
+        const next = stop.activities[i + 1];
+
+        const startMin = parseTimeToMinutes(current.time);
+        const durMin = parseDurationToMinutes(current.duration);
+        const endMin = startMin + durMin;
+
+        const nextStartMin = parseTimeToMinutes(next.time);
+
+        // Check if next activity overlaps with current activity + buffer
+        if (nextStartMin < endMin + bufferMinutes) {
+            const newNextStartMins = endMin + bufferMinutes;
+            next.time = minutesToFormattedTime(newNextStartMins);
+            shiftOccurred = true;
+        }
+    }
+
+    return shiftOccurred;
+}
 
 // Generic Modal Confirmation Handler
 let currentDeleteCallback = null;
@@ -91,6 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initApp() {
+    // Run conflict resolution on initial state stops
+    window.GLOBETROTTER_STATE.stops.forEach(s => resolveStopScheduleConflicts(s));
+
     renderCityCatalogSearch();
     renderActivitySearchCatalog();
     renderItineraryBuilderStops();
@@ -229,7 +315,7 @@ function handleAddCitySubmit(event) {
 }
 
 // -------------------------------------------------------------
-// 2. CITY-STRICT ACTIVITY SEARCH & MODALS
+// 2. CITY-STRICT ACTIVITY SEARCH & SMART TIME MODALS
 // -------------------------------------------------------------
 
 function renderActivitySearchCatalog() {
@@ -289,6 +375,15 @@ function filterActivityCatalogTable() {
         const tdName = document.createElement('td');
         const strong = document.createElement('strong');
         strong.textContent = act.name;
+
+        if (isTicketConstrainedActivity(act.name)) {
+            const ticketBadge = document.createElement('span');
+            ticketBadge.className = 'badge badge-warning';
+            ticketBadge.style.cssText = 'margin-left: 8px; font-size: 10px;';
+            ticketBadge.textContent = '🎟️ Ticket Slot';
+            strong.appendChild(ticketBadge);
+        }
+
         const descDiv = document.createElement('div');
         descDiv.style.cssText = "font-size: 11px; color: var(--muted);";
         descDiv.textContent = act.description;
@@ -345,9 +440,22 @@ function openAddActivityModalWithData(cityId, activityId, targetStopId) {
     const effectiveCityId = cityId || (activeStop ? activeStop.cityId : 'delhi');
     const city = getCityById(effectiveCityId) || GLOBETROTTER_CITIES[0];
 
+    // Calculate smart next available start time for activeStop
+    let suggestedStartTime = "09:00 AM";
+    if (activeStop && activeStop.activities.length > 0) {
+        const lastAct = activeStop.activities[activeStop.activities.length - 1];
+        const lastStartMins = parseTimeToMinutes(lastAct.time);
+        const lastDurMins = parseDurationToMinutes(lastAct.duration);
+        const nextMins = lastStartMins + lastDurMins + 30; // 30 min buffer
+        suggestedStartTime = minutesToFormattedTime(nextMins);
+    }
+
+    const timeInput = document.getElementById('modalActivityTime');
+    if (timeInput) timeInput.value = suggestedStartTime;
+
     const badgeElem = document.getElementById('activityModalCityBadge');
     if (badgeElem) {
-        badgeElem.textContent = `📍 Target Stop: ${activeStop ? activeStop.cityName : city.name} (${city.state})`;
+        badgeElem.textContent = `📍 Target Stop: ${activeStop ? activeStop.cityName : city.name} (${city.state}) • Auto-Suggested Slot: ${suggestedStartTime}`;
     }
 
     const selectElem = document.getElementById('modalActivitySelect');
@@ -446,22 +554,25 @@ function handleAddActivitySubmit(event) {
     }
 
     const timeVal = timeInput.value || "09:00 AM";
-    const existingConflict = targetStop.activities.find(a => a.time === timeVal);
-    if (existingConflict) {
-        showToast(`⚠ Activities overlap at ${timeVal} on this day!`, 'warning');
-    }
+    const actName = nameInput.value.trim();
+    const isTicketed = isTicketConstrainedActivity(actName);
 
     const newActivity = {
         id: `act-${Date.now()}`,
         activityId: `custom-${Date.now()}`,
-        name: nameInput.value.trim(),
+        name: actName,
         category: catInput ? catInput.value : 'Sightseeing',
         cost: parseFloat(costInput.value),
         time: timeVal,
-        duration: durInput ? durInput.value : '2.0 Hours'
+        duration: durInput ? durInput.value : '2.0 Hours',
+        ticketRequired: isTicketed
     };
 
     targetStop.activities.push(newActivity);
+
+    // Resolve conflicts and auto-shift downstream activities chronologically
+    const wasShifted = resolveStopScheduleConflicts(targetStop);
+
     renderItineraryBuilderStops();
     renderItineraryViewPage();
     recalculateBudget();
@@ -469,7 +580,12 @@ function handleAddActivitySubmit(event) {
     syncCalendarView();
     closeModal('addActivityModal');
 
-    showToast(`✓ Added "${newActivity.name}" to ${targetStop.cityName} stop`, 'success');
+    if (wasShifted) {
+        showToast(`⏱️ "${newActivity.name}" scheduled at ${newActivity.time}. Subsequent activities auto-shifted to avoid overlap (+30m transit buffer).`, 'info');
+    } else {
+        showToast(`✓ Added "${newActivity.name}" to ${targetStop.cityName} stop (${newActivity.time})`, 'success');
+    }
+
     return false;
 }
 
@@ -493,24 +609,42 @@ function quickAddActivityToActiveStop(activityId) {
         return;
     }
 
+    // Auto-calculate start time after last activity end time + 30 mins
+    let nextStartTime = "09:00 AM";
+    if (targetStop.activities.length > 0) {
+        const lastAct = targetStop.activities[targetStop.activities.length - 1];
+        const lastStartMins = parseTimeToMinutes(lastAct.time);
+        const lastDurMins = parseDurationToMinutes(lastAct.duration);
+        nextStartTime = minutesToFormattedTime(lastStartMins + lastDurMins + 30);
+    }
+
+    const isTicketed = isTicketConstrainedActivity(act.name);
+
     const newAct = {
         id: `act-${Date.now()}`,
         activityId: act.id,
         name: act.name,
         category: act.category,
         cost: act.cost,
-        time: "10:00 AM",
-        duration: act.duration
+        time: nextStartTime,
+        duration: act.duration,
+        ticketRequired: isTicketed
     };
 
     targetStop.activities.push(newAct);
+    const wasShifted = resolveStopScheduleConflicts(targetStop);
+
     renderItineraryBuilderStops();
     renderItineraryViewPage();
     recalculateBudget();
     updateTripReadiness();
     syncCalendarView();
 
-    showToast(`✓ Added "${act.name}" to ${targetStop.cityName}`, 'success');
+    if (wasShifted) {
+        showToast(`⏱️ Added "${act.name}" at ${nextStartTime}. Schedule auto-adjusted to prevent overlap.`, 'info');
+    } else {
+        showToast(`✓ Added "${act.name}" to ${targetStop.cityName} (${nextStartTime})`, 'success');
+    }
 }
 
 // -------------------------------------------------------------
@@ -610,13 +744,26 @@ function renderItineraryViewPage() {
                     const item = document.createElement('div');
                     item.className = 'timeline-item';
 
+                    const startMins = parseTimeToMinutes(act.time);
+                    const durMins = parseDurationToMinutes(act.duration);
+                    const endMins = startMins + durMins;
+                    const endTimeStr = minutesToFormattedTime(endMins);
+
                     const tTime = document.createElement('div');
                     tTime.className = 'timeline-time';
-                    tTime.textContent = act.time;
+                    tTime.textContent = `${act.time} – ${endTimeStr}`;
 
                     const tTitle = document.createElement('div');
                     tTitle.className = 'timeline-title';
                     tTitle.textContent = act.name;
+
+                    if (act.ticketRequired || isTicketConstrainedActivity(act.name)) {
+                        const ticketSpan = document.createElement('span');
+                        ticketSpan.className = 'badge badge-warning';
+                        ticketSpan.style.cssText = "margin-left: 8px; font-size: 10px;";
+                        ticketSpan.textContent = '🎟️ Timed Ticket Slot';
+                        tTitle.appendChild(ticketSpan);
+                    }
 
                     const tMeta = document.createElement('div');
                     tMeta.className = 'timeline-meta';
@@ -824,21 +971,37 @@ function renderItineraryBuilderStops() {
                 emptyItem.textContent = `⚠ No activities planned for ${stop.cityName} yet. Click "+ Add Activity" to schedule tours.`;
                 timelineElem.appendChild(emptyItem);
             } else {
+                // Ensure conflicts are resolved before rendering timeline
+                resolveStopScheduleConflicts(stop);
+
                 stop.activities.forEach(act => {
                     const item = document.createElement('div');
                     item.className = 'timeline-item';
 
+                    const startMins = parseTimeToMinutes(act.time);
+                    const durMins = parseDurationToMinutes(act.duration);
+                    const endMins = startMins + durMins;
+                    const endTimeStr = minutesToFormattedTime(endMins);
+
                     const timeDiv = document.createElement('div');
                     timeDiv.className = 'timeline-time';
-                    timeDiv.textContent = `Scheduled — ${act.time}`;
+                    timeDiv.textContent = `Scheduled Slot: ${act.time} – ${endTimeStr}`;
 
                     const titleDiv = document.createElement('div');
                     titleDiv.className = 'timeline-title';
                     titleDiv.textContent = act.name;
 
+                    if (act.ticketRequired || isTicketConstrainedActivity(act.name)) {
+                        const ticketBadge = document.createElement('span');
+                        ticketBadge.className = 'badge badge-warning';
+                        ticketBadge.style.cssText = "margin-left: 8px; font-size: 10px;";
+                        ticketBadge.textContent = '🎟️ Timed Entry Ticket';
+                        titleDiv.appendChild(ticketBadge);
+                    }
+
                     const metaDiv = document.createElement('div');
                     metaDiv.className = 'timeline-meta';
-                    metaDiv.textContent = `Category: ${act.category} • Duration: ${act.duration}`;
+                    metaDiv.textContent = `Category: ${act.category} • Duration: ${act.duration} (+30m transit buffer)`;
 
                     const actionDiv = document.createElement('div');
                     actionDiv.style.cssText = "margin-top: 8px; display: flex; gap: 8px; align-items: center;";
@@ -920,6 +1083,8 @@ function deleteActivityFromStop(stopId, actId) {
     const stop = window.GLOBETROTTER_STATE.stops.find(s => s.id === stopId);
     if (stop) {
         stop.activities = stop.activities.filter(a => a.id !== actId);
+        resolveStopScheduleConflicts(stop);
+
         renderItineraryBuilderStops();
         renderItineraryViewPage();
         recalculateBudget();
@@ -1117,6 +1282,10 @@ function syncCalendarView() {
 
     window.GLOBETROTTER_STATE.stops.forEach(stop => {
         stop.activities.forEach(act => {
+            const startMins = parseTimeToMinutes(act.time);
+            const durMins = parseDurationToMinutes(act.duration);
+            const endTimeStr = minutesToFormattedTime(startMins + durMins);
+
             const card = document.createElement('div');
             card.className = 'card';
             card.style.cssText = "margin-bottom: 10px; border-left: 4px solid var(--primary); padding: 12px 16px;";
@@ -1132,7 +1301,7 @@ function syncCalendarView() {
 
             const meta = document.createElement('div');
             meta.style.cssText = "font-size: 12px; color: var(--muted); margin-top: 4px;";
-            meta.textContent = `Scheduled: ${act.time} • Est. Cost: ₹${act.cost.toLocaleString()}`;
+            meta.textContent = `Slot: ${act.time} – ${endTimeStr} • Est. Cost: ${act.cost === 0 ? 'Free' : '₹' + act.cost.toLocaleString()}`;
 
             card.appendChild(header);
             card.appendChild(meta);
