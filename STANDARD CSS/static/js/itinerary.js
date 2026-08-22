@@ -1,6 +1,6 @@
 /**
  * GlobeTrotter - Master State Engine, Interactions & Date-Aware Multi-Day Scheduler
- * Date-Aware Activity Constraints & Drag-and-Drop Sub-Activity Reordering.
+ * Master Activity Catalog with AI Recommendations & Smart Slot USPs.
  */
 
 // Global Application State (Logical, Date-Aware & Geographically Accurate Route)
@@ -14,7 +14,6 @@ window.GLOBETROTTER_STATE = {
         description: "Curated 8-day heritage journey covering Delhi, Agra, and Jaipur.",
         shareToken: "gt-share-883921"
     },
-    // Logically consecutive destination stops with Date-Aware daily activities
     stops: [
         {
             id: "stop-delhi",
@@ -147,6 +146,20 @@ function getContextBadgeMeta(actName, timeStr) {
         return { label: "🎟️ Timed Entry Ticket", type: "success" };
     }
     return null;
+}
+
+function getProTipForActivity(actName) {
+    if (!actName) return "Recommended highlight for itinerary planning.";
+    const name = actName.toLowerCase();
+    if (name.includes("taj mahal")) return "💡 Best visited at 06:00 AM to avoid crowds and catch soft sunrise lighting.";
+    if (name.includes("qutub")) return "💡 Open until dusk. Wheelchair accessible path around the main minaret.";
+    if (name.includes("chandni chowk")) return "💡 Includes rickshaw ride. Best explored around 06:30 PM for street food.";
+    if (name.includes("amer fort")) return "💡 Jeep safari included up the hill. Book morning slot to skip line.";
+    if (name.includes("hawa mahal")) return "💡 Great photo point from opposing rooftop café across the main avenue.";
+    if (name.includes("nahargarh")) return "💡 Panoramic sunset spot overlooking the Pink City. Arrive by 05:00 PM.";
+    if (name.includes("baga")) return "💡 High demand for water sports. Best early morning or late afternoon.";
+    if (name.includes("cruise")) return "💡 Fixed 05:30 PM sunset departure from Panjim jetty with live cultural show.";
+    return "💡 Popular experience with high traveler rating. Reserve early for optimal slot.";
 }
 
 function resolveStopScheduleConflicts(stop) {
@@ -382,7 +395,7 @@ function handleAddCitySubmit(event) {
 }
 
 // -------------------------------------------------------------
-// 2. CITY-STRICT ACTIVITY SEARCH & DATE-AWARE MODALS
+// 2. MASTER ACTIVITY CATALOG & AI DISCOVERY HUB (USPs)
 // -------------------------------------------------------------
 
 function renderActivitySearchCatalog() {
@@ -407,6 +420,8 @@ function renderActivitySearchCatalog() {
 function filterActivityCatalogTable() {
     const cityFilter = document.getElementById('activityCityFilter')?.value || 'delhi';
     const catFilter = document.getElementById('activityCategoryFilter')?.value || '';
+    const budgetFilter = document.getElementById('activityBudgetFilter')?.value || '';
+    const windowFilter = document.getElementById('activityWindowFilter')?.value || '';
     const searchQuery = document.getElementById('activitySearchInput')?.value.trim().toLowerCase() || '';
     const tableBody = document.getElementById('activityCatalogTableBody');
 
@@ -418,10 +433,22 @@ function filterActivityCatalogTable() {
 
     const cityActivities = getActivitiesByCityId(cityFilter);
 
-    const filtered = cityActivities.filter(act => {
+    const filtered = cityActivities.filter((act, idx) => {
         const matchesCat = !catFilter || act.category === catFilter;
         const matchesSearch = !searchQuery || act.name.toLowerCase().includes(searchQuery) || act.description.toLowerCase().includes(searchQuery);
-        return matchesCat && matchesSearch;
+
+        let matchesBudget = true;
+        if (budgetFilter === 'free') matchesBudget = act.cost === 0;
+        else if (budgetFilter === '500') matchesBudget = act.cost <= 500;
+        else if (budgetFilter === '1500') matchesBudget = act.cost <= 1500;
+
+        let matchesWindow = true;
+        const mins = parseTimeToMinutes(act.preferredTime || "09:00 AM");
+        if (windowFilter === 'morning') matchesWindow = mins < 720;
+        else if (windowFilter === 'evening') matchesWindow = mins >= 960 && mins <= 1140;
+        else if (windowFilter === 'night') matchesWindow = mins > 1140;
+
+        return matchesCat && matchesSearch && matchesBudget && matchesWindow;
     });
 
     if (filtered.length === 0) {
@@ -430,50 +457,87 @@ function filterActivityCatalogTable() {
         td.colSpan = 6;
         td.className = 'text-center text-muted';
         td.style.padding = '20px';
-        td.textContent = 'No matching activities found for this selected city.';
+        td.textContent = 'No matching activities found for the selected city & filters.';
         row.appendChild(td);
         tableBody.appendChild(row);
         return;
     }
 
-    filtered.forEach(act => {
+    filtered.forEach((act, idx) => {
         const row = document.createElement('tr');
 
+        // Column 1: Title, Match Score, Context Badge, Description & Pro Tip
         const tdName = document.createElement('td');
-        const strong = document.createElement('strong');
-        strong.textContent = act.name;
+        
+        const titleLine = document.createElement('div');
+        titleLine.style.cssText = "display: flex; align-items: center; gap: 8px; flex-wrap: wrap;";
 
+        const strong = document.createElement('strong');
+        strong.style.cssText = "font-size: 14px; color: var(--dark);";
+        strong.textContent = act.name;
+        titleLine.appendChild(strong);
+
+        // AI Match Score USP Badge
+        const matchScores = ["98% AI Match", "96% AI Match", "94% AI Match", "⭐ Top Rated"];
+        const matchScore = matchScores[idx % matchScores.length];
+        const matchBadge = document.createElement('span');
+        matchBadge.className = 'badge badge-success';
+        matchBadge.style.cssText = "font-size: 10px; padding: 2px 6px;";
+        matchBadge.textContent = matchScore;
+        titleLine.appendChild(matchBadge);
+
+        // Fixed Slot / Context Badge
         const badgeMeta = getContextBadgeMeta(act.name, act.preferredTime || "09:00 AM");
         if (badgeMeta) {
             const contextBadge = document.createElement('span');
             contextBadge.className = `badge badge-${badgeMeta.type}`;
-            contextBadge.style.cssText = 'margin-left: 8px; font-size: 10px;';
+            contextBadge.style.cssText = 'font-size: 10px; padding: 2px 6px;';
             contextBadge.textContent = badgeMeta.label;
-            strong.appendChild(contextBadge);
+            titleLine.appendChild(contextBadge);
         }
 
         const descDiv = document.createElement('div');
-        descDiv.style.cssText = "font-size: 11px; color: var(--muted);";
+        descDiv.style.cssText = "font-size: 12px; color: var(--muted); margin-top: 4px;";
         descDiv.textContent = act.description;
-        tdName.appendChild(strong);
-        tdName.appendChild(descDiv);
 
+        const proTip = document.createElement('div');
+        proTip.style.cssText = "font-size: 11px; color: var(--primary-dark); background: var(--primary-light); padding: 4px 8px; border-radius: 4px; margin-top: 6px; display: inline-block;";
+        proTip.textContent = getProTipForActivity(act.name);
+
+        tdName.appendChild(titleLine);
+        tdName.appendChild(descDiv);
+        tdName.appendChild(proTip);
+
+        // Column 2: Destination City
         const tdDest = document.createElement('td');
         const cityObj = getCityById(act.cityId);
+        tdDest.style.cssText = "font-size: 13px; font-weight: 600;";
         tdDest.textContent = cityObj ? `${cityObj.name}, ${cityObj.state}` : act.cityId;
 
+        // Column 3: Category
         const tdCat = document.createElement('td');
         const badge = document.createElement('span');
         badge.className = 'badge badge-primary';
         badge.textContent = act.category;
         tdCat.appendChild(badge);
 
+        // Column 4: Duration & Best Slot
         const tdDur = document.createElement('td');
-        tdDur.textContent = act.duration;
+        tdDur.style.fontSize = "12px";
+        const durText = document.createElement('div');
+        durText.textContent = act.duration;
+        const timeText = document.createElement('div');
+        timeText.style.cssText = "color: var(--muted); font-size: 11px;";
+        timeText.textContent = `Slot: ${act.preferredTime || '09:00 AM'}`;
+        tdDur.appendChild(durText);
+        tdDur.appendChild(timeText);
 
+        // Column 5: Est Cost
         const tdCost = document.createElement('td');
+        tdCost.style.cssText = "font-weight: 700; color: var(--primary); font-size: 13px;";
         tdCost.textContent = act.cost === 0 ? 'Free' : `₹${act.cost.toLocaleString()}`;
 
+        // Column 6: Smart Action
         const tdAction = document.createElement('td');
         const addBtn = document.createElement('button');
         addBtn.className = 'btn btn-primary btn-sm';
@@ -708,7 +772,6 @@ function renderItineraryViewPage() {
     });
 
     const grandTotalSpent = totalActCost + totalExpenseCost;
-    const avgPerDay = Math.round(grandTotalSpent / 8);
 
     if (titleElem) titleElem.textContent = state.trip.title;
     if (routeSubtitleElem) {

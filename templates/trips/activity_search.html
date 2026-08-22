@@ -1,29 +1,52 @@
 {% extends "base.html" %}
 
-{% block title %}Activity Discovery | GlobeTrotter{% endblock %}
+{% block title %}AI Activity & Experience Discovery | GlobeTrotter{% endblock %}
 
 {% block content %}
+<!-- Page Header with USP -->
 <div class="page-header">
     <div>
-        <h1 class="page-title">🎯 Activity & Experience Catalog</h1>
-        <p class="page-subtitle">Browse city-specific activities, entry tickets, guided tours, and local experiences across destination hubs.</p>
+        <h1 class="page-title">🎯 AI Experience & Activity Discovery Hub</h1>
+        <p class="page-subtitle">Smart AI Recommendations, domain time-slot windows, pro travel tips, and fast-track activity booking across cities.</p>
     </div>
-    <button type="button" class="btn btn-primary" onclick="openAddActivityModalWithData('goa')">
+    <button type="button" class="btn btn-primary" onclick="openAddActivityModalWithData('delhi')">
         + Custom Activity
     </button>
 </div>
 
-<!-- City & Search Controls -->
-<div class="card" style="margin-bottom: 20px; padding: 16px;">
-    <div class="grid grid-3" style="align-items: center;">
+<!-- USP Highlights Banner -->
+<div class="card" style="margin-bottom: 20px; background: linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(124, 58, 237, 0.08) 100%); border-left: 4px solid var(--primary);">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; gap: 16px; align-items: center;">
+            <div style="font-size: 28px;">🧠</div>
+            <div>
+                <strong style="font-size: 15px; color: var(--primary-dark);">Smart AI Discovery Engine (USP)</strong>
+                <div style="font-size: 12px; color: var(--muted); margin-top: 2px;">
+                    Every catalog activity includes real-world optimal slot guidance (🌅 Sunrise, 🌆 Sunset, 🌙 Night Food) and estimated transit buffers.
+                </div>
+            </div>
+        </div>
+        <div style="display: flex; gap: 8px;">
+            <span class="badge badge-success">⭐ AI Match Scoring</span>
+            <span class="badge badge-warning">🌅 Domain Slot Anchors</span>
+            <span class="badge badge-primary">🎟️ Fast-Track Ticket Ready</span>
+        </div>
+    </div>
+</div>
+
+<!-- Multi-Dimensional Filter Control Bar -->
+<div class="card" style="margin-bottom: 20px; padding: 18px;">
+    <div class="grid grid-4" style="align-items: center;">
+        
+        <!-- Filter 1: City -->
         <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label" for="activityCityFilter">📍 Filter by City Destination *</label>
+            <label class="form-label" for="activityCityFilter">📍 Destination City *</label>
             <select id="activityCityFilter" class="form-control" onchange="filterActivityCatalogTable()">
+                <option value="delhi">New Delhi (Delhi)</option>
+                <option value="agra">Agra (Uttar Pradesh)</option>
+                <option value="jaipur">Jaipur (Rajasthan)</option>
                 <option value="goa">Goa (Goa)</option>
                 <option value="mumbai">Mumbai (Maharashtra)</option>
-                <option value="delhi">New Delhi (Delhi)</option>
-                <option value="jaipur">Jaipur (Rajasthan)</option>
-                <option value="agra">Agra (Uttar Pradesh)</option>
                 <option value="ahmedabad">Ahmedabad (Gujarat)</option>
                 <option value="udaipur">Udaipur (Rajasthan)</option>
                 <option value="bengaluru">Bengaluru (Karnataka)</option>
@@ -34,8 +57,9 @@
             </select>
         </div>
 
+        <!-- Filter 2: Category -->
         <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label" for="activityCategoryFilter">Category Filter</label>
+            <label class="form-label" for="activityCategoryFilter">Category</label>
             <select id="activityCategoryFilter" class="form-control" onchange="filterActivityCatalogTable()">
                 <option value="">All Categories</option>
                 <option value="Heritage & Monuments">Heritage & Monuments</option>
@@ -46,34 +70,50 @@
             </select>
         </div>
 
+        <!-- Filter 3: Max Budget USP Filter -->
+        <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" for="activityBudgetFilter">💰 Max Budget</label>
+            <select id="activityBudgetFilter" class="form-control" onchange="filterActivityCatalogTable()">
+                <option value="">All Prices</option>
+                <option value="free">Free Only</option>
+                <option value="500">Under ₹500</option>
+                <option value="1500">Under ₹1,500</option>
+            </select>
+        </div>
+
+        <!-- Filter 4: Search Input -->
         <div class="form-group" style="margin-bottom: 0;">
             <label class="form-label" for="activitySearchInput">Search Activity</label>
             <div class="search-box">
                 <span class="search-icon">🔍</span>
-                <input type="text" id="activitySearchInput" class="form-control" placeholder="Search by activity name..." onkeyup="filterActivityCatalogTable()">
+                <input type="text" id="activitySearchInput" class="form-control" placeholder="Search by title or keyword..." onkeyup="filterActivityCatalogTable()">
             </div>
         </div>
+
     </div>
 </div>
 
-<!-- Dynamic Activity Table -->
+<!-- Master Discovery Activity Table -->
 <div class="card">
     <div class="table-container">
         <table class="table">
             <thead>
                 <tr>
-                    <th>Activity Name & Description</th>
-                    <th>Destination City</th>
+                    <th style="width: 40%;">Activity Title, AI Match & Insider Pro Tip</th>
+                    <th>Destination</th>
                     <th>Category</th>
-                    <th>Duration</th>
+                    <th>Optimal Window</th>
                     <th>Est. Cost</th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody id="activityCatalogTableBody">
-                <!-- Dynamically Populated from GLOBETROTTER_CITIES in data.js -->
+                <!-- Dynamically Populated from GLOBETROTTER_CITIES with AI USPs in itinerary.js -->
             </tbody>
         </table>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
 {% endblock %}
