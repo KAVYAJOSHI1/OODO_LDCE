@@ -8,7 +8,7 @@
 
     <!-- Standard CSS & Custom Admin CSS -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="{% static 'admin/admin.css' %}?v=1.5">
+    <link rel="stylesheet" href="{% static 'admin/admin.css' %}?v=1.6">
 </head>
 <body class="admin-body">
     <div class="admin-wrapper">
@@ -89,8 +89,8 @@
 
     <!-- Admin Profile Modal -->
     <div id="adminProfileModal" class="modal-overlay" style="display:none;">
-        <div class="modal-card" style="max-width: 520px;">
-            <div class="modal-header" style="background: linear-gradient(135deg, #1a202c, #2d3748); color: #ffffff; padding: 20px 24px; border-radius: 12px 12px 0 0;">
+        <div class="modal-card" style="max-width: 520px; background: #ffffff !important; border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4); border: 1px solid #cbd5e1;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #1a202c, #2d3748); color: #ffffff; padding: 20px 24px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <div style="width: 44px; height: 44px; background: rgba(99, 102, 241, 0.2); border: 2px solid #6366f1; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px;">
                         🛡️
@@ -103,7 +103,7 @@
                 <button type="button" onclick="closeAdminProfileModal()" style="background: none; border: none; color: #a0aec0; font-size: 22px; cursor: pointer;">&times;</button>
             </div>
             
-            <div class="modal-body" style="padding: 24px;">
+            <div class="modal-body" style="padding: 24px; background: #ffffff !important;">
                 <div style="text-align: center; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--admin-border);">
                     <div style="font-size: 24px; font-weight: 800; color: var(--admin-dark);" id="profileModalFullName">
                         {{ request.user.get_full_name|default:request.user.username }}
@@ -150,7 +150,7 @@
     <div id="adminToastContainer" class="toast-container"></div>
 
     <!-- JS Client -->
-    <script src="{% static 'admin/admin.js' %}?v=1.5"></script>
+    <script src="{% static 'admin/admin.js' %}?v=1.6"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>
