@@ -6,6 +6,22 @@
 {% block content %}
 <!-- KPI Stats Grid -->
 <div class="admin-stats-grid">
+    <div class="admin-stat-card" style="border-left: 4px solid #6366f1;">
+        <div class="admin-stat-icon-wrapper" style="background: #e0e7ff; color: #4338ca;">💰</div>
+        <div class="admin-stat-info">
+            <span class="admin-stat-value" id="statEstRevenue">₹...</span>
+            <span class="admin-stat-label">Est. Platform Revenue (10%)</span>
+        </div>
+    </div>
+
+    <div class="admin-stat-card" style="border-left: 4px solid #10b981;">
+        <div class="admin-stat-icon-wrapper" style="background: #d1fae5; color: #047857;">📈</div>
+        <div class="admin-stat-info">
+            <span class="admin-stat-value" id="statAvgRevUser">₹...</span>
+            <span class="admin-stat-label">Avg Revenue / Registered User</span>
+        </div>
+    </div>
+
     <div class="admin-stat-card">
         <div class="admin-stat-icon-wrapper">👥</div>
         <div class="admin-stat-info">
@@ -39,22 +55,6 @@
     </div>
 
     <div class="admin-stat-card">
-        <div class="admin-stat-icon-wrapper">🔓</div>
-        <div class="admin-stat-info">
-            <span class="admin-stat-value" id="statPublicTrips">...</span>
-            <span class="admin-stat-label">Public Shared Trips</span>
-        </div>
-    </div>
-
-    <div class="admin-stat-card">
-        <div class="admin-stat-icon-wrapper">💰</div>
-        <div class="admin-stat-info">
-            <span class="admin-stat-value" id="statAvgBudget">₹...</span>
-            <span class="admin-stat-label">Avg Trip Budget</span>
-        </div>
-    </div>
-
-    <div class="admin-stat-card">
         <div class="admin-stat-icon-wrapper">💵</div>
         <div class="admin-stat-info">
             <span class="admin-stat-value" id="statTotalBudget">₹...</span>
@@ -63,7 +63,7 @@
     </div>
 
     <div class="admin-stat-card">
-        <div class="admin-stat-icon-wrapper">📈</div>
+        <div class="admin-stat-icon-wrapper">💳</div>
         <div class="admin-stat-info">
             <span class="admin-stat-value" id="statTotalExpenses">₹...</span>
             <span class="admin-stat-label">Total Expenses (<span id="statBudgetUtil">...</span>% util)</span>
@@ -71,7 +71,39 @@
     </div>
 </div>
 
-<!-- Aggregated Analytics Grid -->
+<!-- Section: Revenue & Financial Analytics -->
+<div class="admin-card" id="revenueAnalyticsSection" style="margin-bottom: 24px; border-top: 4px solid #4f46e5;">
+    <div class="admin-card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <div class="admin-card-title" style="font-size: 18px; font-weight: 700;">
+            <span>📈</span> Financial Intelligence & Platform Revenue Breakdown
+        </div>
+        <span class="admin-badge admin-badge-info" style="font-size: 12px; padding: 6px 12px;">10.0% Service Commission Model</span>
+    </div>
+    
+    <div style="padding: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <!-- Financial City Contribution Graph Card -->
+        <div style="background: #fafafa; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+            <h4 style="margin: 0 0 16px 0; font-size: 15px; color: var(--admin-dark); display: flex; align-items: center; gap: 8px;">
+                <span>🌆</span> Revenue & Commission by Top Destination
+            </h4>
+            <div class="bar-chart-container" id="cityRevenueContainer">
+                <div class="admin-loading">⟳ Loading financial graphs...</div>
+            </div>
+        </div>
+
+        <!-- Expense Allocation Chart Card -->
+        <div style="background: #fafafa; border: 1px solid #e2e8f0; border-radius: 8px; padding: 20px;">
+            <h4 style="margin: 0 0 16px 0; font-size: 15px; color: var(--admin-dark); display: flex; align-items: center; gap: 8px;">
+                <span>💳</span> Category Capital Distribution
+            </h4>
+            <div class="bar-chart-container" id="budgetBreakdownContainer">
+                <div class="admin-loading">⟳ Loading financial graphs...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Aggregated Operational Analytics Grid -->
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
     <!-- Trip Status Distribution Chart -->
     <div class="admin-card">
@@ -93,18 +125,6 @@
             </div>
         </div>
         <div class="bar-chart-container" id="popularCitiesContainer">
-            <div class="admin-loading">⟳ Loading analytics...</div>
-        </div>
-    </div>
-
-    <!-- Budget Breakdown Chart -->
-    <div class="admin-card">
-        <div class="admin-card-header">
-            <div class="admin-card-title">
-                <span>💳</span> Expense Category Breakdown
-            </div>
-        </div>
-        <div class="bar-chart-container" id="budgetBreakdownContainer">
             <div class="admin-loading">⟳ Loading analytics...</div>
         </div>
     </div>
@@ -132,6 +152,9 @@
         </a>
         <a href="{% url 'admin_api:export-trips' %}" class="admin-btn admin-btn-secondary">
             <span>📥</span> Export Trips CSV
+        </a>
+        <a href="{% url 'admin_api:export-users' %}" class="admin-btn admin-btn-secondary">
+            <span>📥</span> Export Users CSV
         </a>
     </div>
 </div>

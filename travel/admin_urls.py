@@ -30,6 +30,9 @@ urlpatterns = [
     path('users/', a.admin_users_list, name='users-list'),
     path('users/<int:user_id>/update-status/', a.admin_user_update_status, name='user-update-status'),
 
+    # Profile
+    path('profile/', a.admin_user_profile, name='user-profile'),
+
     # System Maintenance
     path('system/reseed/', a.admin_system_reseed, name='system-reseed'),
 

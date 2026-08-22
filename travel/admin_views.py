@@ -72,6 +72,10 @@ def admin_dashboard_stats(request):
 
     budget_utilization = round((total_expenses / total_planned_budget * 100), 1) if total_planned_budget > 0 else 0.0
 
+    # Revenue & Commission Metrics (10% Service Fee on Planned Trips)
+    est_platform_revenue = round(total_planned_budget * 0.10, 2)
+    avg_revenue_per_user = round(est_platform_revenue / max(total_users, 1), 2)
+
     return JsonResponse({
         "ok": True,
         "stats": {
@@ -83,7 +87,10 @@ def admin_dashboard_stats(request):
             "avg_trip_budget": round(avg_trip_budget, 2),
             "total_planned_budget": round(total_planned_budget, 2),
             "total_expenses": round(total_expenses, 2),
-            "budget_utilization": budget_utilization
+            "budget_utilization": budget_utilization,
+            "est_platform_revenue": est_platform_revenue,
+            "commission_rate": 10.0,
+            "avg_revenue_per_user": avg_revenue_per_user
         }
     })
 
@@ -130,12 +137,48 @@ def admin_dashboard_charts(request):
         for item in category_counts
     ]
 
+    # Revenue by Destination City (City total planned budget & 10% commission yield)
+    city_revenue_qs = City.objects.annotate(
+        total_city_budget=Sum('trip_stops__trip__budget')
+    ).filter(total_city_budget__gt=0).order_by('-total_city_budget')[:6]
+
+    revenue_by_city = [
+        {
+            "city": c.name,
+            "country": c.country,
+            "total_budget": float(c.total_city_budget or 0.0),
+            "platform_commission": round(float(c.total_city_budget or 0.0) * 0.10, 2)
+        }
+        for c in city_revenue_qs
+    ]
+
     return JsonResponse({
         "ok": True,
         "charts": {
             "status_distribution": status_distribution,
             "popular_destinations": popular_destinations,
-            "budget_breakdown": budget_breakdown
+            "budget_breakdown": budget_breakdown,
+            "revenue_by_city": revenue_by_city
+        }
+    })
+
+
+@staff_required
+@require_http_methods(["GET"])
+def admin_user_profile(request):
+    """GET /api/admin/profile/"""
+    u = request.user
+    return JsonResponse({
+        "ok": True,
+        "profile": {
+            "username": u.username,
+            "full_name": u.get_full_name() or u.username,
+            "email": u.email or "admin@globetrotter.com",
+            "is_staff": u.is_staff,
+            "is_superuser": u.is_superuser,
+            "is_active": u.is_active,
+            "last_login": u.last_login.strftime('%b %d, %Y %H:%M') if u.last_login else "Active Session",
+            "date_joined": u.date_joined.strftime('%b %d, %Y') if u.date_joined else "Unknown"
         }
     })
 

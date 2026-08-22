@@ -108,6 +108,31 @@ function closeAdminModal(modalId) {
     }
 }
 
+// Admin Profile Modal Helpers
+async function openAdminProfileModal() {
+    const modal = document.getElementById('adminProfileModal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+
+    // Fetch latest profile details from API
+    const res = await apiFetch('/api/admin/profile/');
+    if (res.ok && res.profile) {
+        const p = res.profile;
+        if (document.getElementById('profileModalFullName')) document.getElementById('profileModalFullName').textContent = p.full_name;
+        if (document.getElementById('profileModalUsername')) document.getElementById('profileModalUsername').textContent = p.username;
+        if (document.getElementById('profileModalEmail')) document.getElementById('profileModalEmail').textContent = p.email;
+    }
+}
+
+function closeAdminProfileModal() {
+    const modal = document.getElementById('adminProfileModal');
+    if (modal) {
+        modal.style.display = 'none';
+        modal.classList.remove('active');
+    }
+}
+
 // Helper to escape HTML strings safely
 function escapeHtml(str) {
     if (!str) return '';
@@ -126,15 +151,18 @@ async function initAdminDashboard() {
     // Stats
     const statsRes = await apiFetch('/api/admin/dashboard/stats/');
     if (statsRes.ok && statsRes.stats) {
-        if (document.getElementById('statTotalUsers')) document.getElementById('statTotalUsers').textContent = statsRes.stats.total_users;
-        if (document.getElementById('statActiveTrips')) document.getElementById('statActiveTrips').textContent = statsRes.stats.active_trips;
-        if (document.getElementById('statTotalCities')) document.getElementById('statTotalCities').textContent = statsRes.stats.total_cities;
-        if (document.getElementById('statTotalActivities')) document.getElementById('statTotalActivities').textContent = statsRes.stats.total_activities;
-        if (document.getElementById('statPublicTrips')) document.getElementById('statPublicTrips').textContent = statsRes.stats.total_public_trips;
-        if (document.getElementById('statAvgBudget')) document.getElementById('statAvgBudget').textContent = '₹' + statsRes.stats.avg_trip_budget;
-        if (document.getElementById('statTotalBudget')) document.getElementById('statTotalBudget').textContent = '₹' + statsRes.stats.total_planned_budget;
-        if (document.getElementById('statTotalExpenses')) document.getElementById('statTotalExpenses').textContent = '₹' + statsRes.stats.total_expenses;
-        if (document.getElementById('statBudgetUtil')) document.getElementById('statBudgetUtil').textContent = statsRes.stats.budget_utilization;
+        const s = statsRes.stats;
+        if (document.getElementById('statTotalUsers')) document.getElementById('statTotalUsers').textContent = s.total_users;
+        if (document.getElementById('statActiveTrips')) document.getElementById('statActiveTrips').textContent = s.active_trips;
+        if (document.getElementById('statTotalCities')) document.getElementById('statTotalCities').textContent = s.total_cities;
+        if (document.getElementById('statTotalActivities')) document.getElementById('statTotalActivities').textContent = s.total_activities;
+        if (document.getElementById('statPublicTrips')) document.getElementById('statPublicTrips').textContent = s.total_public_trips;
+        if (document.getElementById('statAvgBudget')) document.getElementById('statAvgBudget').textContent = '₹' + s.avg_trip_budget.toLocaleString('en-IN');
+        if (document.getElementById('statTotalBudget')) document.getElementById('statTotalBudget').textContent = '₹' + s.total_planned_budget.toLocaleString('en-IN');
+        if (document.getElementById('statTotalExpenses')) document.getElementById('statTotalExpenses').textContent = '₹' + s.total_expenses.toLocaleString('en-IN');
+        if (document.getElementById('statBudgetUtil')) document.getElementById('statBudgetUtil').textContent = s.budget_utilization;
+        if (document.getElementById('statEstRevenue')) document.getElementById('statEstRevenue').textContent = '₹' + (s.est_platform_revenue || 0).toLocaleString('en-IN');
+        if (document.getElementById('statAvgRevUser')) document.getElementById('statAvgRevUser').textContent = '₹' + (s.avg_revenue_per_user || 0).toLocaleString('en-IN');
     }
 
     // Charts
@@ -143,6 +171,7 @@ async function initAdminDashboard() {
         renderStatusChart(chartsRes.charts.status_distribution);
         renderPopularCitiesChart(chartsRes.charts.popular_destinations);
         renderBudgetBreakdownChart(chartsRes.charts.budget_breakdown);
+        renderCityRevenueChart(chartsRes.charts.revenue_by_city);
     }
 }
 
@@ -218,6 +247,32 @@ function renderBudgetBreakdownChart(data) {
                 </div>
                 <div class="bar-chart-bar-outer">
                     <div class="bar-chart-bar-inner" style="width: ${pct}%; background-color: var(--admin-info);"></div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function renderCityRevenueChart(data) {
+    const container = document.getElementById('cityRevenueContainer');
+    if (!container) return;
+
+    if (!data || data.length === 0) {
+        container.innerHTML = '<div class="admin-loading">No city revenue data logged.</div>';
+        return;
+    }
+
+    const maxBudget = Math.max(...data.map(d => d.total_budget), 1);
+    container.innerHTML = data.map(item => {
+        const pct = Math.round((item.total_budget / maxBudget) * 100);
+        return `
+            <div class="bar-chart-row" style="margin-bottom: 14px;">
+                <div class="bar-chart-label-group">
+                    <span style="font-weight: 600;">${escapeHtml(item.city)}, ${escapeHtml(item.country)}</span>
+                    <span style="color: #4f46e5; font-weight: 700;">₹${item.platform_commission.toLocaleString('en-IN')} fee <small style="color:#64748b; font-weight:400;">(₹${item.total_budget.toLocaleString('en-IN')} vol)</small></span>
+                </div>
+                <div class="bar-chart-bar-outer" style="height: 10px; background: #e0e7ff;">
+                    <div class="bar-chart-bar-inner" style="width: ${pct}%; background: linear-gradient(90deg, #6366f1, #4f46e5);"></div>
                 </div>
             </div>
         `;
